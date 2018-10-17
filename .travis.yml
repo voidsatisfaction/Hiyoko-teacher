@@ -5,6 +5,7 @@ node_js:
 cache:
   - "node_modules"
 install:
+  - npm i -g npx
   - npm i
 script:
   - npm test
