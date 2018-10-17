@@ -22,6 +22,7 @@ export class dbClient {
         host: c.dbHost,
         dialect: 'mysql',
         port: c.dbPort,
+        logging: false,
       }
     )
     
