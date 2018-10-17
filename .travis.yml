@@ -6,7 +6,7 @@ services:
 cache:
   - "node_modules"
 before_install:
-  - sh script/dev.sh
+  - sh script/ci.sh
 install:
   - npm i -g npx
   - npm i
