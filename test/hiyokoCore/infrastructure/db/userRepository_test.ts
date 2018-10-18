@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import { dbClient } from '../../../../src/hiyokoCore/infrastructure/db/client';
-import { UserRepository } from '../../../../src/hiyokoCore/infrastructure/db/userRepository';
-import { UserEntity } from '../../../../src/hiyokoCore/domain/model/user';
+import { dbClient } from '../../../../src/hiyokoCore/infrastructure/db/Client';
+import { UserRepository } from '../../../../src/hiyokoCore/infrastructure/db/UserRepository';
+import { UserEntity } from '../../../../src/hiyokoCore/domain/model/User';
 
 describe('User repository test', () => {
   const dbc = new dbClient()

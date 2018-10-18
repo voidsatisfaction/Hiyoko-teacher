@@ -1,6 +1,6 @@
-import { UserEntity } from "../model/user";
-import { VocabularyEntity } from "../model/vocabulary";
-import { VocabularyListEntity } from "../model/vocabularyList";
+import { UserEntity } from "../model/User";
+import { VocabularyEntity } from "../model/Vocabulary";
+import { VocabularyListEntity } from "../model/VocabularyList";
 
 export interface IVocabularyListRepository {
   findByUserAndVocabulary(

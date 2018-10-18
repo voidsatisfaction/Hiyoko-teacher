@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize'
 
-import { SequelizeModelBase } from './base';
+import { SequelizeModelBase } from './Base';
 
 export class SequelizeVocabularyTable extends SequelizeModelBase {
   static readonly tableName = 'Vocabularies'

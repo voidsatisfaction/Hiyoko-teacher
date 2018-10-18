@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize'
 
-import { SequelizeModelBase } from './base';
+import { SequelizeModelBase } from './Base';
 
 export class SequelizeUserTable extends SequelizeModelBase {
   static readonly tableName = 'Users'

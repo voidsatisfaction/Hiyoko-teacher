@@ -1,9 +1,9 @@
-import { RepositoryBase } from "./repositoryBase";
-import { VocabularyListEntity } from "../../domain/model/vocabularyList";
-import { IVocabularyListRepository } from "../../domain/repository/vocabularyList";
+import { RepositoryBase } from "./RepositoryBase";
+import { VocabularyListEntity } from "../../domain/model/VocabularyList";
+import { IVocabularyListRepository } from "../../domain/repository/VocabularyList";
 import { dbClient } from "./client";
-import { UserEntity } from "../../domain/model/user";
-import { VocabularyEntity } from "../../domain/model/vocabulary";
+import { UserEntity } from "../../domain/model/User";
+import { VocabularyEntity } from "../../domain/model/Vocabulary";
 
 export class VocabularyListRepository extends RepositoryBase<VocabularyListEntity>
   implements IVocabularyListRepository {

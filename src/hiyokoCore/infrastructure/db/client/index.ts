@@ -1,9 +1,9 @@
 import Sequelize from 'sequelize'
 import { Configure } from '../../../../../config'
 
-import { SequelizeUserTable } from '../model/user'
-import { SequelizeVocabularyTable } from '../model/vocabulary';
-import { SequelizeVocabularyListTable } from '../model/vocabularyList';
+import { SequelizeUserTable } from '../model/User'
+import { SequelizeVocabularyTable } from '../model/Vocabulary';
+import { SequelizeVocabularyListTable } from '../model/VocabularyList';
 
 interface ITableInstance {
   destroy(option: object)

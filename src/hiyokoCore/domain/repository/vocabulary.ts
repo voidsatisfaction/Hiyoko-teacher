@@ -1,4 +1,4 @@
-import { VocabularyEntity } from "../model/vocabulary";
+import { VocabularyEntity } from "../model/Vocabulary";
 
 export interface IVocaRepository {
   findOrCreate(name: string): Promise<VocabularyEntity>

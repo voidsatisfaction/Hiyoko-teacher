@@ -1,9 +1,9 @@
 import { expect } from 'chai'
 
 import { dbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
-import { VocabularyListRepository } from '../../../../src/hiyokoCore/infrastructure/db/vocabularyListRepository'
+import { VocabularyListRepository } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
 import { UserEntityMock, VocabularyEntityMock } from '../../../helper/factory';
-import { VocabularyListEntity } from '../../../../src/hiyokoCore/domain/model/vocabularyList';
+import { VocabularyListEntity } from '../../../../src/hiyokoCore/domain/model/VocabularyList';
 
 describe('VocabularyList repository test', () => {
   const dbc = new dbClient()

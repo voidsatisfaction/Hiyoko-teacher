@@ -1,9 +1,9 @@
 import { dbClient } from './client'
-import { RepositoryBase } from './repositoryBase'
+import { RepositoryBase } from './RepositoryBase'
 
-import { IUserRepository } from '../../domain/repository/user'
+import { IUserRepository } from '../../domain/repository/User'
 
-import { UserEntity } from '../../domain/model/user';
+import { UserEntity } from '../../domain/model/User';
 
 export class UserRepository extends RepositoryBase<UserEntity> implements IUserRepository {
   protected readonly dbc: dbClient

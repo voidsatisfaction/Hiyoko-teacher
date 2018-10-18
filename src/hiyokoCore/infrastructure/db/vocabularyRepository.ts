@@ -1,6 +1,6 @@
-import { RepositoryBase } from "./repositoryBase"
-import { IVocaRepository } from "../../domain/repository/vocabulary"
-import { VocabularyEntity } from "../../domain/model/vocabulary"
+import { RepositoryBase } from "./RepositoryBase"
+import { IVocaRepository } from "../../domain/repository/Vocabulary"
+import { VocabularyEntity } from "../../domain/model/Vocabulary"
 import { dbClient } from "./client"
 
 export class VocabularyRepository extends RepositoryBase<VocabularyEntity> implements IVocaRepository {

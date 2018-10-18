@@ -1,4 +1,4 @@
-import { UserEntity } from '../model/user'
+import { UserEntity } from '../model/User'
 
 export interface IUserRepository {
   findOrCreate(userId: string): Promise<UserEntity>
