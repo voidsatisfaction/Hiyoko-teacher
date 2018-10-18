@@ -3,7 +3,7 @@ import Sequelize from 'sequelize'
 import { SequelizeModelBase } from './base';
 
 export class SequelizeVocabularyListTable extends SequelizeModelBase {
-  static readonly tableName = 'VocabularyLists'
+  static readonly tableName = 'Vocabulary_lists'
   static readonly model = {
     userId: {
       type: Sequelize.STRING,
@@ -25,6 +25,7 @@ export class SequelizeVocabularyListTable extends SequelizeModelBase {
     },
   }
   static readonly options = {
+    updatedAt: false,
     indexes: [
       { fields: ['userId', 'createdAt'] },
       { fields: ['userId'] },
