@@ -1,6 +1,6 @@
-import { UserEntity } from '../../../src/hiyokoCore/domain/model/user'
+import { UserEntity } from '../../../src/hiyokoCore/domain/model/User'
 import { Random } from '../util';
-import { VocabularyEntity } from '../../../src/hiyokoCore/domain/model/vocabulary';
+import { VocabularyEntity } from '../../../src/hiyokoCore/domain/model/Vocabulary';
 import { DateTime } from '../../../src/util/DateTime';
 
 export const UserEntityMock = (userId?: string, createdAt?: Date): UserEntity => {
