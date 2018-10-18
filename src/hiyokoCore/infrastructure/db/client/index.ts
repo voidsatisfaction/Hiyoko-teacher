@@ -2,6 +2,7 @@ import Sequelize from 'sequelize'
 import { Configure } from '../../../../../config'
 
 import { SequelizeUserTable } from '../model/user'
+import { SequelizeVocabularyTable } from '../model/vocabulary';
 
 interface ITableInstance {
   destroy(option: object)
@@ -9,6 +10,7 @@ interface ITableInstance {
 
 export class dbClient {
   readonly User
+  readonly Vocabulary
   private readonly hiyokoCoreDB
 
   constructor() {
@@ -30,6 +32,11 @@ export class dbClient {
       SequelizeUserTable.tableName,
       SequelizeUserTable.model,
       SequelizeUserTable.options
+    )
+    this.Vocabulary = this.hiyokoCoreDB.define(
+      SequelizeVocabularyTable.tableName,
+      SequelizeVocabularyTable.model,
+      SequelizeVocabularyTable.options
     )
   }
 

@@ -14,8 +14,9 @@ export class SequelizeVocabularyTable extends SequelizeModelBase {
       type: Sequelize.STRING,
       unique: true
     },
-    indexes: [
-      { unique: true, fields: ['name'] }
-    ]
+  }
+
+  static readonly options = {
+    timestamps: false,
   }
 }

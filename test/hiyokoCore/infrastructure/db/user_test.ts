@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import { dbClient } from '../../../../src/hiyokoCore/infrastructure/db/client';
-import { UserRepository } from '../../../../src/hiyokoCore/infrastructure/db/user';
+import { UserRepository } from '../../../../src/hiyokoCore/infrastructure/db/userRepository';
 import { UserEntity } from '../../../../src/hiyokoCore/domain/model/user';
 
 describe('User repository test', () => {
