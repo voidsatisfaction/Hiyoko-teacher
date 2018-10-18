@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 
-import { dbClient } from '../../../../src/hiyokoCore/infrastructure/db/Client'
+import { dbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
 import { VocabularyRepository } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
 import { VocabularyEntity } from '../../../../src/hiyokoCore/domain/model/Vocabulary';
 
