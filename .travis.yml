@@ -9,6 +9,7 @@ services:
 cache:
   - "node_modules"
 before_install:
+  - touch .env.dev
   - sh script/ci.sh
 install:
   - npm i -g npx
