@@ -1,0 +1,16 @@
+service: hiyoko-sensei
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${env:NODE_ENV}  # Set the default stage used. Default is dev
+  region: ap-northeast-1 # Overwrite the default region used. Default is us-east-1
+plugins:
+  - serverless-plugin-typescript
+functions:
+  hiyokoSensei: # A Function
+    handler: src/hiyokoMantle/web/bot/index.handler
+    events: # The Events that trigger this Function
+      - http:
+          path: hiyokoSensei/bot/webhook
+          method: post
+          cors: true
