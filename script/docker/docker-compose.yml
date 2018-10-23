@@ -1,16 +1,16 @@
 version: '3.1'
 services:
-  # web:
-  #   build: .
-  #   container_name: "omt-project"
-  #   ports:
-  #     - "19000:9000"
-  #   volumes:
-  #     - .:/ts/hiyoko-teacher
-  #   env_file:
-  #     - .env_dev
-  #   environment:
-  #     - NODE_ENV=DEV
+  web:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    container_name: "hiyoko-teacher"
+    volumes:
+      - ../../:/ts/hiyoko-teacher
+    env_file:
+      - ../../.env.dev
+    environment:
+      - NODE_ENV=DEV
   db:
     image: mysql:5.7.23
     container_name: "mysql"
@@ -18,9 +18,5 @@ services:
       - "13306:3306"
     volumes:
       - ./../../db:/docker-entrypoint-initdb.d
-    # env_file:
-    #   - .env_dev
-    environment:
-      - NODE_ENV=DEV
-      - MYSQL_DATABASE=Hiyoko_core
-      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    env_file:
+      - ../../.env.dev
