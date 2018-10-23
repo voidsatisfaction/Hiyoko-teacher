@@ -16,13 +16,14 @@ export class Configure {
         this.dbPassword = ''
         this.dbHost = 'localhost'
         this.dbPort = 13306
-        break;
+        break
       case 'TEST':
         this.dbName = 'Hiyoko_core'
         this.dbUserName = 'root'
         this.dbPassword = ''
         this.dbHost = 'localhost'
         this.dbPort = 13306
+        break
       default:
         throw `NODE_ENV environment variable is not valid value NODE_ENV: ${process.env.NODE_ENV}`
     }
