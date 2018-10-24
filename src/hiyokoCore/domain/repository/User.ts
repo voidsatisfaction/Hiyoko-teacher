@@ -1,7 +1,18 @@
 import { UserEntity } from '../model/User'
 
 export interface IUserRepository {
-  findOrCreate(userId: string): Promise<UserEntity>
-  findByUserId(userId: string): Promise<UserEntity | null>
+  dbc: any
+  userBootstrap: () => IUserBootstrap
+  userLoader: () => IUserLoader
+}
+
+export interface IUserLoader {
+  dbc: any
   listAll(): Promise<UserEntity[]>
+  findByUserId(userId: string): Promise<UserEntity | null>
+}
+
+export interface IUserBootstrap {
+  dbc: any
+  findOrCreate(userId: string): Promise<UserEntity>
 }
