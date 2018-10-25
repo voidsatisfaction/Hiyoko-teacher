@@ -4,6 +4,8 @@ export class Configure {
   readonly dbPassword: string
   readonly dbHost: string
   readonly dbPort: number
+  readonly lineBotAccessToken: string
+  readonly lineBotSecretToken: string
 
   constructor() {
     switch (process.env.NODE_ENV) {
@@ -16,6 +18,9 @@ export class Configure {
         this.dbPassword = ''
         this.dbHost = 'localhost'
         this.dbPort = 13306
+
+        this.lineBotAccessToken = process.env.LineBotAccessToken
+        this.lineBotSecretToken = process.env.LineBotSecretToken
         break
       case 'TEST':
         this.dbName = 'Hiyoko_core'
@@ -23,6 +28,9 @@ export class Configure {
         this.dbPassword = ''
         this.dbHost = 'localhost'
         this.dbPort = 13306
+
+        this.lineBotAccessToken = process.env.LineBotAccessToken
+        this.lineBotSecretToken = process.env.LineBotSecretToken
         break
       default:
         throw `NODE_ENV environment variable is not valid value NODE_ENV: ${process.env.NODE_ENV}`
