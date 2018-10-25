@@ -1,16 +1,30 @@
-import { dbClient } from './client'
+import { DbClient } from './client'
 import { RepositoryBase } from './RepositoryBase'
+import { IUserRepository, IUserBootstrap, IUserLoader } from '../../domain/repository/User'
+import { UserEntity } from '../../domain/model/User'
 
-import { IUserRepository } from '../../domain/repository/User'
+export class UserRepository implements IUserRepository {
+  readonly dbc: DbClient
 
-import { UserEntity } from '../../domain/model/User';
+  constructor(DbClient: DbClient) {
+    this.dbc = DbClient
+  }
 
-export class UserRepository extends RepositoryBase<UserEntity> implements IUserRepository {
-  protected readonly dbc: dbClient
+  userBootstrap(): IUserBootstrap {
+    return new UserDB(this.dbc)
+  }
 
-  constructor(dbClient: dbClient) {
+  userLoader(): IUserLoader {
+    return new UserDB(this.dbc)
+  }
+}
+
+class UserDB extends RepositoryBase<UserEntity> implements IUserBootstrap, IUserLoader {
+  readonly dbc: DbClient
+
+  constructor(dbc: DbClient) {
     super()
-    this.dbc = dbClient
+    this.dbc = dbc
   }
 
   protected parseAs(
@@ -43,6 +57,6 @@ export class UserRepository extends RepositoryBase<UserEntity> implements IUserR
       return null
     }
 
-    return this.parseAs([ res.dataValues ], UserEntity)[0]
+    return this.parseAs([res.dataValues], UserEntity)[0]
   }
 }

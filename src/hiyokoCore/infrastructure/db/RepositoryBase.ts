@@ -1,7 +1,7 @@
-import { dbClient } from './client'
+import { DbClient } from './client'
 
 export abstract class RepositoryBase<E> {
-  protected readonly dbc: dbClient
+  protected readonly dbc: DbClient
 
   protected abstract parseAs(data: any[], entityClass: { new(...args: any[]): E }): E[]
 }

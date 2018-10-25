@@ -1,14 +1,14 @@
 import { RepositoryBase } from "./RepositoryBase"
 import { IVocaRepository } from "../../domain/repository/Vocabulary"
 import { VocabularyEntity } from "../../domain/model/Vocabulary"
-import { dbClient } from "./client"
+import { DbClient } from "./client"
 
 export class VocabularyRepository extends RepositoryBase<VocabularyEntity> implements IVocaRepository {
-  protected readonly dbc: dbClient
+  protected readonly dbc: DbClient
 
-  constructor(dbClient: dbClient) {
+  constructor(DbClient: DbClient) {
     super()
-    this.dbc = dbClient
+    this.dbc = DbClient
   }
 
   protected parseAs(

@@ -9,7 +9,13 @@ interface ITableInstance {
   destroy(option: object)
 }
 
-export class dbClient {
+export class DbClientComponent {
+  dbClient(): DbClient {
+    return new DbClient()
+  }
+}
+
+export class DbClient {
   readonly User
   readonly Vocabulary
   readonly VocabularyList
