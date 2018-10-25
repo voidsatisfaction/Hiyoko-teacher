@@ -19,8 +19,8 @@ export class Configure {
         this.dbHost = 'localhost'
         this.dbPort = 13306
 
-        this.lineBotAccessToken = process.env.LineBotAccessToken
-        this.lineBotSecretToken = process.env.LineBotSecretToken
+        this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
+        this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
         break
       case 'TEST':
         this.dbName = 'Hiyoko_core'
@@ -29,8 +29,8 @@ export class Configure {
         this.dbHost = 'localhost'
         this.dbPort = 13306
 
-        this.lineBotAccessToken = process.env.LineBotAccessToken
-        this.lineBotSecretToken = process.env.LineBotSecretToken
+        this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
+        this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
         break
       default:
         throw `NODE_ENV environment variable is not valid value NODE_ENV: ${process.env.NODE_ENV}`
