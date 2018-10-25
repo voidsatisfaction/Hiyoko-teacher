@@ -1,11 +1,11 @@
 import { expect } from 'chai'
 
-import { dbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
+import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
 import { VocabularyRepository } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
 import { VocabularyEntity } from '../../../../src/hiyokoCore/domain/model/Vocabulary';
 
 describe('Vocabulary repository test', () => {
-  const dbc = new dbClient()
+  const dbc = new DbClient()
   const vocabularyRepository = new VocabularyRepository(dbc)
 
   beforeEach(async () => {

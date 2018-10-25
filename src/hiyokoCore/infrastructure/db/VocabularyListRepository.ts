@@ -1,14 +1,14 @@
 import { RepositoryBase } from "./RepositoryBase";
 import { VocabularyListEntity } from "../../domain/model/VocabularyList";
 import { IVocabularyListRepository } from "../../domain/repository/VocabularyList";
-import { dbClient } from "./client";
+import { DbClient } from "./client";
 import { UserEntity } from "../../domain/model/User";
 import { VocabularyEntity } from "../../domain/model/Vocabulary";
 
 export class VocabularyListRepository extends RepositoryBase<VocabularyListEntity>
   implements IVocabularyListRepository {
-    readonly dbc: dbClient
-    constructor(dbc: dbClient) {
+    readonly dbc: DbClient
+    constructor(dbc: DbClient) {
       super()
       this.dbc = dbc
     }
