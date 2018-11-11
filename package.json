@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/.bin/npx ts-node src/hiyokoCore/server.ts",
+    "start": "pwd; ./node_modules/.bin/npx ts-node src/hiyokoCore/server.ts",
     "dev": ". ./.env.dev; ./node_modules/.bin/npx ts-node src/hiyokoCore/server.ts",
     "test": "NODE_ENV=TEST; ./node_modules/.bin/npx mocha -r ts-node/register 'test/hiyokoCore/**/*.ts'",
     "deploy_dev": ". ./.env.dev; sls deploy",
