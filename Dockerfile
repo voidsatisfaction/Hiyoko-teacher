@@ -6,4 +6,6 @@ WORKDIR /ts/hiyoko-teacher
 RUN npm i
 RUN npm i -g serverless
 
-CMD ["node", "./script/docker/loop.js"]
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]

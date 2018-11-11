@@ -1,13 +1,17 @@
-import * as express from 'express';
+import * as express from 'express'
 
-const app = express();
+import UserRouter from './web/User'
 
-const router = express.Router();
+const app = express()
 
-
-
-app.listen(8000, () => console.log('Server running on 8000!'));
+app.use('/user', UserRouter)
 
 app.get('/', (req, res) => {
-  res.send('hello world!');
+  res.send('worked')
 });
+
+const port = process.env.PORT || 3000
+
+app.listen(port, () =>
+  console.log(`Server running on ${port}!`)
+);

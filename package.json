@@ -4,10 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "./node_modules/nodemon/bin/nodemon.js",
+    "start": "npx ts-node src/hiyokoCore/server.ts",
+    "dev": ". ./.env.dev; npx ts-node src/hiyokoCore/server.ts",
     "test": "NODE_ENV=TEST; npx mocha -r ts-node/register 'test/hiyokoCore/**/*.ts'",
-    "deploy_dev": ". ./.env.dev; sls deploy",
-    "deploy_prod": ". ./.env.prod; sls deploy"
+    "deploy_mantle_dev": ". ./.env.dev; sls deploy",
+    "deploy_mantle_prod": ". ./.env.prod; sls deploy",
+    "deploy_core_prod": "eb deploy"
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,7 @@
     "@types/mocha": "^5.2.5",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
+    "npx": "^10.2.0",
     "serverless-plugin-typescript": "^1.1.5",
     "ts-node": "^7.0.1",
     "typescript": "^3.1.3"
