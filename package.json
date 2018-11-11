@@ -7,8 +7,9 @@
     "start": "npx ts-node src/hiyokoCore/server.ts",
     "dev": ". ./.env.dev; npx ts-node src/hiyokoCore/server.ts",
     "test": "NODE_ENV=TEST; npx mocha -r ts-node/register 'test/hiyokoCore/**/*.ts'",
-    "deploy_dev": ". ./.env.dev; sls deploy",
-    "deploy_prod": ". ./.env.prod; sls deploy"
+    "deploy_mantle_dev": ". ./.env.dev; sls deploy",
+    "deploy_mantle_prod": ". ./.env.prod; sls deploy",
+    "deploy_core_prod": "eb deploy"
   },
   "repository": {
     "type": "git",
