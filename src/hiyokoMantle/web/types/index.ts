@@ -7,7 +7,7 @@ export type TLambdaHttpEvent = {
   pathParameters: string | null // 아직 확인 해본 적이 없음
   stageVariables: string | null // 아직 확인 해본 적이 없음
   requestContext: object // request 정보
-  body: string | null // Post일 경우 String, Get일 경우 null. JSON.parse 등을 사용해야함
+  body: any // Post일 경우 String, Get일 경우 null. JSON.parse 등을 사용해야함
   isBase64Encoded: boolean
 };
 
