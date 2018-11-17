@@ -2,6 +2,7 @@ import * as line from '@line/bot-sdk'
 
 import { TLambdaHttpEvent, response } from "../types";
 import { Configure } from "../../../../config";
+import { Context } from './context';
 
 export const handler = async (event: TLambdaHttpEvent, context, callback) => {
   const config = new Configure()
@@ -10,40 +11,20 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
     channelSecret: config.lineBotSecretToken,
   })
 
-  const handleBotMessageEvent = async (e: line.MessageEvent) => {
-    // TODO: actionParser: parse action
-    // TODO: actionExecutor: execute action
-    const userId = e.source.userId
-    const profile = await botClient.getProfile(userId)
-
-    console.log(profile)
-
-    console.log('rich menu id')
-    // const currentUserRichMenu = await botClient.getRichMenuIdOfUser(userId)
-    // console.log(currentUserRichMenu)
-    
-    console.log('rich menu list')
-    const richMenuList = await botClient.getRichMenuList()
-    console.log(richMenuList)
-
-    // TODO: return result to user
-    return await botClient.replyMessage(e.replyToken, {
-      type: 'text',
-      text: `honololo wow! ${process.env.NODE_ENV}`
-    })
-  }
-
   try {
     // more clear log of stringified object
     console.log('event.body')
     console.log(event.body)
+    const context: Context = new Context(botClient)
 
     const botBody = JSON.parse(event.body)
 
     const results = await Promise.all(
-      botBody.events.map(handleBotMessageEvent)
+      botBody.events.map(
+        handleBotMessageEvent(context)
+      )
     )
-    
+
     callback(null, response(200, results))
   } catch(error) {
     console.error(error)
@@ -51,22 +32,24 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
   }
 }
 
-// class HandlerManager {
-//   private event: TLambdaHttpEvent
-//   private callback: any
-//   private pathMethodHandler: any
+function parseBotAction(e: line.MessageEvent) {
 
-//   constructor(event: TLambdaHttpEvent, callback: any) {
-//     this.event = event
-//     this.callback = callback
-//     this.pathMethodHandler = {}
-//   }
+}
 
-//   private isRegisteredPathMethod(path: string, method: string): boolean {
+function handleBotMessageEvent(
+  context: Context
+) {
+  // TODO: actionParser: parse action
+  // TODO: actionExecutor: execute action
+  return async (e: line.MessageEvent) => {
+    const userId = e.source.userId
 
-//   }
+    const profile = await context.botClient.getProfile(userId)
+    console.log(profile)
 
-//   register(path: string, method: string, handler: () => any) {
-//     this.pathMethodHandler[path]
-//   }
-// }
+    return await context.botClient.replyMessage(e.replyToken, {
+      type: 'text',
+      text: `honololo wow! ${process.env.NODE_ENV}`
+    })
+  }
+}
