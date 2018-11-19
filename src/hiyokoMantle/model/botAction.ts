@@ -17,8 +17,8 @@ export enum BotActionTypeEnum {
 
 // use with generics
 export class BotAction {
-  readonly actionType
-  readonly parameters
+  readonly actionType: BotActionTypeEnum
+  readonly parameters: string[]
 
   constructor(actionType: BotActionTypeEnum, parameters?: string[]) {
     this.actionType = actionType
@@ -28,8 +28,4 @@ export class BotAction {
   actionParameterToStinrg(): string {
     return this.parameters.join('')
   }
-}
-
-export class BotActionResult {
-
 }

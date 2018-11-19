@@ -6,6 +6,12 @@ import { Context } from './context'
 import { BotAction, BotActionTypeEnum } from '../../model/botAction'
 import { enumIncludes } from '../../../util/Enum';
 
+import { BotActionControllerResolver } from '../../botController/Resolver';
+import { BotActionControllerBase } from '../../botController/Base';
+import { BotActionResult } from '../../model/botActionResult';
+import { HelperBotActionController } from '../../botController/HelperBotActionController';
+import { FollowBotActionController } from '../../botController/FollowBotActionController';
+
 export const handler = async (event: TLambdaHttpEvent, context, callback) => {
   // initialize context data
   const config = new Configure()
@@ -14,11 +20,20 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
     channelSecret: config.lineBotSecretToken,
   })
 
+  // initialize botActionControllerResolver
+  const botActionControllerResolver: BotActionControllerResolver = new BotActionControllerResolver()
+
+  botActionControllerResolver.setController(BotActionTypeEnum.help, new HelperBotActionController())
+  botActionControllerResolver.setController(BotActionTypeEnum.follow, new FollowBotActionController())
+
   try {
     // more clear log of stringified object
     console.log('event.body')
     console.log(event.body)
-    const context: Context = new Context(botClient)
+    const context: Context = new Context(
+      botClient,
+      botActionControllerResolver
+    )
 
     const botBody = JSON.parse(event.body)
 
@@ -39,18 +54,19 @@ type lineAvailableEvents =
   line.MessageEvent | line.FollowEvent
 
 function handleBotMessageEvent(
-  context: Context
+  context: Context,
 ) {
   return async (e: lineAvailableEvents) => {
     try {
-      // Action parse & validate
+      const botActionControllerResolver = context.botActionControllerResolver
+      // Action parse & validate TODO: isolate this logics
       let botAction: BotAction | undefined
       switch (e.type) {
         case 'message':
           switch (e.message.type) {
             case 'text':
               const message: string = e.message.text
-              const messageArray: string[] = message.split(' ')
+              const messageArray: string[] = message.split(' ').map(str => str.toLowerCase())
 
               let command: string = messageArray[0]
               const parameters: string[] = messageArray.slice(1)
@@ -78,13 +94,12 @@ function handleBotMessageEvent(
       // TODO: async action logging
 
       // Execute action
-
+      // FIXME: use interface for loosely coupled system
+      const botActionController: BotActionControllerBase = botActionControllerResolver.getController(botAction.actionType)
+      const actionResult: BotActionResult = await botActionController.do(botAction)
 
       // Return Action Results to user
-      const replyContent = <line.TextMessage>{
-        type: 'text',
-        text: `action: ${botAction.actionType} parameter: ${botAction.actionParameterToStinrg()}`
-      }
+      const replyContent = <line.TextMessage>actionResult.getLineMessageParams()
       return await context.botClient.replyMessage(e.replyToken, replyContent)
     } catch(error) {
       throw error
