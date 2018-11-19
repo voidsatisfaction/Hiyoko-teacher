@@ -1,49 +1,48 @@
 import * as line from '@line/bot-sdk'
 
-import { TLambdaHttpEvent, response } from "../types";
-import { Configure } from "../../../../config";
+import { TLambdaHttpEvent, response } from "../types"
+import { Configure } from "../../../../config"
+import { Context } from './context'
+import { BotAction, BotActionTypeEnum } from '../../model/botAction'
+import { enumIncludes } from '../../../util/Enum';
+
+import { BotActionControllerResolver } from '../../botController/Resolver';
+import { BotActionControllerBase } from '../../botController/Base';
+import { BotActionResult } from '../../model/botActionResult';
+import { HelperBotActionController } from '../../botController/HelperBotActionController';
+import { FollowBotActionController } from '../../botController/FollowBotActionController';
 
 export const handler = async (event: TLambdaHttpEvent, context, callback) => {
+  // initialize context data
   const config = new Configure()
   const botClient = new line.Client({
     channelAccessToken: config.lineBotAccessToken,
     channelSecret: config.lineBotSecretToken,
   })
 
-  const handleBotMessageEvent = async (e: line.MessageEvent) => {
-    // TODO: actionParser: parse action
-    // TODO: actionExecutor: execute action
-    const userId = e.source.userId
-    const profile = await botClient.getProfile(userId)
+  // initialize botActionControllerResolver
+  const botActionControllerResolver: BotActionControllerResolver = new BotActionControllerResolver()
 
-    console.log(profile)
-
-    console.log('rich menu id')
-    // const currentUserRichMenu = await botClient.getRichMenuIdOfUser(userId)
-    // console.log(currentUserRichMenu)
-    
-    console.log('rich menu list')
-    const richMenuList = await botClient.getRichMenuList()
-    console.log(richMenuList)
-
-    // TODO: return result to user
-    return await botClient.replyMessage(e.replyToken, {
-      type: 'text',
-      text: `honololo wow! ${process.env.NODE_ENV}`
-    })
-  }
+  botActionControllerResolver.setController(BotActionTypeEnum.help, new HelperBotActionController())
+  botActionControllerResolver.setController(BotActionTypeEnum.follow, new FollowBotActionController())
 
   try {
     // more clear log of stringified object
     console.log('event.body')
     console.log(event.body)
+    const context: Context = new Context(
+      botClient,
+      botActionControllerResolver
+    )
 
     const botBody = JSON.parse(event.body)
 
     const results = await Promise.all(
-      botBody.events.map(handleBotMessageEvent)
+      botBody.events.map(
+        handleBotMessageEvent(context)
+      )
     )
-    
+
     callback(null, response(200, results))
   } catch(error) {
     console.error(error)
@@ -51,22 +50,59 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
   }
 }
 
-// class HandlerManager {
-//   private event: TLambdaHttpEvent
-//   private callback: any
-//   private pathMethodHandler: any
+type lineAvailableEvents =
+  line.MessageEvent | line.FollowEvent
 
-//   constructor(event: TLambdaHttpEvent, callback: any) {
-//     this.event = event
-//     this.callback = callback
-//     this.pathMethodHandler = {}
-//   }
+function handleBotMessageEvent(
+  context: Context,
+) {
+  return async (e: lineAvailableEvents) => {
+    try {
+      const botActionControllerResolver = context.botActionControllerResolver
+      // Action parse & validate TODO: isolate this logics
+      let botAction: BotAction | undefined
+      switch (e.type) {
+        case 'message':
+          switch (e.message.type) {
+            case 'text':
+              const message: string = e.message.text
+              const messageArray: string[] = message.split(' ').map(str => str.toLowerCase())
 
-//   private isRegisteredPathMethod(path: string, method: string): boolean {
+              let command: string = messageArray[0]
+              const parameters: string[] = messageArray.slice(1)
+              if (!enumIncludes(BotActionTypeEnum, command)) {
+                botAction = new BotAction(BotActionTypeEnum.help)
+              } else {
+                botAction = new BotAction(
+                  <BotActionTypeEnum>command,
+                  parameters
+                )
+              }
+              break
+            default:
+              botAction = new BotAction(BotActionTypeEnum.help)
+              break
+          }
+          break
+        case 'follow':
+          botAction = new BotAction(BotActionTypeEnum.follow)
+          break
+        default:
+          botAction = new BotAction(BotActionTypeEnum.help)
+      }
 
-//   }
+      // TODO: async action logging
 
-//   register(path: string, method: string, handler: () => any) {
-//     this.pathMethodHandler[path]
-//   }
-// }
+      // Execute action
+      // FIXME: use interface for loosely coupled system
+      const botActionController: BotActionControllerBase = botActionControllerResolver.getController(botAction.actionType)
+      const actionResult: BotActionResult = await botActionController.do(botAction)
+
+      // Return Action Results to user
+      const replyContent = <line.TextMessage>actionResult.getLineMessageParams()
+      return await context.botClient.replyMessage(e.replyToken, replyContent)
+    } catch(error) {
+      throw error
+    }
+  }
+}
