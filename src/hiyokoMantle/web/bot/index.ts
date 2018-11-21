@@ -50,13 +50,14 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
   }
 }
 
-type lineAvailableEvents =
+export type lineAvailableEvents =
   line.MessageEvent | line.FollowEvent
 
 function handleBotMessageEvent(
   context: Context,
 ) {
   return async (e: lineAvailableEvents) => {
+    context.inject('lineEvent', e)
     try {
       const botActionControllerResolver = context.botActionControllerResolver
       // Action parse & validate TODO: isolate this logics
@@ -96,7 +97,7 @@ function handleBotMessageEvent(
       // Execute action
       // FIXME: use interface for loosely coupled system
       const botActionController: BotActionControllerBase = botActionControllerResolver.getController(botAction.actionType)
-      const actionResult: BotActionResult = await botActionController.do(botAction)
+      const actionResult: BotActionResult = await botActionController.do(context, botAction)
 
       // Return Action Results to user
       const replyContent = <line.TextMessage>actionResult.getLineMessageParams()

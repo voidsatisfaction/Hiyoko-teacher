@@ -1,11 +1,12 @@
 import { BotAction } from '../model/botAction';
 import { BotActionResult } from '../model/botActionResult';
+import { Context } from '../web/bot/context';
 
 export abstract class BotActionControllerBase {
-  async do(botAction: BotAction): Promise<BotActionResult> {
+  async do(context: Context, botAction: BotAction): Promise<BotActionResult> {
     // for various common processing
-    return await this.execute(botAction)
+    return await this.execute(context, botAction)
   }
 
-  protected abstract execute(botAction: BotAction): Promise<BotActionResult>
+  protected abstract execute(context: Context, botAction: BotAction): Promise<BotActionResult>
 }
