@@ -27,7 +27,6 @@ CREATE TABLE Hiyoko_core.Vocabulary_lists (
   `createdAt` datetime NOT NULL,
   PRIMARY KEY (`userId`, `vocaId`),
   KEY `userId_createdAt` (`userId`, `createdAt`),
-  KEY `userId` (`userId`),
   KEY `vocaId` (`vocaId`),
   KEY `createdAt` (`createdAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
