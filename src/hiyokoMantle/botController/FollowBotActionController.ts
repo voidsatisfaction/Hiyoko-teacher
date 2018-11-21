@@ -1,6 +1,6 @@
 import { BotActionControllerBase } from './Base'
-import { BotAction } from '../model/botAction';
-import { BotActionResult, BotActionResultCreator } from '../model/botActionResult';
+import { BotAction } from '../model/botAction'
+import { BotActionResult, BotActionResultCreator } from '../model/botActionResult'
 
 export class FollowBotActionController extends BotActionControllerBase {
   async execute(botAction: BotAction): Promise<BotActionResult> {

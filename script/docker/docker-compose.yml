@@ -4,6 +4,8 @@ services:
     build:
       context: ../../
       dockerfile: Dockerfile
+    links:
+      - "db:db"
     container_name: "hiyoko-teacher"
     ports:
       - "13000:3000"

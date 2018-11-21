@@ -6,6 +6,7 @@ export class Configure {
   readonly dbPort: string
   readonly lineBotAccessToken: string
   readonly lineBotSecretToken: string
+  readonly coreURL: string
 
   constructor() {
     switch (process.env.NODE_ENV) {
@@ -15,26 +16,33 @@ export class Configure {
         this.dbPassword = process.env.DB_PASSWORD
         this.dbHost = process.env.DB_HOST
         this.dbPort = process.env.DB_PORT
+        this.coreURL = process.env.CORE_URL
 
         this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
         this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
         break
       case 'DEV':
+        // DEV(sh ./script/dev.sh)
+        this.dbName = 'Hiyoko_core'
+        this.dbUserName = 'root'
+        this.dbPassword = ''
+        this.dbHost = 'db'
+        this.dbPort = '3306'
+
+        this.coreURL = 'http://localhost:13000'
+
+        this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
+        this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
+        break
+      case 'TEST':
+        // TEST(CI / local unit test npm run test)
         this.dbName = 'Hiyoko_core'
         this.dbUserName = 'root'
         this.dbPassword = ''
         this.dbHost = 'localhost'
         this.dbPort = '13306'
 
-        this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
-        this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
-        break
-      case 'TEST':
-        this.dbName = 'Hiyoko_core'
-        this.dbUserName = 'root'
-        this.dbPassword = ''
-        this.dbHost = 'localhost'
-        this.dbPort = '13306'
+        this.coreURL = 'http://localhost:13000'
 
         this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
         this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN

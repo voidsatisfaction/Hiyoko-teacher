@@ -19,7 +19,7 @@ UserRouter.post('/', [
     const userApplication: UserApplication = new UserApplication(userId)
 
     const user: UserEntity = await userApplication.getOrAdd()
-    
+
     res.json({ user })
   } catch(e) {
     res.status(500).json({ error: e.toString() })
