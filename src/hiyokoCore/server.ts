@@ -27,7 +27,7 @@ switch (process.env.NODE_ENV) {
 app.use('/users', UserRouter)
 
 app.get('/', (req, res) => {
-  res.send('worked')
+  res.send(`worked ${process.env.NODE_ENV}`)
 });
 
 const port = process.env.PORT || 3000

@@ -9,7 +9,9 @@
     "test": "NODE_ENV=TEST; npx mocha --exit -r ts-node/register 'test/hiyokoCore/**/*.ts'",
     "deploy_mantle_dev": ". ./.env.dev; sls deploy",
     "deploy_mantle_prod": ". ./.env.prod; sls deploy",
-    "deploy_core_prod": "eb deploy"
+    "deploy_core_prod": "eb deploy",
+    "deploy_both_dev": "npm run deploy_core_prod; npm run deploy_mantle_dev",
+    "deploy_both_prod": "npm run deploy_core_prod; npm run deploy_mantle_prod"
   },
   "repository": {
     "type": "git",
