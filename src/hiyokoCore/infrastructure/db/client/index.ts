@@ -41,6 +41,7 @@ export class DbClient implements IDbClient {
         dialect: 'mysql',
         port: c.dbPort,
         logging: false,
+        timezone: 'Asia/Tokyo',
       }
     )
 
