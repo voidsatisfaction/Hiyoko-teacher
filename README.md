@@ -1,5 +1,7 @@
 # Hiyoko Sensei
 
+[![Build Status](https://travis-ci.org/voidsatisfaction/Hiyoko-teacher.svg?branch=master)](https://travis-ci.org/voidsatisfaction/Hiyoko-teacher)
+
 Line bot for learning active vocabulary
 
 ## Develpment
