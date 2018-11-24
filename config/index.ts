@@ -11,7 +11,7 @@ export class Configure {
   constructor() {
     switch (process.env.NODE_ENV) {
       case 'PROD':
-        this.dbName = 'HiyokoCore'
+        this.dbName = 'Hiyoko_core'
         this.dbUserName = process.env.DB_USER_NAME
         this.dbPassword = process.env.DB_PASSWORD
         this.dbHost = process.env.DB_HOST
