@@ -1,6 +1,6 @@
 import { RepositoryBase } from "./RepositoryBase";
 import { VocabularyListEntity } from "../../domain/model/VocabularyList";
-import { IVocabularyListRepository } from "../../domain/repository/VocabularyList";
+import { IVocabularyListRepository } from "../../domain/repository/VocabularyListRepository";
 import { DbClient } from "./client";
 import { UserEntity } from "../../domain/model/User";
 import { VocabularyEntity } from "../../domain/model/Vocabulary";

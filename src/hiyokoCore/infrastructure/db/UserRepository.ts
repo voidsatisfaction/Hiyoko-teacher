@@ -1,5 +1,5 @@
 import { RepositoryBase } from './RepositoryBase'
-import { IUserRepository, IUserBootstrap, IUserLoader } from '../../domain/repository/User'
+import { IUserRepository, IUserBootstrap, IUserLoader } from '../../domain/repository/UserRepository'
 import { UserEntity } from '../../domain/model/User'
 import { IDbClient } from '../../interface/infrastructure/db';
 

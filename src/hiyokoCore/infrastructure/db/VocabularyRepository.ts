@@ -1,12 +1,25 @@
 import { RepositoryBase } from "./RepositoryBase"
-import { IVocaRepository } from "../../domain/repository/Vocabulary"
+import { IVocaRepository, IVocaBootstrap, IVocaLoader } from "../../domain/repository/VocabularyRepository"
 import { VocabularyEntity } from "../../domain/model/Vocabulary"
-import { DbClient } from "./client"
+import { IDbClient } from "../../interface/infrastructure/db"
 
-export class VocabularyRepository extends RepositoryBase<VocabularyEntity> implements IVocaRepository {
-  protected readonly dbc: DbClient
+export class VocabularyRepository implements IVocaRepository {
+  dbc: IDbClient
 
-  constructor(DbClient: DbClient) {
+  vocaBootstrap(): IVocaBootstrap {
+    return new VocaDB(this.dbc)
+  }
+
+  vocaLoader(): IVocaLoader {
+    return new VocaDB(this.dbc)
+  }
+}
+
+class VocaDB extends RepositoryBase<VocabularyEntity>
+  implements IVocaBootstrap, IVocaLoader {
+  protected readonly dbc: IDbClient
+
+  constructor(DbClient: IDbClient) {
     super()
     this.dbc = DbClient
   }

@@ -1,6 +1,6 @@
 import { UserEntity } from "../domain/model/User"
 import { UserRepository } from "../infrastructure/db/UserRepository"
-import { IUserBootstrap, IUserLoader } from "../domain/repository/User"
+import { IUserBootstrap, IUserLoader } from "../domain/repository/UserRepository"
 import { applyMixins } from "../../util/Mixin"
 import { DbClientComponent } from "../infrastructure/db/client"
 import { UserHelperComponent } from "./helper/UserHelper"
