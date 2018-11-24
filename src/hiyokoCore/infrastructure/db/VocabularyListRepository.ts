@@ -1,14 +1,26 @@
-import { RepositoryBase } from "./RepositoryBase";
-import { VocabularyListEntity } from "../../domain/model/VocabularyList";
-import { IVocabularyListRepository } from "../../domain/repository/VocabularyListRepository";
-import { DbClient } from "./client";
-import { UserEntity } from "../../domain/model/User";
-import { VocabularyEntity } from "../../domain/model/Vocabulary";
+import { RepositoryBase } from "./RepositoryBase"
+import { VocabularyListEntity } from "../../domain/model/VocabularyList"
+import { IVocabularyListRepository, IVocabularyListLoader, IVocabularyListAction } from "../../domain/repository/VocabularyListRepository"
+import { UserEntity } from "../../domain/model/User"
+import { VocabularyEntity } from "../../domain/model/Vocabulary"
+import { IDbClient } from "../../interface/infrastructure/db"
 
-export class VocabularyListRepository extends RepositoryBase<VocabularyListEntity>
-  implements IVocabularyListRepository {
-    readonly dbc: DbClient
-    constructor(dbc: DbClient) {
+export class VocabularyListRepository implements IVocabularyListRepository {
+  dbc: IDbClient
+
+  vocabularyListLoader(): IVocabularyListLoader {
+    return new VocabularyListDB(this.dbc)
+  }
+
+  vocabularyListAction(): IVocabularyListAction {
+    return new VocabularyListDB(this.dbc)
+  }
+}
+
+export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
+  implements IVocabularyListLoader, IVocabularyListAction {
+    readonly dbc: IDbClient
+    constructor(dbc: IDbClient) {
       super()
       this.dbc = dbc
     }

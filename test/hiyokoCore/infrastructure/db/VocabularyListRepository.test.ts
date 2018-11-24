@@ -2,12 +2,23 @@ import { expect } from 'chai'
 
 import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
 import { VocabularyListRepository } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
-import { UserEntityMock, VocabularyEntityMock } from '../../../helper/factory';
-import { VocabularyListEntity } from '../../../../src/hiyokoCore/domain/model/VocabularyList';
+import { UserEntityMock, VocabularyEntityMock } from '../../../helper/factory'
+import { VocabularyListEntity } from '../../../../src/hiyokoCore/domain/model/VocabularyList'
+import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db';
+
+class VocabularyListRepositoryTest extends VocabularyListRepository {
+  readonly dbc: IDbClient
+  constructor(dbc: IDbClient) {
+    super()
+    this.dbc = dbc
+  }
+}
 
 describe('VocabularyList repository test', () => {
   const dbc = new DbClient()
-  const vocabularyListRepository = new VocabularyListRepository(dbc)
+  const vocabularyListRepository = new VocabularyListRepositoryTest(dbc)
+  const vocabularyListLoader = vocabularyListRepository.vocabularyListLoader()
+  const vocabularyListAction = vocabularyListRepository.vocabularyListAction()
 
   beforeEach(async () => {
     await dbc.truncateTable(dbc.Vocabulary)
@@ -18,7 +29,7 @@ describe('VocabularyList repository test', () => {
       const userEntity = UserEntityMock()
       const vocabularyEntity = VocabularyEntityMock()
 
-      const vocabularyList = await vocabularyListRepository.findByUserAndVocabulary(userEntity, vocabularyEntity)
+      const vocabularyList = await vocabularyListLoader.findByUserAndVocabulary(userEntity, vocabularyEntity)
 
       expect(vocabularyList).to.be.null
     })
@@ -30,7 +41,7 @@ describe('VocabularyList repository test', () => {
       const contextSentence = 'there is no one in here hello world!'
       const contextPictureURL = 'http://helloWOrld.com/picture.jpg'
 
-      const createdVocabularyListEntity = await vocabularyListRepository.create(
+      const createdVocabularyListEntity = await vocabularyListAction.create(
         userEntity, vocabularyEntity, meaning, contextSentence, contextPictureURL
       )
 
@@ -49,7 +60,7 @@ describe('VocabularyList repository test', () => {
       expect(foundContextSentence).to.be.equal(contextSentence)
       expect(foundContextPictureURL).to.be.equal(contextPictureURL)
 
-      const foundVocabularyListEntity = await vocabularyListRepository.findByUserAndVocabulary(
+      const foundVocabularyListEntity = await vocabularyListLoader.findByUserAndVocabulary(
         userEntity, vocabularyEntity
       )
 
