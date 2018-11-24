@@ -16,6 +16,7 @@ export class Configure {
         this.dbPassword = process.env.DB_PASSWORD
         this.dbHost = process.env.DB_HOST
         this.dbPort = process.env.DB_PORT
+
         this.coreURL = process.env.CORE_URL
 
         this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
@@ -29,7 +30,7 @@ export class Configure {
         this.dbHost = 'db'
         this.dbPort = '3306'
 
-        this.coreURL = 'http://localhost:13000'
+        this.coreURL = process.env.CORE_URL
 
         this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
         this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
