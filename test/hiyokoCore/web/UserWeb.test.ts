@@ -2,7 +2,6 @@ import * as request from 'supertest'
 import { expect } from 'chai'
 
 import app from '../../../src/hiyokoCore/server'
-import { UserEntity } from '../../../src/hiyokoCore/domain/model/User';
 
 describe('/users', () => {
   describe('POST /users', () => {

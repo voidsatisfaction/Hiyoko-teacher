@@ -35,7 +35,7 @@ export class DbClient {
         logging: false,
       }
     )
-    
+
     this.User = this.hiyokoCoreDB.define(
       SequelizeUserTable.tableName,
       SequelizeUserTable.model,

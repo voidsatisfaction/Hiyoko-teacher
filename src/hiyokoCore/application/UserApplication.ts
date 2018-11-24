@@ -9,7 +9,7 @@ export class UserApplication
 
   readonly dbc: DbClient
   private userId: string
-  
+
   dbClient: () => DbClient
 
   userBootstrap: () => IUserBootstrap
@@ -26,7 +26,7 @@ export class UserApplication
 
       return await userBootstrap.findOrCreate(this.userId)
     } catch(e) {
-      throw e      
+      throw e
     } finally {
       await this.dbc.close()
     }

@@ -1,7 +1,7 @@
 import * as express from 'express'
 import * as morgan from 'morgan'
 
-import UserRouter from './web/User'
+import UserRouter from './web/UserWeb'
 
 const app = express()
 
