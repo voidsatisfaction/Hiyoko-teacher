@@ -1,4 +1,4 @@
-import { IDbClient } from './client'
+import { IDbClient } from "../../interface/infrastructure/db"
 
 export abstract class RepositoryBase<E> {
   protected readonly dbc: IDbClient

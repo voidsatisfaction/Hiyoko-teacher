@@ -1,9 +1,10 @@
-import { UserEntity } from "../domain/model/User";
-import { UserRepository } from "../infrastructure/db/UserRepository";
-import { IUserBootstrap, IUserLoader } from "../domain/repository/User";
-import { applyMixins } from "../../util/Mixin";
-import { DbClientComponent, IDbClient } from "../infrastructure/db/client";
-import { UserHelperComponent } from "./helper/UserHelper";
+import { UserEntity } from "../domain/model/User"
+import { UserRepository } from "../infrastructure/db/UserRepository"
+import { IUserBootstrap, IUserLoader } from "../domain/repository/User"
+import { applyMixins } from "../../util/Mixin"
+import { DbClientComponent } from "../infrastructure/db/client"
+import { UserHelperComponent } from "./helper/UserHelper"
+import { IDbClient } from "../interface/infrastructure/db"
 
 export class UserApplication
   implements DbClientComponent, UserHelperComponent, UserRepository {

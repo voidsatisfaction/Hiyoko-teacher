@@ -1,8 +1,8 @@
 import { UserEntity } from "../../domain/model/User"
 import { IUserBootstrap, IUserLoader } from "../../domain/repository/User"
-import { IDbClient } from "../../infrastructure/db/client"
-import { applyMixins } from "../../../util/Mixin";
-import { UserRepository } from "../../infrastructure/db/UserRepository";
+import { applyMixins } from "../../../util/Mixin"
+import { UserRepository } from "../../infrastructure/db/UserRepository"
+import { IDbClient } from "../../interface/infrastructure/db";
 
 export class UserHelperComponent
   implements UserRepository {

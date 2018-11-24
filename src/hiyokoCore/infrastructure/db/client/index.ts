@@ -1,20 +1,13 @@
 import Sequelize from 'sequelize'
 import { Configure } from '../../../../../config'
+import { IDbClient } from '../../../interface/infrastructure/db'
 
 import { SequelizeUserTable } from '../model/User'
-import { SequelizeVocabularyTable } from '../model/Vocabulary';
-import { SequelizeVocabularyListTable } from '../model/VocabularyList';
+import { SequelizeVocabularyTable } from '../model/Vocabulary'
+import { SequelizeVocabularyListTable } from '../model/VocabularyList'
 
 interface ITableInstance {
   destroy(option: object)
-}
-
-export interface IDbClient {
-  User: any
-  Vocabulary: any
-  VocabularyList: any
-
-  close(): Promise<void>
 }
 
 export class DbClientComponent {

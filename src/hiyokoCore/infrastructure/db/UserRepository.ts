@@ -1,7 +1,7 @@
-import { IDbClient } from './client'
 import { RepositoryBase } from './RepositoryBase'
 import { IUserRepository, IUserBootstrap, IUserLoader } from '../../domain/repository/User'
 import { UserEntity } from '../../domain/model/User'
+import { IDbClient } from '../../interface/infrastructure/db';
 
 export class UserRepository implements IUserRepository {
   dbc: IDbClient

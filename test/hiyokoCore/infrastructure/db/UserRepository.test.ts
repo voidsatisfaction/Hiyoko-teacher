@@ -1,8 +1,9 @@
-import { expect } from 'chai';
+import { expect } from 'chai'
 
-import { DbClient, IDbClient } from '../../../../src/hiyokoCore/infrastructure/db/client';
-import { UserRepository } from '../../../../src/hiyokoCore/infrastructure/db/UserRepository';
-import { UserEntity } from '../../../../src/hiyokoCore/domain/model/User';
+import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
+import { UserRepository } from '../../../../src/hiyokoCore/infrastructure/db/UserRepository'
+import { UserEntity } from '../../../../src/hiyokoCore/domain/model/User'
+import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db'
 
 class UserRepositoryTest extends UserRepository {
   constructor(dbc: IDbClient) {
