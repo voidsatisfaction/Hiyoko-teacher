@@ -1,12 +1,19 @@
 import { expect } from 'chai';
 
-import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client';
+import { DbClient, IDbClient } from '../../../../src/hiyokoCore/infrastructure/db/client';
 import { UserRepository } from '../../../../src/hiyokoCore/infrastructure/db/UserRepository';
 import { UserEntity } from '../../../../src/hiyokoCore/domain/model/User';
 
+class UserRepositoryTest extends UserRepository {
+  constructor(dbc: IDbClient) {
+    super()
+    this.dbc = dbc
+  }
+}
+
 describe('User repository test', () => {
   const dbc = new DbClient()
-  const userRepository = new UserRepository(dbc)
+  const userRepository = new UserRepositoryTest(dbc)
   const userLoader = userRepository.userLoader()
   const userBootstrap = userRepository.userBootstrap()
 

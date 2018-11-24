@@ -2,18 +2,20 @@ import { UserEntity } from "../domain/model/User";
 import { UserRepository } from "../infrastructure/db/UserRepository";
 import { IUserBootstrap, IUserLoader } from "../domain/repository/User";
 import { applyMixins } from "../../util/Mixin";
-import { DbClientComponent, DbClient } from "../infrastructure/db/client";
+import { DbClientComponent, IDbClient } from "../infrastructure/db/client";
+import { UserHelperComponent } from "./helper/UserHelper";
 
 export class UserApplication
-  implements UserRepository, DbClientComponent {
+  implements DbClientComponent, UserHelperComponent, UserRepository {
 
-  readonly dbc: DbClient
+  readonly dbc: IDbClient
   private userId: string
 
-  dbClient: () => DbClient
+  dbClient: () => IDbClient
 
   userBootstrap: () => IUserBootstrap
   userLoader: () => IUserLoader
+  getCurrentUser: (userId: string) => Promise<UserEntity>
 
   constructor(userId: string) {
     this.dbc = this.dbClient()
@@ -35,5 +37,5 @@ export class UserApplication
 
 applyMixins(
   UserApplication,
-  [UserRepository, DbClientComponent]
+  [DbClientComponent, UserHelperComponent, UserRepository]
 )

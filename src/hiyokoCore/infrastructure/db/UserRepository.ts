@@ -1,14 +1,10 @@
-import { DbClient } from './client'
+import { IDbClient } from './client'
 import { RepositoryBase } from './RepositoryBase'
 import { IUserRepository, IUserBootstrap, IUserLoader } from '../../domain/repository/User'
 import { UserEntity } from '../../domain/model/User'
 
 export class UserRepository implements IUserRepository {
-  readonly dbc: DbClient
-
-  constructor(DbClient: DbClient) {
-    this.dbc = DbClient
-  }
+  dbc: IDbClient
 
   userBootstrap(): IUserBootstrap {
     return new UserDB(this.dbc)
@@ -20,9 +16,9 @@ export class UserRepository implements IUserRepository {
 }
 
 class UserDB extends RepositoryBase<UserEntity> implements IUserBootstrap, IUserLoader {
-  readonly dbc: DbClient
+  readonly dbc: IDbClient
 
-  constructor(dbc: DbClient) {
+  constructor(dbc: IDbClient) {
     super()
     this.dbc = dbc
   }

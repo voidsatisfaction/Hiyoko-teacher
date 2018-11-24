@@ -9,13 +9,21 @@ interface ITableInstance {
   destroy(option: object)
 }
 
+export interface IDbClient {
+  User: any
+  Vocabulary: any
+  VocabularyList: any
+
+  close(): Promise<void>
+}
+
 export class DbClientComponent {
-  dbClient(): DbClient {
+  dbClient(): IDbClient {
     return new DbClient()
   }
 }
 
-export class DbClient {
+export class DbClient implements IDbClient {
   readonly User
   readonly Vocabulary
   readonly VocabularyList
