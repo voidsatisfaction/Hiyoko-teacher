@@ -17,8 +17,8 @@ class VocabularyRepositoryTest extends VocabularyRepository {
 describe('Vocabulary repository test', () => {
   const dbc = new DbClient()
   const vocabularyRepository = new VocabularyRepositoryTest(dbc)
-  const vocabularyBootstrap = vocabularyRepository.vocaBootstrap()
-  const vocabularyLoader = vocabularyRepository.vocaLoader()
+  const vocabularyBootstrap = vocabularyRepository.vocabularyBootstrap()
+  const vocabularyLoader = vocabularyRepository.vocabularyLoader()
 
   beforeEach(async () => {
     await dbc.truncateTable(dbc.Vocabulary)

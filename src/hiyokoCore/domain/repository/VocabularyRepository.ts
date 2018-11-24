@@ -1,14 +1,14 @@
 import { VocabularyEntity } from "../model/Vocabulary";
 
-export interface IVocaRepository {
-  vocaBootstrap: () => IVocaBootstrap
-  vocaLoader: () => IVocaLoader
+export interface IVocabularyRepository {
+  vocabularyBootstrap: () => IVocabularyBootstrap
+  vocabularyLoader: () => IVocabularyLoader
 }
 
-export interface IVocaLoader {
-  findByName(name: string): Promise<VocabularyEntity | null>
-}
-
-export interface IVocaBootstrap {
+export interface IVocabularyBootstrap {
   findOrCreate(name: string): Promise<VocabularyEntity>
+}
+
+export interface IVocabularyLoader {
+  findByName(name: string): Promise<VocabularyEntity | null>
 }
