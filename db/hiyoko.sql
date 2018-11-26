@@ -25,7 +25,7 @@ CREATE TABLE Hiyoko_core.Vocabulary_lists (
   `contextSentence` VARCHAR(500) DEFAULT NULL,
   `contextPictureURL` VARCHAR(500) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
-  PRIMARY KEY (`userId`, `vocaId`),
+  PRIMARY KEY (`userId`, `vocaId`, `createdAt`),
   KEY `userId_createdAt` (`userId`, `createdAt`),
   KEY `vocaId` (`vocaId`),
   KEY `createdAt` (`createdAt`)
