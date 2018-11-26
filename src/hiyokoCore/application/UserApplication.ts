@@ -3,11 +3,10 @@ import { UserRepository } from "../infrastructure/db/UserRepository"
 import { IUserBootstrap, IUserLoader } from "../domain/repository/UserRepository"
 import { applyMixins } from "../../util/Mixin"
 import { DbClientComponent } from "../infrastructure/db/client"
-import { UserHelperComponent } from "./helper/UserHelper"
 import { IDbClient } from "../interface/infrastructure/db"
 
 export class UserApplication
-  implements DbClientComponent, UserHelperComponent, UserRepository {
+  implements DbClientComponent, UserRepository {
 
   readonly dbc: IDbClient
   private userId: string
@@ -16,7 +15,6 @@ export class UserApplication
 
   userBootstrap: () => IUserBootstrap
   userLoader: () => IUserLoader
-  getCurrentUser: (userId: string) => Promise<UserEntity>
 
   constructor(userId: string) {
     this.dbc = this.dbClient()
@@ -38,5 +36,5 @@ export class UserApplication
 
 applyMixins(
   UserApplication,
-  [DbClientComponent, UserHelperComponent, UserRepository]
+  [DbClientComponent, UserRepository]
 )
