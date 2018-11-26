@@ -1,0 +1,18 @@
+{
+  "ignore": [
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    ".gitignore",
+    "node_modules",
+    "script",
+    "test",
+    "build",
+    "dist"
+  ],
+  "watch": [
+    "config",
+    "src/hiyokoCore"
+  ],
+  "exec": "npm run dev_start",
+  "ext": "ts"
+}
