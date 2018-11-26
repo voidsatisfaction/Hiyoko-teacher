@@ -11,7 +11,7 @@ export class UserHelperComponent
   dbc: IDbClient
 
   userBootstrap: () => IUserBootstrap
-  userLoader: () => IUserLoader
+  userLoader: () => null
 
   async getCurrentUser(): Promise<UserEntity> {
     return await this.userBootstrap().findOrCreate(this.userId)
