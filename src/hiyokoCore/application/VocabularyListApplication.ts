@@ -6,8 +6,8 @@ import { IUserBootstrap, IUserLoader } from "../domain/repository/UserRepository
 import { IDbClient } from "../interface/infrastructure/db"
 import { VocabularyListRepository } from "../infrastructure/db/VocabularyListRepository"
 import { VocabularyRepository } from "../infrastructure/db/VocabularyRepository"
-import { IVocabularyListLoader, IVocabularyListAction } from "../domain/repository/VocabularyListRepository"
-import { IVocabularyBootstrap, IVocabularyLoader } from "../domain/repository/VocabularyRepository"
+import { IVocabularyListAction } from "../domain/repository/VocabularyListRepository"
+import { IVocabularyBootstrap } from "../domain/repository/VocabularyRepository"
 
 export class VocabularyList {
   readonly userId: string
