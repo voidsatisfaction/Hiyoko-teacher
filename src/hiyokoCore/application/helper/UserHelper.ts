@@ -7,13 +7,14 @@ import { IDbClient } from "../../interface/infrastructure/db";
 export class UserHelperComponent
   implements UserRepository {
 
+  userId: string
   dbc: IDbClient
 
   userBootstrap: () => IUserBootstrap
   userLoader: () => IUserLoader
 
-  async getCurrentUser(userId: string): Promise<UserEntity> {
-    return await this.userBootstrap().findOrCreate(userId)
+  async getCurrentUser(): Promise<UserEntity> {
+    return await this.userBootstrap().findOrCreate(this.userId)
   }
 }
 
