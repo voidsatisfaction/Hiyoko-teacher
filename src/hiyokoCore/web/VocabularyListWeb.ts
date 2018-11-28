@@ -5,10 +5,10 @@ import { VocabularyListApplication } from '../application/VocabularyListApplicat
 const VocabularyListRouter = express.Router()
 
 VocabularyListRouter.post('/', [
-  check('userId').isString(),
-  check('name').isString(),
-  check('meaning').isString(),
-  check('contextSentence').optional()
+  check('userId').isString().trim(),
+  check('name').isString().trim(),
+  check('meaning').isString().trim(),
+  check('contextSentence').optional().trim()
 ], async (req: express.Request, res: express.Response) => {
   try {
     const bodyErrors = validationResult(req)
