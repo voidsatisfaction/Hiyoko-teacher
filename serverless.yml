@@ -12,19 +12,25 @@ provider:
 plugins:
   - serverless-plugin-typescript
 functions:
-  hiyokoSensei: # A Function
+  # For bot
+  hiyokoSensei:
     handler: src/hiyokoMantle/web/bot/index.handler
-    events: # The Events that trigger this Function
+    events:
       - http:
           path: hiyokoSensei/bot/webhook
           method: post
           cors: true
+  # For add vocabulary
   hiyokoSenseiLiff:
-    handler: src/hiyokoMantle/web/liff/index.handler
+    handler: src/hiyokoMantle/web/liff/vocabularyListAdd.handler
     events:
       - http:
           path: hiyokoSensei/liff/vocabularyList/add
           method: get
+          cors: true
+      - http:
+          path: hiyokoSensei/liff/vocabularyList/add
+          method: post
           cors: true
 package:
   include:

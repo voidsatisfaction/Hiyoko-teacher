@@ -1,5 +1,5 @@
 import { TLambdaHttpEvent, responseHTML } from "../types"
-import { TemplateEngine } from "./templateEngine";
+import { TemplateEngine } from "./util/templateEngine";
 
 export const handler = async (event: TLambdaHttpEvent, context, callback) => {
   const filePath = `${__dirname}/template/vocabularyListAdd.ejs`

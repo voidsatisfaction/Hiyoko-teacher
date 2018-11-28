@@ -6,6 +6,13 @@ interface IUser {
   createdAt: string
 }
 
+interface IVocabularyList {
+  userId: string
+  name: string
+  meaning: string
+  contextSentence: string
+}
+
 export class HiyokoCoreClient {
   private static _client(): AxiosInstance {
     const config: Configure = new Configure()
@@ -22,6 +29,23 @@ export class HiyokoCoreClient {
       })
 
       return result.data
+    } catch(error) {
+      throw error
+    }
+  }
+
+  static async addVocabularyList(
+    userId: string,
+    name: string,
+    meaning: string,
+    contextSentence?: string
+  ): Promise<IVocabularyList> {
+    try {
+      const response = await this._client().post('/vocabularyLists', {
+        userId, name, meaning, contextSentence
+      })
+
+      return response.data
     } catch(error) {
       throw error
     }

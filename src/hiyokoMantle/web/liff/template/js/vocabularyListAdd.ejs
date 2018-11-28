@@ -1,8 +1,8 @@
 <script>
-  function init() {
+  function init(data) {
     const container = document.querySelector('.container')
 
-    new VocabularyListAddView({ container })
+    new VocabularyListAddView({ container, data })
   }
 
   class VocabularyListAddPresenter {
@@ -10,26 +10,30 @@
       this.view = view
     }
 
-    async sendVocabularyListData({ name, meaning, contextSentence }) {
+    async sendVocabularyListData({ userId, name, meaning, contextSentence }) {
       try {
-        const result = await axios.get('/DEV/hiyokoSensei/liff/vocabularyList/add')
+        const result = await axios.post('/DEV/hiyokoSensei/liff/vocabularyList/add', {
+          userId, name, meaning, contextSentence
+        })
 
-        alert('ok')
-        alert(JSON.stringify(result))
+        this.view.submitSuccess({ name })
       } catch(error) {
-        alert('not ok')
         alert(JSON.stringify(error))
+        alert(JSON.stringify(`Something went wrong! please retry a few minutes later`))
       }
     }
   }
 
   class VocabularyListAddView {
-    constructor({ container }) {
+    constructor({ container, data }) {
+      this.liffData = data
       this.presenter = new VocabularyListAddPresenter(this)
       this.container = container
 
       this.initMember()
       this.initEvent()
+
+      this.submitSuccess.bind(this)
     }
 
     initMember() {
@@ -40,13 +44,37 @@
     }
 
     initEvent() {
-      this.submitInput.addEventListener('click', async (e) => {
-        await this.presenter.sendVocabularyListData({})
+      this.submitInput.addEventListener('click', this._onClickSubmitButton.bind(this))
+    }
+
+    submitSuccess({ name }) {
+      this.vocabularyNameInput.value = ''
+      this.meaningInput.value = ''
+      this.contextSentenceInput.value = ''
+
+      const addResult = this.container.querySelector('#addResult')
+      addResult.innerHTML = `
+        <div class="alert alert-primary" role="alert">
+          ${name} was successfully added
+        </div>
+      `
+    }
+
+    _onClickSubmitButton(e) {
+      const userId = this.liffData.context.userId
+      const name = this.vocabularyNameInput.value
+      const meaning = this.meaningInput.value
+      const contextSentence = this.contextSentenceInput.value
+
+      this.presenter.sendVocabularyListData({
+        userId, name, meaning, contextSentence
       })
     }
   }
 
   (() => {
-    init()
+    liff.init((data) => {
+      init(data)
+    })
   })()
 </script>
