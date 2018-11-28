@@ -18,7 +18,6 @@
 
         this.view.submitSuccess({ name })
       } catch(error) {
-        alert(JSON.stringify(error))
         alert(JSON.stringify(`Something went wrong! please retry a few minutes later`))
       }
     }
@@ -60,11 +59,26 @@
       `
     }
 
+    submitFail({ reason }) {
+      const addResult = this.container.querySelector('#addResult')
+      addResult.innerHTML = `
+        <div class="alert alert-danger" role="alert">
+          ${reason}
+        </div>
+      `
+    }
+
     _onClickSubmitButton(e) {
       const userId = this.liffData.context.userId
       const name = this.vocabularyNameInput.value
       const meaning = this.meaningInput.value
       const contextSentence = this.contextSentenceInput.value
+
+      if (!name || !meaning || !contextSentence) {
+        const reason = 'You should fill out all three fields (name, meaning, contextSentence)'
+        this.submitFail({ reason })
+        return
+      }
 
       this.presenter.sendVocabularyListData({
         userId, name, meaning, contextSentence
