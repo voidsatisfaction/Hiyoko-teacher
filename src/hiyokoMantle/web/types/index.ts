@@ -29,6 +29,15 @@ export const response = (statusCode: number, body): TLambdaResponse => ({
   body: JSON.stringify(body),
 });
 
+export const responseHTML = (statusCode: number, body): TLambdaResponse => ({
+  statusCode,
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'text/html'
+  },
+  body
+})
+
 export type TLambdaInvokeResponse = {
   success: boolean,
   payload: object | string,

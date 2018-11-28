@@ -19,3 +19,13 @@ functions:
           path: hiyokoSensei/bot/webhook
           method: post
           cors: true
+  hiyokoSenseiLiff:
+    handler: src/hiyokoMantle/web/liff/index.handler
+    events:
+      - http:
+          path: hiyokoSensei/liff/vocabularyList/add
+          method: get
+          cors: true
+package:
+  include:
+    - src/hiyokoMantle/web/liff/template

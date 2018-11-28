@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+
+  <%- include('common/header', { title: 'vocabularyListAdd' }) %>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <h2>Add Vocabulary</h2>
+      </div>
+      <div class="row">
+        <form>
+          <div class="form-group">
+            <label for="vocaInput">Vocabulary name(단어명)</label>
+            <input type="text" class="form-control" id="vocabularyNameInput" placeholder="e.g) turn down">
+          </div>
+          <div class="form-group">
+            <label for="meaningInput">Meaning(의미)</label>
+            <input type="text" class="form-control" id="meaningInput" placeholder="e.g) 거절하다 / 拒絶する">
+          </div>
+          <div class="form-group">
+            <label for="meaningInput">Context Sentence(해당 단어가 속한 문맥)</label>
+            <input type="text" class="form-control" id="contextSentenceInput" placeholder="e.g) Why did she turn down your invitation?">
+          </div>
+        </form>
+      </div>
+      <div class="row">
+        <button id="submitInput" class="btn btn-primary">Add Vocabulary</button>
+      </div>
+    </div>
+
+    <%- include('common/script') %>
+
+    <%- include('js/vocabularyListAdd') %>
+  </body>
+</html>

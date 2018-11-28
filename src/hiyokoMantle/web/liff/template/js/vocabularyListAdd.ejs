@@ -1,0 +1,52 @@
+<script>
+  function init() {
+    const container = document.querySelector('.container')
+
+    new VocabularyListAddView({ container })
+  }
+
+  class VocabularyListAddPresenter {
+    constructor(view) {
+      this.view = view
+    }
+
+    async sendVocabularyListData({ name, meaning, contextSentence }) {
+      try {
+        const result = await axios.get('/DEV/hiyokoSensei/liff/vocabularyList/add')
+
+        alert('ok')
+        alert(JSON.stringify(result))
+      } catch(error) {
+        alert('not ok')
+        alert(JSON.stringify(error))
+      }
+    }
+  }
+
+  class VocabularyListAddView {
+    constructor({ container }) {
+      this.presenter = new VocabularyListAddPresenter(this)
+      this.container = container
+
+      this.initMember()
+      this.initEvent()
+    }
+
+    initMember() {
+      this.vocabularyNameInput = this.container.querySelector('#vocabularyNameInput')
+      this.meaningInput = this.container.querySelector('#meaningInput')
+      this.contextSentenceInput = this.container.querySelector('#contextSentenceInput')
+      this.submitInput = this.container.querySelector('#submitInput')
+    }
+
+    initEvent() {
+      this.submitInput.addEventListener('click', async (e) => {
+        await this.presenter.sendVocabularyListData({})
+      })
+    }
+  }
+
+  (() => {
+    init()
+  })()
+</script>
