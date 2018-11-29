@@ -54,6 +54,32 @@ describe('Vocabulary repository test', () => {
     })
   });
 
+  describe('findAll()', () => {
+    it('should find all of vocabularies by voca ids', async () => {
+      const name1 = 'turn down'
+      const name2 = 'momo land'
+      const name3 = 'bbang dduck'
+
+      const created1 = await vocabularyBootstrap.findOrCreate(name1)
+      const created2 = await vocabularyBootstrap.findOrCreate(name2)
+      const created3 = await vocabularyBootstrap.findOrCreate(name3)
+
+      const createdVocabularies = [ created1, created2, created3 ]
+      const createdVocabularyIds = createdVocabularies.map(d => d.vocaId).sort()
+      const createdVocabularyNames = createdVocabularies.map(d => d.name).sort()
+
+      const foundVocabularyies = await vocabularyLoader.findAll(
+        createdVocabularies.map(d => d.vocaId)
+      )
+      const foundVocabularyIds = foundVocabularyies.map(d => d.vocaId).sort()
+      const foundVocabularyNames = foundVocabularyies.map(d => d.name).sort()
+
+      expect(foundVocabularyies[0]).to.be.an.instanceOf(VocabularyEntity)
+      expect(foundVocabularyIds).to.deep.equal(createdVocabularyIds)
+      expect(foundVocabularyNames).to.deep.equal(createdVocabularyNames)
+    })
+  })
+
   after(() => {
     dbc.close()
   })
