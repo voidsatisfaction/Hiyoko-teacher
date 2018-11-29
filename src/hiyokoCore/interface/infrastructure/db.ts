@@ -7,4 +7,5 @@ export interface IDbClient {
   QueryTypes: any
 
   close(): Promise<void>
+  truncateTable(tableName: any): Promise<void>
 }
