@@ -56,6 +56,7 @@ class VocabularyListRepositoryMock extends VocabularyListRepository {
 
 export const VocabularyListEntityPersistMock = async (
   dbc: IDbClient,
+  user?: UserEntity,
   name?: string,
   meaning?: string,
   contextSentence?: string
@@ -67,7 +68,7 @@ export const VocabularyListEntityPersistMock = async (
   const vocabularyRepositoryMock = new VocabularyRepositoryMock(dbc)
   const vocabularyListRepositoryMock = new VocabularyListRepositoryMock(dbc)
 
-  const userEntity = UserEntityMock()
+  const userEntity = user || UserEntityMock()
   const vocabularyEntity = await vocabularyRepositoryMock.vocabularyBootstrap().findOrCreate(name)
   const vocabularyListEntity = await vocabularyListRepositoryMock.vocabularyListAction().create(
     userEntity, vocabularyEntity, meaning, contextSentence

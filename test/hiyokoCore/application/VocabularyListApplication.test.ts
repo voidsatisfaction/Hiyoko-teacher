@@ -1,7 +1,8 @@
 import { expect } from 'chai'
+import * as sinon from 'sinon'
 import { DbClient } from '../../../src/hiyokoCore/infrastructure/db/client'
 import { VocabularyListApplication, VocabularyList } from '../../../src/hiyokoCore/application/VocabularyListApplication'
-import { UserEntityPersistMock } from '../../helper/factory';
+import { UserEntityPersistMock, VocabularyListEntityPersistMock } from '../../helper/factory';
 import { VocabularyRepository } from '../../../src/hiyokoCore/infrastructure/db/VocabularyRepository';
 import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db';
 
@@ -43,6 +44,30 @@ describe('VocabularyListApplication test', () => {
       const vocabulary = await vocabularyRepository.vocabularyLoader().findByName(vocaName)
 
       expect(vocabulary.name).to.be.equal(vocaName)
+    })
+  })
+
+  describe('getUserVocabularyLists()', () => {
+    it('should list all of vocabularyList of a certain user', async () => {
+      const now = sinon.useFakeTimers(new Date())
+      const persistUser = await UserEntityPersistMock(dbc)
+      const vocabularyListApplication = new VocabularyListApplication(persistUser.userId)
+
+      now.tick(0)
+      const [vocabularyEntity1, vocabularyListEntity1] = await VocabularyListEntityPersistMock(dbc, persistUser)
+
+      now.tick(10 * 1000)
+      const [vocabularyEntity2, vocabularyListEntity2] = await VocabularyListEntityPersistMock(dbc, persistUser)
+
+      now.tick(20 * 1000)
+      const [vocabularyEntity3, vocabularyListEntity3] = await VocabularyListEntityPersistMock(dbc, persistUser)
+
+      const vocabularyLists = await vocabularyListApplication.getUserVocabularyLists()
+
+      expect(vocabularyLists.length).to.be.equal(3)
+      expect(vocabularyLists[0].name).to.be.equal(vocabularyEntity3.name)
+      expect(vocabularyLists[1].name).to.be.equal(vocabularyEntity2.name)
+      expect(vocabularyLists[2].name).to.be.equal(vocabularyEntity1.name)
     })
   })
 
