@@ -6,7 +6,6 @@ import { VocabularyRepository } from '../../../../src/hiyokoCore/infrastructure/
 import { IVocabularyBootstrap, IVocabularyLoader } from '../../../../src/hiyokoCore/domain/repository/VocabularyRepository'
 import { VocabularyListVocabularyRelationComponent, IVocabularyListVocabularyRelationObject } from '../../../../src/hiyokoCore/domain/relation/VocabularyListVocabularyRelation'
 import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db'
-import { VocabularyListEntity } from '../../../../src/hiyokoCore/domain/model/VocabularyList'
 
 class VocabularyListVocabularyRelationTest
   implements VocabularyRepository, VocabularyListVocabularyRelationComponent {
