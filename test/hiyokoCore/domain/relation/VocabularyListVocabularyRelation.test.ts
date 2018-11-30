@@ -4,14 +4,15 @@ import { VocabularyListEntityPersistMock } from '../../../helper/factory'
 import { applyMixins } from '../../../../src/util/Mixin'
 import { VocabularyRepository } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
 import { IVocabularyBootstrap, IVocabularyLoader } from '../../../../src/hiyokoCore/domain/repository/VocabularyRepository'
-import { VocabularyVocabularyListRelation } from '../../../../src/hiyokoCore/domain/relation/VocabularyListVocabularyRelation'
+import { VocabularyListVocabularyRelationComponent, IVocabularyListVocabularyRelationObject } from '../../../../src/hiyokoCore/domain/relation/VocabularyListVocabularyRelation'
 import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db'
 import { VocabularyListEntity } from '../../../../src/hiyokoCore/domain/model/VocabularyList'
 
 class VocabularyListVocabularyRelationTest
-  implements VocabularyRepository, VocabularyVocabularyListRelation {
+  implements VocabularyRepository, VocabularyListVocabularyRelationComponent {
 
-  dbc: IDbClient
+  readonly dbc: IDbClient
+  readonly vocabularyListVocabularyRelationObject: IVocabularyListVocabularyRelationObject
   constructor() {
     // FIXME: implements
     this.dbc = new DbClient()
@@ -20,7 +21,7 @@ class VocabularyListVocabularyRelationTest
   vocabularyBootstrap: () => IVocabularyBootstrap
   vocabularyLoader: () => IVocabularyLoader
 
-  mergeVocabulary: (vocabularyLists: VocabularyListEntity[]) => Promise<any[]>
+  vocabularyListVocabularyRelation: () => IVocabularyListVocabularyRelationObject
 
   do() {
     describe('VocabularyListVocabularyRelation test', () => {
@@ -36,7 +37,7 @@ class VocabularyListVocabularyRelationTest
           const [vocabularyEntity2, vocabularyListEntity2] = await VocabularyListEntityPersistMock(this.dbc)
           const [vocabularyEntity3, vocabularyListEntity3] = await VocabularyListEntityPersistMock(this.dbc)
 
-          const mergedVocas = await this.mergeVocabulary([ vocabularyListEntity1, vocabularyListEntity2, vocabularyListEntity3 ])
+          const mergedVocas = await this.vocabularyListVocabularyRelation().mergeVocabulary([vocabularyListEntity1, vocabularyListEntity2, vocabularyListEntity3])
 
           expect(mergedVocas.length).to.equal(3)
           expect(mergedVocas[0]).to.deep.equal({ ...vocabularyEntity1, ...vocabularyListEntity1 })
@@ -54,7 +55,7 @@ class VocabularyListVocabularyRelationTest
 
 applyMixins(
   VocabularyListVocabularyRelationTest,
-  [VocabularyRepository, VocabularyVocabularyListRelation]
+  [VocabularyRepository, VocabularyListVocabularyRelationComponent]
 )
 
 new VocabularyListVocabularyRelationTest().do()
