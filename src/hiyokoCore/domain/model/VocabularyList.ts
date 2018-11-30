@@ -1,4 +1,4 @@
-import { DateTime } from "../../../util/DateTime";
+import { DateTime } from "../../../util/DateTime"
 
 export class VocabularyListEntity {
   readonly userId: string

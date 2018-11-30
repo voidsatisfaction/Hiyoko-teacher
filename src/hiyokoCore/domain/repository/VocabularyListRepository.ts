@@ -12,6 +12,10 @@ export interface IVocabularyListLoader {
     user: UserEntity,
     vocabulary: VocabularyEntity
   ): Promise<VocabularyListEntity | null>
+
+  findAllByUser(
+    user: UserEntity
+  ): Promise<VocabularyListEntity[]>
 }
 
 export interface IVocabularyListAction {

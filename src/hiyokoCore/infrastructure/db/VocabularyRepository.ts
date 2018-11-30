@@ -54,4 +54,18 @@ class VocaDB extends RepositoryBase<VocabularyEntity>
 
     return this.parseAs([ res.dataValues ], VocabularyEntity)[0]
   }
+
+  async findAll(ids: number[]): Promise<VocabularyEntity[]> {
+    const res = await this.dbc.query(`
+      SELECT * FROM Vocabularies
+        WHERE vocaId IN (:ids)
+    `, {
+      replacements: {
+        ids
+      },
+      type: this.dbc.QueryTypes.SELECT
+    })
+
+    return this.parseAs(res, VocabularyEntity)
+  }
 }

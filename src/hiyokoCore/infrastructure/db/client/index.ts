@@ -20,6 +20,8 @@ export class DbClient implements IDbClient {
   readonly User
   readonly Vocabulary
   readonly VocabularyList
+  readonly Op
+  readonly QueryTypes
   private readonly hiyokoCoreDB
 
   constructor() {
@@ -53,6 +55,14 @@ export class DbClient implements IDbClient {
       SequelizeVocabularyListTable.model,
       SequelizeVocabularyListTable.options
     )
+
+    this.Op = Sequelize.Op
+
+    this.QueryTypes = this.hiyokoCoreDB.QueryTypes
+  }
+
+  async query(sql: string, placeholders: object, ) {
+    return await this.hiyokoCoreDB.query(sql, placeholders)
   }
 
   async close(): Promise<void> {

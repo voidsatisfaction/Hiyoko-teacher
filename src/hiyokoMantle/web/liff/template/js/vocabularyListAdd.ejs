@@ -31,8 +31,6 @@
 
       this.initMember()
       this.initEvent()
-
-      this.submitSuccess.bind(this)
     }
 
     initMember() {
@@ -76,6 +74,14 @@
 
       if (!name || !meaning || !contextSentence) {
         const reason = 'You should fill out all three fields (name, meaning, contextSentence)'
+        this.submitFail({ reason })
+        return
+      }
+
+      // contextSentence should include name validation
+      // FIXME: name: hell 이고, contextSentence가 hellsing인경우 단어가 등록됨
+      if (!contextSentence.trim().includes(name)) {
+        const reason = 'Context sentence should contain vocabulary name'
         this.submitFail({ reason })
         return
       }

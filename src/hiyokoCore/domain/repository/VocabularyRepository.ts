@@ -11,4 +11,5 @@ export interface IVocabularyBootstrap {
 
 export interface IVocabularyLoader {
   findByName(name: string): Promise<VocabularyEntity | null>
+  findAll(ids: number[]): Promise<VocabularyEntity[]>
 }

@@ -2,12 +2,13 @@ import { applyMixins } from "../../util/Mixin"
 import { DbClientComponent } from "../infrastructure/db/client"
 import { UserHelperComponent } from "./helper/UserHelper"
 import { UserEntity } from "../domain/model/User"
-import { IUserBootstrap, IUserLoader } from "../domain/repository/UserRepository"
+import { IUserBootstrap } from "../domain/repository/UserRepository"
 import { IDbClient } from "../interface/infrastructure/db"
 import { VocabularyListRepository } from "../infrastructure/db/VocabularyListRepository"
 import { VocabularyRepository } from "../infrastructure/db/VocabularyRepository"
-import { IVocabularyListAction } from "../domain/repository/VocabularyListRepository"
-import { IVocabularyBootstrap } from "../domain/repository/VocabularyRepository"
+import { IVocabularyListAction, IVocabularyListLoader } from "../domain/repository/VocabularyListRepository"
+import { IVocabularyBootstrap, IVocabularyLoader } from "../domain/repository/VocabularyRepository"
+import { VocabularyListVocabularyRelationComponent, IVocabularyListVocabularyRelationObject } from "../domain/relation/VocabularyListVocabularyRelation"
 
 export class VocabularyList {
   readonly userId: string
@@ -26,8 +27,14 @@ export class VocabularyList {
 }
 
 export class VocabularyListApplication
-  implements DbClientComponent, UserHelperComponent, VocabularyListRepository, VocabularyRepository {
+  implements DbClientComponent,
+    UserHelperComponent,
+    VocabularyListVocabularyRelationComponent,
+    VocabularyListRepository,
+    VocabularyRepository
+  {
     readonly dbc: IDbClient
+    readonly vocabularyListVocabularyRelationObject: IVocabularyListVocabularyRelationObject
     userId: string
 
     dbClient: () => IDbClient
@@ -36,11 +43,13 @@ export class VocabularyListApplication
     userBootstrap: () => IUserBootstrap
     userLoader: () => null
 
-    vocabularyListLoader: () => null
+    vocabularyListVocabularyRelation: () => IVocabularyListVocabularyRelationObject
+
+    vocabularyListLoader: () => IVocabularyListLoader
     vocabularyListAction: () => IVocabularyListAction
 
     vocabularyBootstrap: () => IVocabularyBootstrap
-    vocabularyLoader: () => null
+    vocabularyLoader: () => IVocabularyLoader
 
     constructor(userId: string) {
       this.dbc = this.dbClient()
@@ -62,9 +71,25 @@ export class VocabularyListApplication
         vocabularyList.contextSentence
       )
     }
+
+    // TODO: add pagination
+    async getUserVocabularyLists(): Promise<VocabularyList[]> {
+      const user = await this.getCurrentUser()
+
+      const vocabularyListEntities = await this.vocabularyListLoader().findAllByUser(user)
+      const vocabularyLists = await this.vocabularyListVocabularyRelation().mergeVocabulary(vocabularyListEntities)
+
+      return vocabularyLists
+    }
 }
 
 applyMixins(
   VocabularyListApplication,
-  [DbClientComponent, UserHelperComponent, VocabularyListRepository, VocabularyRepository]
+  [
+    DbClientComponent,
+    UserHelperComponent,
+    VocabularyListVocabularyRelationComponent,
+    VocabularyListRepository,
+    VocabularyRepository,
+  ]
 )

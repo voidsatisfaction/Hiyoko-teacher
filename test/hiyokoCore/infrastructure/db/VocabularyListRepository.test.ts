@@ -1,4 +1,5 @@
 import { expect } from 'chai'
+import * as sinon from 'sinon'
 
 import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
 import { VocabularyListRepository } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
@@ -21,11 +22,48 @@ describe('VocabularyList repository test', () => {
   const vocabularyListAction = vocabularyListRepository.vocabularyListAction()
 
   beforeEach(async () => {
-    await dbc.truncateTable(dbc.Vocabulary)
+    await Promise.all([
+      dbc.truncateTable(dbc.Vocabulary),
+      dbc.truncateTable(dbc.VocabularyList)
+    ])
+  })
+
+  describe('findAllByUser()', () => {
+    it('should get all vocabularyLists of the user', async () => {
+      const now = sinon.useFakeTimers(new Date())
+
+      const userEntity = UserEntityMock()
+      const vocabularyEntity1 = VocabularyEntityMock()
+      const meaning1 = 'よくわからないけどね'
+      const contextSentence1 = 'there is no one in here hello world!'
+      const contextPictureURL1 = 'http://helloWOrld.com/picture.jpg'
+
+      now.tick(0)
+      const createdVocabularyListEntity1 = await vocabularyListAction.create(
+        userEntity, vocabularyEntity1, meaning1, contextSentence1, contextPictureURL1
+      )
+
+      const vocabularyEntity2 = VocabularyEntityMock()
+      const meaning2 = 'よくわからないけどね2222'
+      const contextSentence2 = 'there is no one in here hello 2222222!'
+      const contextPictureURL2 = 'http://helloWOrld.com/picture.jpg/2222'
+
+      now.tick(10 * 1000)
+      const createdVocabularyListEntity2 = await vocabularyListAction.create(
+        userEntity, vocabularyEntity2, meaning2, contextSentence2, contextPictureURL2
+      )
+
+      const vocabularyLists = await vocabularyListLoader.findAllByUser(userEntity)
+
+      expect(vocabularyLists.length).to.be.equal(2)
+      expect(vocabularyLists[0]).to.be.instanceof(VocabularyListEntity)
+      expect([vocabularyLists[0].userId, vocabularyLists[0].vocaId]).to.be.deep.equal([createdVocabularyListEntity2.userId, createdVocabularyListEntity2.vocaId])
+      expect([vocabularyLists[1].userId, vocabularyLists[1].vocaId]).to.be.deep.equal([createdVocabularyListEntity1.userId, createdVocabularyListEntity1.vocaId])
+    })
   })
 
   describe('findByName()', () => {
-    it('should be null when there is no vocabularyList', async() => {
+    it('should be null when there is no vocabularyList', async () => {
       const userEntity = UserEntityMock()
       const vocabularyEntity = VocabularyEntityMock()
 
