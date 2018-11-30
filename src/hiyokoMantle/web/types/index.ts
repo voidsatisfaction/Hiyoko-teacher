@@ -3,7 +3,7 @@ export type TLambdaHttpEvent = {
   path: string
   httpMethod: 'GET' | 'POST' | 'PUT' | 'DELETE'
   headers: object // Header 가 object 형식으로
-  queryStringParameters: object | null // queryParams 가 object 형식으로 보임
+  queryStringParameters: any // queryParams 가 object 형식으로 보임
   pathParameters: string | null // 아직 확인 해본 적이 없음
   stageVariables: string | null // 아직 확인 해본 적이 없음
   requestContext: object // request 정보
