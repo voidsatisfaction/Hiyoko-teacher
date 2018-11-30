@@ -1,9 +1,74 @@
 import * as request from 'supertest'
+import * as sinon from 'sinon'
 import { expect } from 'chai'
 
 import app from '../../../src/hiyokoCore/server'
 
 describe('/vocabularyLists', () => {
+  describe('GET /vocabularyLists', () => {
+    const now = sinon.useFakeTimers(new Date())
+    const userId = '12312sadfadf3123'
+
+    before(async () => {
+      await request(app)
+        .post('/users')
+        .send({ userId })
+        .set('Accept', 'application/json')
+
+      const payload1 = {
+        userId,
+        name: 'abcd efd',
+        meaning: '뜻1 입니다',
+        contextSentence: 'hell o wlkefmlwk abcd efd wlkmflkm'
+      }
+
+      const payload2 = {
+        userId,
+        name: 'name2',
+        meaning: '뜻2 입니다',
+        contextSentence: 'hell o wlkefmlwk abcd efd wlkmflkm22222'
+      }
+
+      const payload3 = {
+        userId,
+        name: 'name3',
+        meaning: '뜻3 입니다',
+        contextSentence: 'hell o wlkefmlwk abcd efd 33333'
+      }
+
+      now.tick(0)
+      await request(app)
+        .post('/vocabularyLists')
+        .send(payload1)
+
+      now.tick(10 * 1000)
+      await request(app)
+        .post('/vocabularyLists')
+        .send(payload2)
+
+      now.tick(20 * 1000)
+      await request(app)
+        .post('/vocabularyLists')
+        .send(payload3)
+
+      now.restore()
+    })
+
+    it('should successfully show user vocabulary lists', (done) => {
+      // TODO: persist user / add vocabularylists
+      request(app)
+        .get(`/vocabularyLists/${userId}/all`)
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            return done(err)
+          }
+          expect(res.body.length).to.be.equal(3)
+          done()
+        })
+    })
+  })
+
   describe('POST /vocabularyLists', () => {
     it('should successfully create vocabularyList', (done) => {
       const payload = {

@@ -4,6 +4,26 @@ import { VocabularyListApplication } from '../application/VocabularyListApplicat
 
 const VocabularyListRouter = express.Router()
 
+VocabularyListRouter.get('/:userId/all', [
+  check('userId').exists().isString()
+], async (req: express.Request, res: express.Response) => {
+  try {
+    const bodyErrors = validationResult(req)
+    if (!bodyErrors.isEmpty()) {
+      return res.status(400).json({ errors: bodyErrors.array() })
+    }
+
+    const userId = req.params.userId
+
+    const vocabularyListApplication = new VocabularyListApplication(userId)
+    const userVocabularyLists = await vocabularyListApplication.getUserVocabularyLists()
+
+    res.json(userVocabularyLists)
+  } catch(e) {
+    res.status(500).json({ error: e.toString() })
+  }
+})
+
 VocabularyListRouter.post('/', [
   check('userId').isString().trim(),
   check('name').isString().trim(),

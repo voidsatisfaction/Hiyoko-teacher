@@ -68,6 +68,7 @@ describe('VocabularyListApplication test', () => {
       expect(vocabularyLists[0].name).to.be.equal(vocabularyEntity3.name)
       expect(vocabularyLists[1].name).to.be.equal(vocabularyEntity2.name)
       expect(vocabularyLists[2].name).to.be.equal(vocabularyEntity1.name)
+      now.restore()
     })
   })
 
