@@ -35,6 +35,25 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       )
     }
 
+    async findAllByUser(
+      user: UserEntity
+    ): Promise<VocabularyListEntity[]> {
+      const userId = user.userId
+
+      const rows = await this.dbc.query(`
+        SELECT * FROM Vocabulary_lists
+          WHERE userId = (:userId)
+          ORDER BY createdAt DESC
+      `, {
+        replacements: {
+          userId
+        },
+        type: this.dbc.QueryTypes.SELECT
+      })
+
+      return this.parseAs(rows, VocabularyListEntity)
+    }
+
     async findByUserAndVocabulary(
       user: UserEntity,
       vocabulary: VocabularyEntity,
