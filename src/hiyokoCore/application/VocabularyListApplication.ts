@@ -12,14 +12,16 @@ import { VocabularyListVocabularyRelationComponent, IVocabularyListVocabularyRel
 
 export class VocabularyList {
   readonly userId: string
+  readonly vocaListId: number
   readonly name: string
   readonly meaning: string
   readonly contextSentence: string
 
   constructor(
-    userId: string, name: string, meaning: string, contextSentence: string
+    userId: string, vocaListId: number, name: string, meaning: string, contextSentence: string
   ) {
     this.userId = userId
+    this.vocaListId = vocaListId
     this.name = name
     this.meaning = meaning
     this.contextSentence = contextSentence
@@ -66,6 +68,7 @@ export class VocabularyListApplication
 
       return new VocabularyList(
         user.userId,
+        vocabulary.vocaId,
         vocabulary.name,
         vocabularyList.meaning,
         vocabularyList.contextSentence
