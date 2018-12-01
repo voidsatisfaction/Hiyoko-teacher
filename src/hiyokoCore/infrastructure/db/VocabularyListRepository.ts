@@ -78,9 +78,9 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       const vocaId = vocabulary.vocaId
 
       const createdAtBefore: Date = new Date(createdAt.getTime())
-      createdAtBefore.setTime(createdAtBefore.getTime() - 100)
+      createdAtBefore.setTime(createdAtBefore.getTime() - 1000)
       const createdAtAfter: Date = new Date(createdAt.getTime())
-      createdAtAfter.setTime(createdAtAfter.getTime() + 100)
+      createdAtAfter.setTime(createdAtAfter.getTime() + 1000)
 
       const rows = await this.dbc.query(`
         SELECT * FROM Vocabulary_lists
