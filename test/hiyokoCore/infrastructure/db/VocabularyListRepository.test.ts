@@ -80,39 +80,6 @@ describe('VocabularyList repository test', () => {
     })
   })
 
-  describe('findByUserAndVocabularyAndCreatedAt()', () => {
-    it('should be null when there is no vocabularyList', async () => {
-      const userEntity = UserEntityMock()
-      const vocabularyEntity = VocabularyEntityMock()
-
-      const vocabularyList = await vocabularyListLoader.findByUserAndVocabularyAndCreatedAt(userEntity, vocabularyEntity, new Date())
-
-      expect(vocabularyList).to.be.null
-    })
-
-    it('should find by userEntity, vocabularyEntity, createdAt', async () => {
-      const userEntity = UserEntityMock()
-      const vocabularyEntity = VocabularyEntityMock()
-      const meaning = 'よくわからないけどね'
-      const contextSentence = 'there is no one in here hello world!'
-      const contextPictureURL = 'http://helloWOrld.com/picture.jpg'
-
-      const createdVocabularyListEntity = await vocabularyListAction.create(
-        userEntity, vocabularyEntity, meaning, contextSentence, contextPictureURL
-      )
-
-      const { createdAt } = createdVocabularyListEntity
-
-      expect(createdVocabularyListEntity).to.be.a.instanceof(VocabularyListEntity)
-
-      const foundVocabularyListEntity = await vocabularyListLoader.findByUserAndVocabularyAndCreatedAt(
-        userEntity, vocabularyEntity, createdAt
-      )
-
-      expect(foundVocabularyListEntity).to.be.deep.equal(createdVocabularyListEntity)
-    })
-  })
-
   describe('delete()', () => {
     it('should delete when there is corresponding vocabularyList', async () => {
       const userEntity = UserEntityMock()
@@ -125,16 +92,16 @@ describe('VocabularyList repository test', () => {
         userEntity, vocabularyEntity, meaning, contextSentence, contextPictureURL
       )
 
-      const foundVocabularyListEntity1 = await vocabularyListLoader.findByUserAndVocabularyAndCreatedAt(
-        userEntity, vocabularyEntity, createdVocabularyListEntity.createdAt
+      const foundVocabularyListEntity1 = await vocabularyListLoader.find(
+        createdVocabularyListEntity.vocaListId
       )
 
       expect(foundVocabularyListEntity1).not.to.be.equal(null)
 
       await vocabularyListAction.delete(createdVocabularyListEntity.vocaListId)
 
-      const foundVocabularyListEntity2 = await vocabularyListLoader.findByUserAndVocabularyAndCreatedAt(
-        userEntity, vocabularyEntity, createdVocabularyListEntity.createdAt
+      const foundVocabularyListEntity2 = await vocabularyListLoader.find(
+        createdVocabularyListEntity.vocaListId
       )
 
       expect(foundVocabularyListEntity2).to.be.equal(null)

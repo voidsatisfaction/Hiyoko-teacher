@@ -10,12 +10,6 @@ export interface IVocabularyListRepository {
 export interface IVocabularyListLoader {
   find(vocaListId: number): Promise<VocabularyListEntity | null>
 
-  findByUserAndVocabularyAndCreatedAt(
-    user: UserEntity,
-    vocabulary: VocabularyEntity,
-    createdAt: Date,
-  ): Promise<VocabularyListEntity | null>
-
   findAllByUser(
     user: UserEntity
   ): Promise<VocabularyListEntity[]>

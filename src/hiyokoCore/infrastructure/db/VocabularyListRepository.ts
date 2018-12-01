@@ -69,36 +69,6 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       return this.parseAs(rows, VocabularyListEntity)
     }
 
-    async findByUserAndVocabularyAndCreatedAt(
-      user: UserEntity,
-      vocabulary: VocabularyEntity,
-      createdAt: Date,
-    ): Promise<VocabularyListEntity | null> {
-      const userId = user.userId
-      const vocaId = vocabulary.vocaId
-
-      const createdAtBefore: Date = new Date(createdAt.getTime())
-      createdAtBefore.setTime(createdAtBefore.getTime() - 1000)
-      const createdAtAfter: Date = new Date(createdAt.getTime())
-      createdAtAfter.setTime(createdAtAfter.getTime() + 1000)
-
-      const rows = await this.dbc.query(`
-        SELECT * FROM Vocabulary_lists
-          WHERE userId = (:userId) AND vocaId = (:vocaId) AND (createdAt >= :createdAtBefore AND createdAt <= :createdAtAfter)
-          LIMIT 1
-      `, {
-        replacements: {
-          userId,
-          vocaId,
-          createdAtBefore,
-          createdAtAfter
-        },
-        type: this.dbc.QueryTypes.SELECT
-      })
-
-      return this.parseAs(rows, VocabularyListEntity)[0] || null
-    }
-
     async create(
       userEntity: UserEntity,
       vocabularyEntity: VocabularyEntity,
@@ -108,7 +78,7 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
     ): Promise<VocabularyListEntity> {
       const createdAt = new Date()
 
-      await this.dbc.query(`
+      const res = await this.dbc.query(`
         INSERT INTO Vocabulary_lists
           (userId, vocaId, meaning, contextSentence, contextPictureURL, createdAt)
         VALUES
@@ -121,14 +91,13 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
           contextSentence,
           contextPictureURL: contextPictureURL || null,
           createdAt
-        }
+        },
+        type: this.dbc.QueryTypes.INSERT
       })
 
-      return await this.findByUserAndVocabularyAndCreatedAt(
-        userEntity,
-        vocabularyEntity,
-        createdAt
-      )
+      const vocaListId = res[0]
+
+      return await this.find(vocaListId)
     }
 
     async delete(
