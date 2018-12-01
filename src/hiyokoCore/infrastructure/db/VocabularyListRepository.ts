@@ -30,7 +30,7 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       VocabularyListEntityClass: { new(...args: any[]): VocabularyListEntity }
     ): VocabularyListEntity[] {
       return data.map(d => new VocabularyListEntityClass(
-          d.userId, d.vocaId, d.meaning, d.createdAt, d.contextSentence, d.contextPictureURL
+          d.vocaListId, d.userId, d.vocaId, d.meaning, d.createdAt, d.contextSentence, d.contextPictureURL
         )
       )
     }

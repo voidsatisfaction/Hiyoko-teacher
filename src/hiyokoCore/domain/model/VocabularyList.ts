@@ -1,6 +1,7 @@
 import { DateTime } from "../../../util/DateTime"
 
 export class VocabularyListEntity {
+  readonly vocaListId: number
   readonly userId: string
   readonly vocaId: number
   readonly meaning: string
@@ -9,6 +10,7 @@ export class VocabularyListEntity {
   readonly createdAt: DateTime
 
   constructor(
+    vocaListId: number,
     userId: string,
     vocaId: number,
     meaning: string,
@@ -16,6 +18,7 @@ export class VocabularyListEntity {
     contextSentece?: string,
     contextPictureURL?: string,
   ) {
+    this.vocaListId = vocaListId
     this.userId = userId
     this.vocaId = vocaId
     this.meaning = meaning
