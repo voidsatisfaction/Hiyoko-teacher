@@ -12,7 +12,7 @@
 
     async sendVocabularyListData({ userId, name, meaning, contextSentence }) {
       try {
-        const result = await axios.post('/DEV/hiyokoSensei/liff/vocabularyList/add', {
+        const result = await axios.post(`/<%= process.env.NODE_ENV %>/hiyokoSensei/liff/vocabularyList/add`, {
           userId, name, meaning, contextSentence
         })
 
@@ -29,18 +29,18 @@
       this.presenter = new VocabularyListAddPresenter(this)
       this.container = container
 
-      this.initMember()
-      this.initEvent()
+      this.initMembers()
+      this.initEvents()
     }
 
-    initMember() {
+    initMembers() {
       this.vocabularyNameInput = this.container.querySelector('#vocabularyNameInput')
       this.meaningInput = this.container.querySelector('#meaningInput')
       this.contextSentenceInput = this.container.querySelector('#contextSentenceInput')
       this.submitInput = this.container.querySelector('#submitInput')
     }
 
-    initEvent() {
+    initEvents() {
       this.submitInput.addEventListener('click', this._onClickSubmitButton.bind(this))
     }
 

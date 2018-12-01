@@ -32,6 +32,18 @@ functions:
           path: hiyokoSensei/liff/vocabularyList/add
           method: post
           cors: true
+  # For list all user vocabularies
+  hiyokoSenseiLiff-Vocabularies:
+    handler: src/hiyokoMantle/web/liff/vocabularyLists.handler
+    events:
+      - http:
+          path: hiyokoSensei/liff/vocabularyLists/all
+          method: get
+          cors: true
+      - http:
+          path: hiyokoSensei/api/vocabularyLists/all
+          method: get
+          cors: true
 package:
   include:
     - src/hiyokoMantle/web/liff/template
