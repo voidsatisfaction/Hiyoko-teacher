@@ -5,7 +5,7 @@ import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
 import { VocabularyListRepository } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
 import { UserEntityMock, VocabularyEntityMock } from '../../../helper/factory'
 import { VocabularyListEntity } from '../../../../src/hiyokoCore/domain/model/VocabularyList'
-import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db';
+import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db'
 
 class VocabularyListRepositoryTest extends VocabularyListRepository {
   readonly dbc: IDbClient
@@ -101,9 +101,7 @@ describe('VocabularyList repository test', () => {
         userEntity, vocabularyEntity, meaning, contextSentence, contextPictureURL
       )
 
-      const {
-        createdAt
-      } = createdVocabularyListEntity
+      const { createdAt } = createdVocabularyListEntity
 
       expect(createdVocabularyListEntity).to.be.a.instanceof(VocabularyListEntity)
 
