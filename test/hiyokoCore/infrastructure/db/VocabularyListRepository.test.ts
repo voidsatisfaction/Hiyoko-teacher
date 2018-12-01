@@ -90,7 +90,7 @@ describe('VocabularyList repository test', () => {
       expect(vocabularyList).to.be.null
     })
 
-    it('should find by name', async () => {
+    it('should find by userEntity, vocabularyEntity, createdAt', async () => {
       const userEntity = UserEntityMock()
       const vocabularyEntity = VocabularyEntityMock()
       const meaning = 'よくわからないけどね'
@@ -102,30 +102,16 @@ describe('VocabularyList repository test', () => {
       )
 
       const {
-        userId,
-        vocaId,
         createdAt
       } = createdVocabularyListEntity
-      const foundMeaning = createdVocabularyListEntity.meaning
-      const foundContextSentence = createdVocabularyListEntity.contextSentence
-      const foundContextPictureURL = createdVocabularyListEntity.contextPictureURL
 
       expect(createdVocabularyListEntity).to.be.a.instanceof(VocabularyListEntity)
-      expect(userId).to.be.equal(userEntity.userId)
-      expect(vocaId).to.be.equal(vocabularyEntity.vocaId)
-      expect(foundMeaning).to.be.equal(meaning)
-      expect(foundContextSentence).to.be.equal(contextSentence)
-      expect(foundContextPictureURL).to.be.equal(contextPictureURL)
 
       const foundVocabularyListEntity = await vocabularyListLoader.findByUserAndVocabularyAndCreatedAt(
         userEntity, vocabularyEntity, createdAt
       )
 
-      expect(foundVocabularyListEntity.userId).to.be.deep.equal(createdVocabularyListEntity.userId)
-      expect(foundVocabularyListEntity.vocaId).to.be.deep.equal(createdVocabularyListEntity.vocaId)
-      expect(foundVocabularyListEntity.meaning).to.be.deep.equal(createdVocabularyListEntity.meaning)
-      expect(foundVocabularyListEntity.contextSentence).to.be.deep.equal(createdVocabularyListEntity.contextSentence)
-      expect(foundVocabularyListEntity.contextPictureURL).to.be.deep.equal(createdVocabularyListEntity.contextPictureURL)
+      expect(foundVocabularyListEntity).to.be.deep.equal(createdVocabularyListEntity)
     })
   })
 
