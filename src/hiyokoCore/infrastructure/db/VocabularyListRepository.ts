@@ -77,15 +77,21 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       const userId = user.userId
       const vocaId = vocabulary.vocaId
 
+      const createdAtBefore: Date = new Date(createdAt.getTime())
+      createdAtBefore.setTime(createdAtBefore.getTime() - 100)
+      const createdAtAfter: Date = new Date(createdAt.getTime())
+      createdAtAfter.setTime(createdAtBefore.getTime() + 100)
+
       const rows = await this.dbc.query(`
         SELECT * FROM Vocabulary_lists
-          WHERE userId = (:userId) AND vocaId = (:vocaId) AND createdAt = (:createdAt)
+          WHERE userId = (:userId) AND vocaId = (:vocaId) AND (createdAt >= :createdAtBefore AND createdAt <= :createdAtAfter)
           LIMIT 1
       `, {
         replacements: {
           userId,
           vocaId,
-          createdAt
+          createdAtBefore,
+          createdAtAfter
         },
         type: this.dbc.QueryTypes.SELECT
       })
