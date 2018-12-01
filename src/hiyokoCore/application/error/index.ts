@@ -7,6 +7,13 @@ class UnauthorizedError extends Error {
   }
 }
 
+export class UserHelperUnauthorizedError extends UnauthorizedError {
+  constructor(message: string) {
+    super(message)
+    this.name += message
+  }
+}
+
 export class VocabularyListApplicationUnauthorizationError extends UnauthorizedError {
   constructor(message: string) {
     super(message)

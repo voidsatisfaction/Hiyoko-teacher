@@ -69,7 +69,7 @@ export class VocabularyListApplication
 
       return new VocabularyList(
         user.userId,
-        vocabulary.vocaId,
+        vocabularyList.vocaListId,
         vocabulary.name,
         vocabularyList.meaning,
         vocabularyList.contextSentence
