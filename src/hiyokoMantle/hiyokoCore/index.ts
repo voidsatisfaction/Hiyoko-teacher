@@ -11,6 +11,7 @@ interface IVocabularyList {
   name: string
   meaning: string
   contextSentence: string
+  createdAt: string
 }
 
 export class HiyokoCoreClient {
@@ -44,6 +45,18 @@ export class HiyokoCoreClient {
       const response = await this._client().post('/vocabularyLists', {
         userId, name, meaning, contextSentence
       })
+
+      return response.data
+    } catch(error) {
+      throw error
+    }
+  }
+
+  static async getUserVocabularyLists(
+    userId: string
+  ): Promise<IVocabularyList[]> {
+    try {
+      const response = await this._client().get(`/vocabularyLists/${userId}/all`)
 
       return response.data
     } catch(error) {

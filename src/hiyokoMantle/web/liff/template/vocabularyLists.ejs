@@ -1,0 +1,35 @@
+<html lang="en">
+  <head>
+    <%- include('common/header', { title: 'vocabularyLists' }) %>
+
+    <%- include('css/vocabularyLists') %>
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="nav-vocabularyLists-home-tab" data-toggle="tab" href="#nav-vocabularyLists-home" role="tab" aria-controls="nav-vocabularyLists-home" aria-selected="true">
+            Voca-Meaning <span class="badge badge-light js-vocabularyLists-num"></span>
+          </a>
+            <!-- TODO: today's new words / entire words -->
+          <a class="nav-item nav-link" id="nav-vocabularyLists-contextSentence-tab" data-toggle="tab" href="#nav-vocabularyLists-contextSentence" role="tab" aria-controls="nav-vocabularyLists-contextSentence" aria-selected="false">
+            Voca-Context
+          </a>
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-vocabularyLists-home" role="tabpanel" aria-labelledby="nav-vocabularyLists-home-tab">
+          <!-- vocabulary - meaning goes here -->
+        </div>
+        <div class="tab-pane fade" id="nav-vocabularyLists-contextSentence" role="tabpanel" aria-labelledby="nav-vocabularyLists-contextSentence-tab">
+          <!-- vocabulary - context sentence goes here -->
+        </div>
+      </div>
+
+    </div>
+
+    <%- include('common/script') %>
+
+    <%- include('js/vocabularyLists') %>
+  </body>
+</html>

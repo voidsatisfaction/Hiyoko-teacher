@@ -1,0 +1,154 @@
+<script>
+  function init(data) {
+    const container = document.querySelector('.container')
+
+    new VocabularyListsView({ container, data })
+  }
+
+  class VocabularyListsPresenter {
+    constructor(view, userId) {
+      this.view = view
+      this.userId = userId
+      this.normalizedVocabularyLists = []
+      this.vocabularyListsNum = 0
+    }
+
+    async fetchAndRenderNormalizedVocabularyLists() {
+      try {
+        await this._fetchNormalizedVocabularyLists()
+
+        this.renderVocabularyMeaningView()
+        this.renderVocabularyContextSentenceView()
+      } catch(error) {
+        console.error(error)
+        alert('Unexpected error occured! Please contect to app provider and retry a few minutes later')
+      }
+    }
+
+    renderVocabularyMeaningView() {
+      this.view.renderVocabularyListsNum({ num: this.vocabularyListsNum })
+      this.view.renderVocabularyMeaningCards({ normalizedVocabularyLists: this.normalizedVocabularyLists })
+    }
+
+    renderVocabularyContextSentenceView() {
+      this.view.renderVocabularyContextSentenceCards({ normalizedVocabularyLists: this.normalizedVocabularyLists })
+    }
+
+    async _fetchNormalizedVocabularyLists() {
+      try {
+        const res = await axios.get(`/<%= process.env.NODE_ENV %>/hiyokoSensei/api/vocabularyLists/all?userId=${this.userId}`)
+
+        this.normalizedVocabularyLists = res.data
+        this.vocabularyListsNum = res.data.allDates.reduce((num, date) => num + this.normalizedVocabularyLists.byDate[date].length, 0)
+      } catch (error) {
+        throw error
+      }
+    }
+  }
+
+  class VocabularyListsView {
+    constructor({ container, data }) {
+      this.liffData = data
+      this.container = container
+      this.presenter = new VocabularyListsPresenter(this, this.liffData.context.userId)
+
+      this.initMembers()
+      this.initEvents()
+      this.initAction()
+    }
+
+    initMembers() {
+      this.vocabularyListsHome = this.container.querySelector('#nav-vocabularyLists-home')
+      this.vocabularyListsContextSentence = this.container.querySelector('#nav-vocabularyLists-contextSentence')
+
+      this.vocabularyListsNum = this.container.querySelector('.js-vocabularyLists-num')
+    }
+
+    initEvents() {
+
+    }
+
+    initAction() {
+      this.presenter.fetchAndRenderNormalizedVocabularyLists()
+    }
+
+    renderVocabularyListsNum({ num }) {
+      this.vocabularyListsNum.innerHTML = num
+    }
+
+    renderVocabularyMeaningCards({ normalizedVocabularyLists }) {
+      const dateCardHTMLArray = normalizedVocabularyLists.allDates.map((date) => {
+        const vocabularyLists = normalizedVocabularyLists.byDate[date]
+        return (`
+          <div class="row js-vocabulary-card">
+            <div class="card vocabulary-card-container">
+              <div class="card-header">
+                ${date}
+              </div>
+              <table class="table table-sm">
+                <tbody>
+                  ${
+                    vocabularyLists.map((vocabularyList) => this._vocabularyMeaningTableRowHTML({ vocabularyList }))
+                      .join('\n')
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `)
+      })
+
+      this.vocabularyListsHome.innerHTML = dateCardHTMLArray.join('\n')
+    }
+
+    renderVocabularyContextSentenceCards({ normalizedVocabularyLists }) {
+      const dateCardHTMLArray = normalizedVocabularyLists.allDates.map((date) => {
+        const vocabularyLists = normalizedVocabularyLists.byDate[date]
+        return (`
+          <div class="row js-vocabulary-card">
+            <div class="card vocabulary-card-container">
+              <div class="card-header">
+                ${date}
+              </div>
+              <table class="table table-sm">
+                <tbody>
+                  ${
+                    vocabularyLists.map((vocabularyList) => this._vocabularyContextSentenceTableRowHTML({ vocabularyList }))
+                      .join('\n')
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `)
+      })
+
+      this.vocabularyListsContextSentence.innerHTML = dateCardHTMLArray.join('\n')
+    }
+
+    _vocabularyMeaningTableRowHTML({ vocabularyList }) {
+      return `
+        <tr>
+          <th class="vocabulary-list-name" scope="row">${vocabularyList.name}</td>
+          <td class="vocabulary-list-meaning">${vocabularyList.meaning}</td>
+          <td class="vocabulary-list-delete"><i class="material-icons">delete</i></td>
+        </tr>
+      `
+    }
+
+    _vocabularyContextSentenceTableRowHTML({ vocabularyList }) {
+      return `
+        <tr>
+          <th class="vocabulary-list-name" scope="row">${vocabularyList.name}</td>
+          <td class="vocabulary-list-context-sentence">${vocabularyList.contextSentence}</td>
+        </tr>
+      `
+    }
+  }
+
+  (() => {
+    liff.init((data) => {
+      init(data)
+    })
+  })()
+</script>

@@ -22,6 +22,7 @@ export class PathMethodResolver {
     this.store[method][url] = func
   }
 
+  // FIXME: enable path parameters
   getFunction(
     url: string,
     method: HTTPMethods
