@@ -10,11 +10,11 @@ export class UserHelperComponent
   userId: string
   dbc: IDbClient
 
-  userBootstrap: () => IUserBootstrap
-  userLoader: () => null
+  userBootstrap: () => null
+  userLoader: () => IUserLoader
 
   async getCurrentUser(): Promise<UserEntity> {
-    return await this.userBootstrap().findOrCreate(this.userId)
+    return await this.userLoader().findByUserId(this.userId)
   }
 }
 

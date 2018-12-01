@@ -101,20 +101,26 @@ describe('/vocabularyLists', () => {
         meaning: '       뜻 입니다  2   ',
         contextSentence: '      hello wlkefmlwk abcd efd wlkmflkm  '
       }
+
       request(app)
-        .post('/vocabularyLists')
-        .send(payload)
-        .set('Accept', 'application/json')
-        .expect(200)
-        .end((err, res) => {
-          if (err) {
-            return done(err)
-          }
-          expect(res.body.vocabularyList.userId).to.equal(payload.userId)
-          expect(res.body.vocabularyList.name).to.equal('asdf')
-          expect(res.body.vocabularyList.meaning).to.equal('뜻 입니다  2')
-          expect(res.body.vocabularyList.contextSentence).to.equal('hello wlkefmlwk abcd efd wlkmflkm')
-          done()
+        .post('/users')
+        .send({ userId: '12312312344' })
+        .end(() => {
+          request(app)
+            .post('/vocabularyLists')
+            .send(payload)
+            .set('Accept', 'application/json')
+            .expect(200)
+            .end((err, res) => {
+              if (err) {
+                return done()
+              }
+              expect(res.body.vocabularyList.userId).to.equal(payload.userId)
+              expect(res.body.vocabularyList.name).to.equal('asdf')
+              expect(res.body.vocabularyList.meaning).to.equal('뜻 입니다  2')
+              expect(res.body.vocabularyList.contextSentence).to.equal('hello wlkefmlwk abcd efd wlkmflkm')
+              done()
+            })
         })
     })
 
