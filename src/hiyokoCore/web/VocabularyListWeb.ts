@@ -46,8 +46,10 @@ VocabularyListRouter.post('/', [
 
     res.json({ vocabularyList })
   } catch(e) {
-    res.status(500).json({ error: e.toString() })
+    return res.status(e.statusCode || 500).json({ error: e.toString() })
   }
 })
+
+// VocabularyListR
 
 export default VocabularyListRouter
