@@ -8,9 +8,10 @@ export interface IVocabularyListRepository {
 }
 
 export interface IVocabularyListLoader {
-  findByUserAndVocabulary(
+  findByUserAndVocabularyAndCreatedAt(
     user: UserEntity,
-    vocabulary: VocabularyEntity
+    vocabulary: VocabularyEntity,
+    createdAt: Date,
   ): Promise<VocabularyListEntity | null>
 
   findAllByUser(
@@ -26,4 +27,8 @@ export interface IVocabularyListAction {
     contextSentence?: string,
     contextPirctureURL?: string
   ): Promise<VocabularyListEntity>
+
+  delete(
+    vocaListId: number
+  ): Promise<void>
 }

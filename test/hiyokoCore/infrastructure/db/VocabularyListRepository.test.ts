@@ -57,17 +57,17 @@ describe('VocabularyList repository test', () => {
 
       expect(vocabularyLists.length).to.be.equal(2)
       expect(vocabularyLists[0]).to.be.instanceof(VocabularyListEntity)
-      expect([vocabularyLists[0].userId, vocabularyLists[0].vocaId]).to.be.deep.equal([createdVocabularyListEntity2.userId, createdVocabularyListEntity2.vocaId])
-      expect([vocabularyLists[1].userId, vocabularyLists[1].vocaId]).to.be.deep.equal([createdVocabularyListEntity1.userId, createdVocabularyListEntity1.vocaId])
+      expect(vocabularyLists[0]).to.be.deep.equal(createdVocabularyListEntity2)
+      expect(vocabularyLists[1]).to.be.deep.equal(createdVocabularyListEntity1)
     })
   })
 
-  describe('findByName()', () => {
+  describe('findByUserAndVocabularyAndCreatedAt()', () => {
     it('should be null when there is no vocabularyList', async () => {
       const userEntity = UserEntityMock()
       const vocabularyEntity = VocabularyEntityMock()
 
-      const vocabularyList = await vocabularyListLoader.findByUserAndVocabulary(userEntity, vocabularyEntity)
+      const vocabularyList = await vocabularyListLoader.findByUserAndVocabularyAndCreatedAt(userEntity, vocabularyEntity, new Date())
 
       expect(vocabularyList).to.be.null
     })
@@ -86,6 +86,7 @@ describe('VocabularyList repository test', () => {
       const {
         userId,
         vocaId,
+        createdAt
       } = createdVocabularyListEntity
       const foundMeaning = createdVocabularyListEntity.meaning
       const foundContextSentence = createdVocabularyListEntity.contextSentence
@@ -98,8 +99,8 @@ describe('VocabularyList repository test', () => {
       expect(foundContextSentence).to.be.equal(contextSentence)
       expect(foundContextPictureURL).to.be.equal(contextPictureURL)
 
-      const foundVocabularyListEntity = await vocabularyListLoader.findByUserAndVocabulary(
-        userEntity, vocabularyEntity
+      const foundVocabularyListEntity = await vocabularyListLoader.findByUserAndVocabularyAndCreatedAt(
+        userEntity, vocabularyEntity, createdAt
       )
 
       expect(foundVocabularyListEntity.userId).to.be.deep.equal(createdVocabularyListEntity.userId)
@@ -107,6 +108,34 @@ describe('VocabularyList repository test', () => {
       expect(foundVocabularyListEntity.meaning).to.be.deep.equal(createdVocabularyListEntity.meaning)
       expect(foundVocabularyListEntity.contextSentence).to.be.deep.equal(createdVocabularyListEntity.contextSentence)
       expect(foundVocabularyListEntity.contextPictureURL).to.be.deep.equal(createdVocabularyListEntity.contextPictureURL)
+    })
+  })
+
+  describe('delete()', () => {
+    it('should delete when there is corresponding vocabularyList', async () => {
+      const userEntity = UserEntityMock()
+      const vocabularyEntity = VocabularyEntityMock()
+      const meaning = 'lkmaflwemflawemkf'
+      const contextSentence = 'hello world!'
+      const contextPictureURL = 'http://helloWOrld.com/123123.jpg'
+
+      const createdVocabularyListEntity = await vocabularyListAction.create(
+        userEntity, vocabularyEntity, meaning, contextSentence, contextPictureURL
+      )
+
+      const foundVocabularyListEntity1 = await vocabularyListLoader.findByUserAndVocabularyAndCreatedAt(
+        userEntity, vocabularyEntity, createdVocabularyListEntity.createdAt
+      )
+
+      expect(foundVocabularyListEntity1).not.to.be.equal(null)
+
+      await vocabularyListAction.delete(createdVocabularyListEntity.vocaListId)
+
+      const foundVocabularyListEntity2 = await vocabularyListLoader.findByUserAndVocabularyAndCreatedAt(
+        userEntity, vocabularyEntity, createdVocabularyListEntity.createdAt
+      )
+
+      expect(foundVocabularyListEntity2).to.be.equal(null)
     })
   })
 
