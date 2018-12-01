@@ -28,6 +28,24 @@ describe('VocabularyList repository test', () => {
     ])
   })
 
+  describe('find()', () => {
+    it('should get vocabularyList same with vocaListId', async () => {
+      const userEntity = UserEntityMock()
+      const vocabularyEntity = VocabularyEntityMock()
+      const meaning = 'sdlfkmasdlfadkfmlwe'
+      const contextSentence = 'glwekmflwm hello world!'
+      const contextPictureURL = 'http://helloWOrld.com/picture123.jpg'
+
+      const createdVocabularyListEntity = await vocabularyListAction.create(
+        userEntity, vocabularyEntity, meaning, contextSentence, contextPictureURL
+      )
+
+      const foundVocabularyListEntity = await vocabularyListLoader.find(createdVocabularyListEntity.vocaListId)
+
+      expect(foundVocabularyListEntity).to.be.deep.equal(createdVocabularyListEntity)
+    })
+  })
+
   describe('findAllByUser()', () => {
     it('should get all vocabularyLists of the user', async () => {
       const now = sinon.useFakeTimers(new Date())

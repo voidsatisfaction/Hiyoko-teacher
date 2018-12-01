@@ -35,6 +35,21 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       )
     }
 
+    async find(vocaListId: number): Promise<VocabularyListEntity | null> {
+      const rows = await this.dbc.query(`
+        SELECT * FROM Vocabulary_lists
+          WHERE vocaListId = (:vocaListId)
+          LIMIT 1
+      `, {
+        replacements: {
+          vocaListId
+        },
+        type: this.dbc.QueryTypes.SELECT
+      })
+
+      return this.parseAs(rows, VocabularyListEntity)[0] || null
+    }
+
     async findAllByUser(
       user: UserEntity
     ): Promise<VocabularyListEntity[]> {
