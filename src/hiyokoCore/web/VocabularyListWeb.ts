@@ -25,10 +25,10 @@ VocabularyListRouter.get('/:userId/all', [
 })
 
 VocabularyListRouter.post('/', [
-  check('userId').isString().trim(),
-  check('name').isString().trim(),
-  check('meaning').isString().trim(),
-  check('contextSentence').isString().trim()
+  check('userId').exists().isString(),
+  check('name').exists().isString().trim(),
+  check('meaning').exists().isString().trim(),
+  check('contextSentence').exists().isString().trim()
 ], async (req: express.Request, res: express.Response) => {
   try {
     const bodyErrors = validationResult(req)
@@ -46,7 +46,31 @@ VocabularyListRouter.post('/', [
 
     res.json({ vocabularyList })
   } catch(e) {
-    res.status(500).json({ error: e.toString() })
+    return res.status(e.statusCode || 500).json({ error: e.toString() })
+  }
+})
+
+VocabularyListRouter.delete('/', [
+  check('userId').exists().isString(),
+  check('vocaListId').exists().isNumeric()
+], async (req: express.Request, res: express.Response) => {
+  try {
+    const bodyErrors = validationResult(req)
+    if (!bodyErrors.isEmpty()) {
+      return res.status(400).json({ errors: bodyErrors.array() })
+    }
+
+    const userId: string = req.body.userId
+    const vocaListId: number = req.body.vocaListId
+
+    const vocabularyListApplication = new VocabularyListApplication(userId)
+    await vocabularyListApplication.deleteVocabularyList(vocaListId)
+
+    res.json({ result: 'success' })
+  } catch(e) {
+    // user unauthorized
+    // userId delete unautorized
+    return res.status(e.statusCode || 500).json({ error: e.toString() })
   }
 })
 

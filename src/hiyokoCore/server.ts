@@ -18,7 +18,6 @@ switch (process.env.NODE_ENV) {
     app.use(morgan('dev'))
     break
   case 'TEST':
-    app.use(morgan('dev'))
     break
   default:
     throw `NODE_ENV is not set properly`

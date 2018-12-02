@@ -3,6 +3,7 @@ import { IUserBootstrap, IUserLoader } from "../../domain/repository/UserReposit
 import { applyMixins } from "../../../util/Mixin"
 import { UserRepository } from "../../infrastructure/db/UserRepository"
 import { IDbClient } from "../../interface/infrastructure/db";
+import { UserHelperUnauthorizedError } from "../error";
 
 export class UserHelperComponent
   implements UserRepository {
@@ -10,11 +11,15 @@ export class UserHelperComponent
   userId: string
   dbc: IDbClient
 
-  userBootstrap: () => IUserBootstrap
-  userLoader: () => null
+  userBootstrap: () => null
+  userLoader: () => IUserLoader
 
   async getCurrentUser(): Promise<UserEntity> {
-    return await this.userBootstrap().findOrCreate(this.userId)
+    const userEntity = await this.userLoader().findByUserId(this.userId)
+    if (!userEntity) {
+      throw new UserHelperUnauthorizedError(`Unauthorized user action`)
+    }
+    return userEntity
   }
 }
 

@@ -5,20 +5,21 @@ import { SequelizeModelBase } from './Base';
 export class SequelizeVocabularyListTable extends SequelizeModelBase {
   static readonly tableName = 'Vocabulary_lists'
   static readonly model = {
+    vocaListId: {
+      type: Sequelize.BIGINT.UNSIGNED,
+      primaryKey: true
+    },
     userId: {
       type: Sequelize.STRING,
-      primaryKey: true,
     },
     vocaId: {
       type: Sequelize.BIGINT.UNSIGNED,
-      primaryKey: true,
     },
     meaning: {
       type: Sequelize.STRING,
     },
     contextSentence: {
       type: Sequelize.STRING,
-      unique: true
     },
     contextPictureURL: {
       type: Sequelize.STRING,

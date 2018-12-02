@@ -5,16 +5,25 @@ import { expect } from 'chai'
 import app from '../../../src/hiyokoCore/server'
 
 describe('/vocabularyLists', () => {
+
+  const userId = '12312sadfadf3123'
+  const userId2 = 'lskadmflmwkel12930u'
+  before (async () => {
+    await request(app)
+      .post('/users')
+      .send({ userId })
+      .set('Accept', 'application/json')
+
+    await request(app)
+      .post('/users')
+      .send({ userId: userId2 })
+      .set('Accept', 'application/json')
+  })
+
   describe('GET /vocabularyLists', () => {
     const now = sinon.useFakeTimers(new Date())
-    const userId = '12312sadfadf3123'
 
     before(async () => {
-      await request(app)
-        .post('/users')
-        .send({ userId })
-        .set('Accept', 'application/json')
-
       const payload1 = {
         userId,
         name: 'abcd efd',
@@ -101,20 +110,26 @@ describe('/vocabularyLists', () => {
         meaning: '       뜻 입니다  2   ',
         contextSentence: '      hello wlkefmlwk abcd efd wlkmflkm  '
       }
+
       request(app)
-        .post('/vocabularyLists')
-        .send(payload)
-        .set('Accept', 'application/json')
-        .expect(200)
-        .end((err, res) => {
-          if (err) {
-            return done(err)
-          }
-          expect(res.body.vocabularyList.userId).to.equal(payload.userId)
-          expect(res.body.vocabularyList.name).to.equal('asdf')
-          expect(res.body.vocabularyList.meaning).to.equal('뜻 입니다  2')
-          expect(res.body.vocabularyList.contextSentence).to.equal('hello wlkefmlwk abcd efd wlkmflkm')
-          done()
+        .post('/users')
+        .send({ userId: '12312312344' })
+        .end(() => {
+          request(app)
+            .post('/vocabularyLists')
+            .send(payload)
+            .set('Accept', 'application/json')
+            .expect(200)
+            .end((err, res) => {
+              if (err) {
+                return done()
+              }
+              expect(res.body.vocabularyList.userId).to.equal(payload.userId)
+              expect(res.body.vocabularyList.name).to.equal('asdf')
+              expect(res.body.vocabularyList.meaning).to.equal('뜻 입니다  2')
+              expect(res.body.vocabularyList.contextSentence).to.equal('hello wlkefmlwk abcd efd wlkmflkm')
+              done()
+            })
         })
     })
 
@@ -124,6 +139,66 @@ describe('/vocabularyLists', () => {
         .send({ abcd: 'asfwef' })
         .set('Accept', 'application/json')
         .expect(400, done)
+    })
+  })
+
+  describe('DELETE /vocabularyLists', () => {
+    it('should not delete with different userId', async () => {
+      const createPayload = {
+        userId,
+        name: 'asldkfmalw',
+        meaning: 'welfkmwleflwe',
+        contextSentence: 'wefwfwef weeee qwe12e'
+      }
+
+      const res = await request(app)
+        .post('/vocabularyLists')
+        .send(createPayload)
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      const deletePayload = {
+        userId: userId2,
+        vocaListId: res.body.vocabularyList.vocaListId
+      }
+
+      await request(app)
+        .delete('/vocabularyLists')
+        .send(deletePayload)
+        .set('Accept', 'application/json')
+        .expect(403)
+        .then((res2) => {
+          expect(res2.status).to.be.equal(403)
+        })
+    })
+
+    it('should delete with proper parameters', async () => {
+      const createPayload = {
+        userId,
+        name: 'wlkemflwemklk',
+        meaning: 'meaning',
+        contextSentence: 'lkmfglakwmglemkfl welkfmwlefm wlemkf'
+      }
+
+      const res = await request(app)
+        .post('/vocabularyLists')
+        .send(createPayload)
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      const deletePayload = {
+        userId,
+        vocaListId: res.body.vocabularyList.vocaListId
+      }
+
+      await request(app)
+        .delete('/vocabularyLists')
+        .send(deletePayload)
+        .set('Accept', 'application/json')
+        .expect(200)
+        .then((res2) => {
+          expect(res2.body.result).to.be.equal('success')
+        })
     })
   })
 })

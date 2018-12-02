@@ -5,7 +5,7 @@ import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
 import { VocabularyListRepository } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
 import { UserEntityMock, VocabularyEntityMock } from '../../../helper/factory'
 import { VocabularyListEntity } from '../../../../src/hiyokoCore/domain/model/VocabularyList'
-import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db';
+import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db'
 
 class VocabularyListRepositoryTest extends VocabularyListRepository {
   readonly dbc: IDbClient
@@ -26,6 +26,24 @@ describe('VocabularyList repository test', () => {
       dbc.truncateTable(dbc.Vocabulary),
       dbc.truncateTable(dbc.VocabularyList)
     ])
+  })
+
+  describe('find()', () => {
+    it('should get vocabularyList same with vocaListId', async () => {
+      const userEntity = UserEntityMock()
+      const vocabularyEntity = VocabularyEntityMock()
+      const meaning = 'sdlfkmasdlfadkfmlwe'
+      const contextSentence = 'glwekmflwm hello world!'
+      const contextPictureURL = 'http://helloWOrld.com/picture123.jpg'
+
+      const createdVocabularyListEntity = await vocabularyListAction.create(
+        userEntity, vocabularyEntity, meaning, contextSentence, contextPictureURL
+      )
+
+      const foundVocabularyListEntity = await vocabularyListLoader.find(createdVocabularyListEntity.vocaListId)
+
+      expect(foundVocabularyListEntity).to.be.deep.equal(createdVocabularyListEntity)
+    })
   })
 
   describe('findAllByUser()', () => {
@@ -57,56 +75,36 @@ describe('VocabularyList repository test', () => {
 
       expect(vocabularyLists.length).to.be.equal(2)
       expect(vocabularyLists[0]).to.be.instanceof(VocabularyListEntity)
-      expect([vocabularyLists[0].userId, vocabularyLists[0].vocaId]).to.be.deep.equal([createdVocabularyListEntity2.userId, createdVocabularyListEntity2.vocaId])
-      expect([vocabularyLists[1].userId, vocabularyLists[1].vocaId]).to.be.deep.equal([createdVocabularyListEntity1.userId, createdVocabularyListEntity1.vocaId])
+      expect(vocabularyLists[0]).to.be.deep.equal(createdVocabularyListEntity2)
+      expect(vocabularyLists[1]).to.be.deep.equal(createdVocabularyListEntity1)
     })
   })
 
-  describe('findByName()', () => {
-    it('should be null when there is no vocabularyList', async () => {
+  describe('delete()', () => {
+    it('should delete when there is corresponding vocabularyList', async () => {
       const userEntity = UserEntityMock()
       const vocabularyEntity = VocabularyEntityMock()
-
-      const vocabularyList = await vocabularyListLoader.findByUserAndVocabulary(userEntity, vocabularyEntity)
-
-      expect(vocabularyList).to.be.null
-    })
-
-    it('should find by name', async () => {
-      const userEntity = UserEntityMock()
-      const vocabularyEntity = VocabularyEntityMock()
-      const meaning = 'よくわからないけどね'
-      const contextSentence = 'there is no one in here hello world!'
-      const contextPictureURL = 'http://helloWOrld.com/picture.jpg'
+      const meaning = 'lkmaflwemflawemkf'
+      const contextSentence = 'hello world!'
+      const contextPictureURL = 'http://helloWOrld.com/123123.jpg'
 
       const createdVocabularyListEntity = await vocabularyListAction.create(
         userEntity, vocabularyEntity, meaning, contextSentence, contextPictureURL
       )
 
-      const {
-        userId,
-        vocaId,
-      } = createdVocabularyListEntity
-      const foundMeaning = createdVocabularyListEntity.meaning
-      const foundContextSentence = createdVocabularyListEntity.contextSentence
-      const foundContextPictureURL = createdVocabularyListEntity.contextPictureURL
-
-      expect(createdVocabularyListEntity).to.be.a.instanceof(VocabularyListEntity)
-      expect(userId).to.be.equal(userEntity.userId)
-      expect(vocaId).to.be.equal(vocabularyEntity.vocaId)
-      expect(foundMeaning).to.be.equal(meaning)
-      expect(foundContextSentence).to.be.equal(contextSentence)
-      expect(foundContextPictureURL).to.be.equal(contextPictureURL)
-
-      const foundVocabularyListEntity = await vocabularyListLoader.findByUserAndVocabulary(
-        userEntity, vocabularyEntity
+      const foundVocabularyListEntity1 = await vocabularyListLoader.find(
+        createdVocabularyListEntity.vocaListId
       )
 
-      expect(foundVocabularyListEntity.userId).to.be.deep.equal(createdVocabularyListEntity.userId)
-      expect(foundVocabularyListEntity.vocaId).to.be.deep.equal(createdVocabularyListEntity.vocaId)
-      expect(foundVocabularyListEntity.meaning).to.be.deep.equal(createdVocabularyListEntity.meaning)
-      expect(foundVocabularyListEntity.contextSentence).to.be.deep.equal(createdVocabularyListEntity.contextSentence)
-      expect(foundVocabularyListEntity.contextPictureURL).to.be.deep.equal(createdVocabularyListEntity.contextPictureURL)
+      expect(foundVocabularyListEntity1).not.to.be.equal(null)
+
+      await vocabularyListAction.delete(createdVocabularyListEntity.vocaListId)
+
+      const foundVocabularyListEntity2 = await vocabularyListLoader.find(
+        createdVocabularyListEntity.vocaListId
+      )
+
+      expect(foundVocabularyListEntity2).to.be.equal(null)
     })
   })
 

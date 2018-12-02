@@ -1,18 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import { Configure } from '../../../config'
-
-interface IUser {
-  userId: string
-  createdAt: string
-}
-
-interface IVocabularyList {
-  userId: string
-  name: string
-  meaning: string
-  contextSentence: string
-  createdAt: string
-}
+import { IVocabularyList } from '../model/VocabularyList'
+import { IUser } from '../model/User'
 
 export class HiyokoCoreClient {
   private static _client(): AxiosInstance {

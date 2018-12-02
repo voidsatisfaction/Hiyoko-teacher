@@ -19,13 +19,15 @@ CREATE TABLE Hiyoko_core.Vocabularies (
 
 DROP TABLE IF EXISTS Hiyoko_core.Vocabulary_lists;
 CREATE TABLE Hiyoko_core.Vocabulary_lists (
+  `vocaListId` BIGINT(20) unsigned AUTO_INCREMENT NOT NULL,
   `userId` VARCHAR(50) NOT NULL,
   `vocaId` BIGINT(20) NOT NULL,
   `meaning` VARCHAR(200) DEFAULT NULL,
   `contextSentence` VARCHAR(500) DEFAULT NULL,
   `contextPictureURL` VARCHAR(500) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
-  PRIMARY KEY (`userId`, `vocaId`, `createdAt`),
+  PRIMARY KEY (`vocaListId`),
+  UNIQUE KEY `userId_vocaId_createdAt` (`userId`, `vocaId`, `createdAt`),
   KEY `userId_createdAt` (`userId`, `createdAt`),
   KEY `vocaId` (`vocaId`),
   KEY `createdAt` (`createdAt`)
