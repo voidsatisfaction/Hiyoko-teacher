@@ -5,8 +5,19 @@ import { VocabularyListApplication, VocabularyList } from '../../../src/hiyokoCo
 import { UserEntityPersistMock, VocabularyListEntityPersistMock } from '../../helper/factory';
 import { VocabularyRepository } from '../../../src/hiyokoCore/infrastructure/db/VocabularyRepository';
 import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db';
+import { VocabularyListApplicationUnauthorizationError } from '../../../src/hiyokoCore/application/error';
+import { VocabularyListRepository } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository';
 
 class VocabularyRepositoryTest extends VocabularyRepository {
+  readonly dbc: IDbClient
+
+  constructor(dbc: IDbClient) {
+    super()
+    this.dbc = dbc
+  }
+}
+
+class VocabularyListRepositoryTest extends VocabularyListRepository {
   readonly dbc: IDbClient
 
   constructor(dbc: IDbClient) {
@@ -69,6 +80,36 @@ describe('VocabularyListApplication test', () => {
       expect(vocabularyLists[1].name).to.be.equal(vocabularyEntity2.name)
       expect(vocabularyLists[2].name).to.be.equal(vocabularyEntity1.name)
       now.restore()
+    })
+  })
+
+  describe('deleteVocabularyList()', () => {
+    it('should be unauthorized error when userId is not matching', async () => {
+      try {
+        const persistUser1 = await UserEntityPersistMock(dbc)
+        const persistUser2 = await UserEntityPersistMock(dbc)
+        const vocabularyListApplication2 = new VocabularyListApplication(persistUser2.userId)
+
+        const [vocabularyEntity, vocabularyListEntity] = await VocabularyListEntityPersistMock(dbc, persistUser1)
+
+        await vocabularyListApplication2.deleteVocabularyList(vocabularyListEntity.vocaListId)
+      } catch(e) {
+        expect(e.message).to.be.equal(new VocabularyListApplicationUnauthorizationError(`Delete vocabularyList not authorized`).message)
+      }
+    })
+
+    it('should delete vocabularyList', async () => {
+      const persistUser1 = await UserEntityPersistMock(dbc)
+      const vocabularyListApplication1 = new VocabularyListApplication(persistUser1.userId)
+      const vocabularyListRepository = new VocabularyListRepositoryTest(dbc)
+
+      const [vocabularyEntity, vocabularyListEntity] = await VocabularyListEntityPersistMock(dbc, persistUser1)
+
+      await vocabularyListApplication1.deleteVocabularyList(vocabularyListEntity.vocaListId)
+
+      const emptyVocabularyList = await vocabularyListRepository.vocabularyListLoader().find(vocabularyListEntity.vocaListId)
+
+      expect(emptyVocabularyList).to.be.equal(null)
     })
   })
 

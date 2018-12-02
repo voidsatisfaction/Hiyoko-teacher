@@ -4,7 +4,6 @@ import { Random } from '../util'
 import { VocabularyEntity } from '../../../src/hiyokoCore/domain/model/Vocabulary'
 import { VocabularyListEntity } from '../../../src/hiyokoCore/domain/model/VocabularyList'
 
-import { DateTime } from '../../../src/util/DateTime'
 import { UserRepository } from '../../../src/hiyokoCore/infrastructure/db/UserRepository'
 import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db'
 
@@ -20,7 +19,7 @@ class UserRepositoryMock extends UserRepository {
 
 export const UserEntityPersistMock = async (dbc: IDbClient, userId?: string, createdAt?: Date): Promise<UserEntity> => {
   userId = userId || Random.alphaNumeric(10)
-  createdAt = createdAt || new DateTime()
+  createdAt = createdAt || new Date()
 
   const userRepositoryMock: UserRepositoryMock = new UserRepositoryMock(dbc)
   return await userRepositoryMock.userBootstrap().findOrCreate(userId)
@@ -28,7 +27,7 @@ export const UserEntityPersistMock = async (dbc: IDbClient, userId?: string, cre
 
 export const UserEntityMock = (userId?: string, createdAt?: Date): UserEntity => {
   userId = userId || Random.alphaNumeric(10)
-  createdAt = createdAt || new DateTime()
+  createdAt = createdAt || new Date()
 
   return new UserEntity(userId, createdAt)
 }

@@ -35,6 +35,21 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       )
     }
 
+    async find(vocaListId: number): Promise<VocabularyListEntity | null> {
+      const rows = await this.dbc.query(`
+        SELECT * FROM Vocabulary_lists
+          WHERE vocaListId = (:vocaListId)
+          LIMIT 1
+      `, {
+        replacements: {
+          vocaListId
+        },
+        type: this.dbc.QueryTypes.SELECT
+      })
+
+      return this.parseAs(rows, VocabularyListEntity)[0] || null
+    }
+
     async findAllByUser(
       user: UserEntity
     ): Promise<VocabularyListEntity[]> {
@@ -54,27 +69,6 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       return this.parseAs(rows, VocabularyListEntity)
     }
 
-    async findByUserAndVocabulary(
-      user: UserEntity,
-      vocabulary: VocabularyEntity,
-    ): Promise<VocabularyListEntity> {
-      const userId = user.userId
-      const vocaId = vocabulary.vocaId
-
-      const row = await this.dbc.VocabularyList.findOne({
-        where: {
-          userId,
-          vocaId
-        }
-      })
-
-      if (!row) {
-        return null
-      }
-
-      return this.parseAs([row.dataValues], VocabularyListEntity)[0]
-    }
-
     async create(
       userEntity: UserEntity,
       vocabularyEntity: VocabularyEntity,
@@ -82,14 +76,40 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       contextSentence?: string,
       contextPictureURL?: string,
     ): Promise<VocabularyListEntity> {
-      const row = await this.dbc.VocabularyList.create({
-        userId: userEntity.userId,
-        vocaId: vocabularyEntity.vocaId,
-        meaning,
-        contextSentence,
-        contextPictureURL
+      const createdAt = new Date()
+
+      const res = await this.dbc.query(`
+        INSERT INTO Vocabulary_lists
+          (userId, vocaId, meaning, contextSentence, contextPictureURL, createdAt)
+        VALUES
+          (:userId, :vocaId, :meaning, :contextSentence, :contextPictureURL, :createdAt)
+      `, {
+        replacements: {
+          userId: userEntity.userId,
+          vocaId: vocabularyEntity.vocaId,
+          meaning,
+          contextSentence,
+          contextPictureURL: contextPictureURL || null,
+          createdAt
+        },
+        type: this.dbc.QueryTypes.INSERT
       })
 
-      return this.parseAs([ row.dataValues ], VocabularyListEntity)[0]
+      const vocaListId = res[0]
+
+      return await this.find(vocaListId)
+    }
+
+    async delete(
+      vocaListId: number
+    ): Promise<void> {
+      await this.dbc.query(`
+        DELETE FROM Vocabulary_lists
+          WHERE vocaListId = (:vocaListId)
+      `, {
+        replacements: {
+          vocaListId
+        }
+      })
     }
 }
