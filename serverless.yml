@@ -41,8 +41,12 @@ functions:
           method: get
           cors: true
       - http:
-          path: hiyokoSensei/api/vocabularyLists/all
+          path: hiyokoSensei/api/vocabularyLists
           method: get
+          cors: true
+      - http:
+          path: hiyokoSensei/api/vocabularyLists
+          method: delete
           cors: true
 package:
   include:

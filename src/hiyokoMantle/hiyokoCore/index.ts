@@ -52,4 +52,21 @@ export class HiyokoCoreClient {
       throw error
     }
   }
+
+  static async deleteVocabularyList(
+    userId: string,
+    vocaListId: number
+  ): Promise<void> {
+    try {
+      await this._client().delete('/vocabularyLists', {
+        data: {
+          userId, vocaListId
+        }
+      })
+
+      return
+    } catch(error) {
+      throw error
+    }
+  }
 }

@@ -25,6 +25,25 @@
       }
     }
 
+    async deleteVocabularyList({ vocaListId }) {
+      try {
+        const userId = this.userId
+
+        await axios.delete('/<%= process.env.NODE_ENV %>/hiyokoSensei/api/vocabularyLists', {
+          data: {
+            userId,
+            vocaListId
+          }
+        })
+
+        // FIXME: just delete one element from this.normalizedVocabularyLists and rerender
+        this.fetchAndRenderNormalizedVocabularyLists()
+      } catch(error) {
+        console.error(error)
+        alert('Unexpected error occured! Please contect to app provider and retry a few minutes later')
+      }
+    }
+
     renderVocabularyMeaningView() {
       this.view.renderVocabularyListsNum({ num: this.vocabularyListsNum })
       this.view.renderVocabularyMeaningCards({ normalizedVocabularyLists: this.normalizedVocabularyLists })
@@ -36,7 +55,7 @@
 
     async _fetchNormalizedVocabularyLists() {
       try {
-        const res = await axios.get(`/<%= process.env.NODE_ENV %>/hiyokoSensei/api/vocabularyLists/all?userId=${this.userId}`)
+        const res = await axios.get(`/<%= process.env.NODE_ENV %>/hiyokoSensei/api/vocabularyLists?userId=${this.userId}`)
 
         this.normalizedVocabularyLists = res.data
         this.vocabularyListsNum = res.data.allDates.reduce((num, date) => num + this.normalizedVocabularyLists.byDate[date].length, 0)
@@ -65,11 +84,21 @@
     }
 
     initEvents() {
-
+      this.vocabularyListsHome.addEventListener('click', this._onClickDeleteButton.bind(this))
     }
 
     initAction() {
       this.presenter.fetchAndRenderNormalizedVocabularyLists()
+    }
+
+    _onClickDeleteButton(e) {
+      const { nodeName, vocaListId } = e.srcElement.dataset
+      if (
+        nodeName !== 'vocabulary-list-delete-icon' ||
+        !confirm('Really delete?')
+      ) return
+
+      this.presenter.deleteVocabularyList({ vocaListId })
     }
 
     renderVocabularyListsNum({ num }) {
@@ -131,7 +160,7 @@
         <tr>
           <th class="vocabulary-list-name" scope="row">${vocabularyList.name}</td>
           <td class="vocabulary-list-meaning">${vocabularyList.meaning}</td>
-          <td class="vocabulary-list-delete"><i class="material-icons">delete</i></td>
+          <td class="vocabulary-list-delete"><i class="material-icons vocabulary-list-delete-icon" data-node-name="vocabulary-list-delete-icon" data-voca-list-id="${vocabularyList.vocaListId}">delete</i></td>
         </tr>
       `
     }

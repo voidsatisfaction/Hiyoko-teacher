@@ -2,6 +2,7 @@ import { TLambdaHttpEvent, responseHTML, response } from "../types"
 import { TemplateEngine } from "./util/templateEngine"
 import { PathMethodResolver } from "./util/pathResolver"
 import { HiyokoCoreService } from "../../service/HiyokoCore"
+import { HiyokoCoreClient } from "../../hiyokoCore";
 
 export const handler = async (event: TLambdaHttpEvent, context, callback) => {
   const pathMethodResolver = new PathMethodResolver()
@@ -13,9 +14,15 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
   )
 
   pathMethodResolver.setFunction(
-    '/hiyokoSensei/api/vocabularyLists/all',
+    '/hiyokoSensei/api/vocabularyLists',
     'GET',
     getVocabularyListsAllJSON
+  )
+
+  pathMethodResolver.setFunction(
+    '/hiyokoSensei/api/vocabularyLists',
+    'DELETE',
+    deleteVocabularyListJSON
   )
 
   const func = pathMethodResolver.getFunction(event.path, event.httpMethod)
@@ -39,6 +46,21 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
       const normalizedVocabularyLists = await HiyokoCoreService.getAndProcessUserVocabularyLists(userId)
 
       callback(null, response(200, normalizedVocabularyLists))
+    } catch(error) {
+      console.error(error)
+      callback(null, response(500, 'Some error occured'))
+    }
+  }
+
+  async function deleteVocabularyListJSON() {
+    try {
+      const body = JSON.parse(event.body)
+      const userId: string = body.userId
+      const vocaListId: number = body.vocaListId
+
+      await HiyokoCoreClient.deleteVocabularyList(userId, vocaListId)
+
+      callback(null, response(200, {}))
     } catch(error) {
       console.error(error)
       callback(null, response(500, 'Some error occured'))
