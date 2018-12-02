@@ -8,12 +8,11 @@ export class HelperBotActionController extends BotActionControllerBase {
     return BotActionResultCreator.textMessage(`
       This is not a valid input.
 
-      You can use either menu located below or commands as follow
+      You can use either menu located below or links as follows
 
       -------
-      add {word} {meaning}
-
-
+      Adding vocabulary: line://app/1615960675-Gye0WZOX
+      Seeing vocabulary Lists: line://app/1615960675-d85ko9yN
       -------
     `)
   }
