@@ -21,7 +21,7 @@ export class VocabularyListEntity {
     this.vocaId = vocaId
     this.meaning = meaning
     this.createdAt = createdAt || new Date()
-    this.contextSentence = contextSentece || ''
-    this.contextPictureURL = contextPictureURL || ''
+    this.contextSentence = contextSentece
+    this.contextPictureURL = contextPictureURL
   }
 }

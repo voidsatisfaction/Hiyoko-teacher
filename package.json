@@ -14,7 +14,8 @@
     "build": "./node_modules/.bin/tsc",
     "make_core_artifact": "stat dist || mkdir dist; zip dist/hiyoko-core-app.zip -r build package.json package-lock.json",
     "deploy_both_dev": "npm run deploy_core_prod; npm run deploy_mantle_dev",
-    "deploy_both_prod": "npm run deploy_core_prod; npm run deploy_mantle_prod"
+    "deploy_both_prod": "npm run deploy_core_prod; npm run deploy_mantle_prod",
+    "setup_local_db": "sh script/setup_local_db.sh"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
   "homepage": "https://github.com/voidsatisfaction/Hiyoko-teacher#readme",
   "dependencies": {
     "@line/bot-sdk": "^6.3.0",
+    "aws-sdk": "^2.368.0",
     "axios": "^0.18.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",

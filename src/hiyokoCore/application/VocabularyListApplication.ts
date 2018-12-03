@@ -10,6 +10,9 @@ import { IVocabularyListAction, IVocabularyListLoader } from "../domain/reposito
 import { IVocabularyBootstrap, IVocabularyLoader } from "../domain/repository/VocabularyRepository"
 import { VocabularyListVocabularyRelationComponent, IVocabularyListVocabularyRelationObject } from "../domain/relation/VocabularyListVocabularyRelation"
 import { VocabularyListApplicationUnauthorizationError } from "./error";
+import { LoggerDBClientComponent } from "../infrastructure/loggerDb/client";
+import { ILoggerDBClient } from "../interface/infrastructure/LoggerDB";
+import { UserActionLogHelperComponent, IUserActionLoggerObject, Action } from "./helper/UserActionLogHelper";
 
 export class VocabularyList {
   readonly userId: string
@@ -31,16 +34,20 @@ export class VocabularyList {
 
 export class VocabularyListApplication
   implements DbClientComponent,
+    LoggerDBClientComponent,
     UserHelperComponent,
     VocabularyListVocabularyRelationComponent,
     VocabularyListRepository,
-    VocabularyRepository
+    VocabularyRepository,
+    UserActionLogHelperComponent
   {
     readonly dbc: IDbClient
+    readonly loggerDBC: ILoggerDBClient
     readonly vocabularyListVocabularyRelationObject: IVocabularyListVocabularyRelationObject
     userId: string
 
     dbClient: () => IDbClient
+    loggerDBClient: () => ILoggerDBClient
 
     getCurrentUser: () => Promise<UserEntity>
     userBootstrap: () => null
@@ -54,47 +61,82 @@ export class VocabularyListApplication
     vocabularyBootstrap: () => IVocabularyBootstrap
     vocabularyLoader: () => IVocabularyLoader
 
+    userActionLogger: () => IUserActionLoggerObject
+
     constructor(userId: string) {
       this.dbc = this.dbClient()
+      this.loggerDBC = this.loggerDBClient()
       this.userId = userId
     }
 
     async addVocabularyToList(name: string, meaning: string, contextSentence?: string): Promise<VocabularyList> {
-      const user = await this.getCurrentUser()
+      try {
+        const user = await this.getCurrentUser()
 
-      const vocabulary = await this.vocabularyBootstrap().findOrCreate(name)
-      const vocabularyList = await this.vocabularyListAction().create(
-        user, vocabulary, meaning, contextSentence
-      )
+        const vocabulary = await this.vocabularyBootstrap().findOrCreate(name)
+        const vocabularyList = await this.vocabularyListAction().create(
+          user, vocabulary, meaning, contextSentence
+        )
 
-      return new VocabularyList(
-        user.userId,
-        vocabularyList.vocaListId,
-        vocabulary.name,
-        vocabularyList.meaning,
-        vocabularyList.contextSentence
-      )
+        // FIXME: input productId later
+        this.userActionLogger().putActionLog(
+          Action.addVocabularyList, 1, vocabularyList
+        )
+
+        return new VocabularyList(
+          user.userId,
+          vocabularyList.vocaListId,
+          vocabulary.name,
+          vocabularyList.meaning,
+          vocabularyList.contextSentence
+        )
+      } catch(e) {
+        throw e
+      } finally {
+        await this.dbc.close()
+      }
     }
 
     // TODO: add pagination
     async getUserVocabularyLists(): Promise<VocabularyList[]> {
-      const user = await this.getCurrentUser()
+      try {
+        const user = await this.getCurrentUser()
 
-      const vocabularyListEntities = await this.vocabularyListLoader().findAllByUser(user)
-      const vocabularyLists = await this.vocabularyListVocabularyRelation().mergeVocabulary(vocabularyListEntities)
+        const vocabularyListEntities = await this.vocabularyListLoader().findAllByUser(user)
+        const vocabularyLists = await this.vocabularyListVocabularyRelation().mergeVocabulary(vocabularyListEntities)
 
-      return vocabularyLists
+        this.userActionLogger().putActionLog(
+          Action.readVocabularyLists, 1
+        )
+
+        return vocabularyLists
+      } catch(e) {
+        throw e
+      } finally {
+        await this.dbc.close()
+      }
     }
 
     async deleteVocabularyList(vocaListId: number): Promise<void> {
-      const user = await this.getCurrentUser()
+      try {
+        const user = await this.getCurrentUser()
 
-      const vocabularyList = await this.vocabularyListLoader().find(vocaListId)
+        const vocabularyList = await this.vocabularyListLoader().find(vocaListId)
 
-      if (vocabularyList.userId === user.userId) {
-        await this.vocabularyListAction().delete(vocaListId)
-      } else {
-        throw new VocabularyListApplicationUnauthorizationError(`Delete vocabularyList not authorized`)
+        if (vocabularyList.userId === user.userId) {
+          await this.vocabularyListAction().delete(vocaListId)
+        } else {
+          throw new VocabularyListApplicationUnauthorizationError(`Delete vocabularyList not authorized`)
+        }
+
+        this.userActionLogger().putActionLog(
+          Action.deleteVocabularyList, 1
+        )
+
+      } catch(e) {
+        throw e
+      } finally {
+        await this.dbc.close()
       }
     }
 }
@@ -103,9 +145,11 @@ applyMixins(
   VocabularyListApplication,
   [
     DbClientComponent,
+    LoggerDBClientComponent,
     UserHelperComponent,
     VocabularyListVocabularyRelationComponent,
     VocabularyListRepository,
     VocabularyRepository,
+    UserActionLogHelperComponent
   ]
 )

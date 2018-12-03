@@ -1,4 +1,7 @@
 export class Configure {
+  readonly nodeEnv: string
+  readonly awsAccessKeyId: string
+  readonly awsSecretAccessKey: string
   readonly dbName: string
   readonly dbUserName: string
   readonly dbPassword: string
@@ -11,6 +14,10 @@ export class Configure {
   constructor() {
     switch (process.env.NODE_ENV) {
       case 'PROD':
+        this.nodeEnv = 'PROD'
+
+        this.awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID
+        this.awsSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
         this.dbName = 'Hiyoko_core'
         this.dbUserName = process.env.DB_USER_NAME
         this.dbPassword = process.env.DB_PASSWORD
@@ -24,6 +31,10 @@ export class Configure {
         break
       case 'DEV':
         // DEV(sh ./script/dev.sh)
+        this.nodeEnv = 'DEV'
+
+        this.awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID
+        this.awsSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
         this.dbName = 'Hiyoko_core'
         this.dbUserName = 'root'
         this.dbPassword = ''
@@ -37,6 +48,11 @@ export class Configure {
         break
       case 'TEST':
         // TEST(CI / local unit test npm run test)
+        this.nodeEnv = 'TEST'
+
+        this.awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID
+        this.awsSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
+
         this.dbName = 'Hiyoko_core'
         this.dbUserName = 'root'
         this.dbPassword = ''

@@ -14,5 +14,7 @@ before_install:
 install:
   - npm i -g npx
   - npm i
+before_script:
+  - sh script/setup_local_db.sh
 script:
   - npm test

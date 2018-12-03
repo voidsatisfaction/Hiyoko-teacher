@@ -8,8 +8,11 @@ Line bot for learning active vocabulary
 
 ```sh
 sh script/dev.sh # docker setting(mysql, web)
+sh script/setup_local_db.sh # execute after dynamoDB container ready
 
 npm run test # test can be possible after turn on the docker compose
+
+aws dynamodb scan --table-name HiyokoActionLogs --endpoint-url http://localhost:18000 # scan local dynamodb HiyokoActionLogs table
 ```
 
 ## Deploy
