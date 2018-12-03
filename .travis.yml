@@ -12,8 +12,9 @@ before_install:
   - touch .env.dev
   - sh script/ci.sh
 install:
-  - sh script/setup_local_db.sh
   - npm i -g npx
   - npm i
+before_script:
+  - sh script/setup_local_db.sh
 script:
   - npm test
