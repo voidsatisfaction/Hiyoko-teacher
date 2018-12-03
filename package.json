@@ -28,6 +28,7 @@
   "homepage": "https://github.com/voidsatisfaction/Hiyoko-teacher#readme",
   "dependencies": {
     "@line/bot-sdk": "^6.3.0",
+    "aws-sdk": "^2.368.0",
     "axios": "^0.18.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",

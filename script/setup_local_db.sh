@@ -1,0 +1,1 @@
+node db/LogDb/setup.js

@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
     links:
       - "db:db"
+      - "LogDb:LogDb"
     container_name: "hiyoko-teacher"
     ports:
       - "13000:3000"
@@ -25,3 +26,8 @@ services:
     environment:
       - MYSQL_DATABASE=Hiyoko_core
       - MYSQL_ALLOW_EMPTY_PASSWORD=true
+  LogDb:
+    image: amazon/dynamodb-local
+    container_name: "dynamodb"
+    ports:
+      - "18000:8000"
