@@ -51,7 +51,7 @@ export class LoggerDBClient implements ILoggerDBClient {
         content,
       }
     }
-    console.log(params)
+
     return new Promise((resolve, reject) => {
       this.dynamodb.put(params, (err, data) => {
         if (err) {
