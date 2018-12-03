@@ -1,5 +1,5 @@
 import { UserEntity } from "../../domain/model/User"
-import { IUserBootstrap, IUserLoader } from "../../domain/repository/UserRepository"
+import { IUserLoader } from "../../domain/repository/UserRepository"
 import { applyMixins } from "../../../util/Mixin"
 import { UserRepository } from "../../infrastructure/db/UserRepository"
 import { IDbClient } from "../../interface/infrastructure/db";

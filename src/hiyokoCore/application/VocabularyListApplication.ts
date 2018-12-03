@@ -10,7 +10,9 @@ import { IVocabularyListAction, IVocabularyListLoader } from "../domain/reposito
 import { IVocabularyBootstrap, IVocabularyLoader } from "../domain/repository/VocabularyRepository"
 import { VocabularyListVocabularyRelationComponent, IVocabularyListVocabularyRelationObject } from "../domain/relation/VocabularyListVocabularyRelation"
 import { VocabularyListApplicationUnauthorizationError } from "./error";
-import { LoggerDBClient } from "../infrastructure/loggerDb/client";
+import { LoggerDBClientComponent } from "../infrastructure/loggerDb/client";
+import { ILoggerDBClient } from "../interface/infrastructure/LoggerDB";
+import { UserActionLogHelperComponent, IUserActionLoggerObject, Action } from "./helper/UserActionLogHelper";
 
 export class VocabularyList {
   readonly userId: string
@@ -32,16 +34,21 @@ export class VocabularyList {
 
 export class VocabularyListApplication
   implements DbClientComponent,
+    LoggerDBClientComponent,
     UserHelperComponent,
     VocabularyListVocabularyRelationComponent,
     VocabularyListRepository,
-    VocabularyRepository
+    VocabularyRepository,
+    UserActionLogHelperComponent
   {
     readonly dbc: IDbClient
+    readonly loggerDBC: ILoggerDBClient
     readonly vocabularyListVocabularyRelationObject: IVocabularyListVocabularyRelationObject
+    private readonly action: Action
     userId: string
 
     dbClient: () => IDbClient
+    loggerDBClient: () => ILoggerDBClient
 
     getCurrentUser: () => Promise<UserEntity>
     userBootstrap: () => null
@@ -55,8 +62,11 @@ export class VocabularyListApplication
     vocabularyBootstrap: () => IVocabularyBootstrap
     vocabularyLoader: () => IVocabularyLoader
 
+    userActionLogger: () => IUserActionLoggerObject
+
     constructor(userId: string) {
       this.dbc = this.dbClient()
+      this.loggerDBC = this.loggerDBClient()
       this.userId = userId
     }
 
@@ -67,6 +77,10 @@ export class VocabularyListApplication
         const vocabulary = await this.vocabularyBootstrap().findOrCreate(name)
         const vocabularyList = await this.vocabularyListAction().create(
           user, vocabulary, meaning, contextSentence
+        )
+
+        this.userActionLogger().putActionLog(
+          Action.addVocabularyList, 1, vocabularyList
         )
 
         return new VocabularyList(
@@ -91,6 +105,10 @@ export class VocabularyListApplication
         const vocabularyListEntities = await this.vocabularyListLoader().findAllByUser(user)
         const vocabularyLists = await this.vocabularyListVocabularyRelation().mergeVocabulary(vocabularyListEntities)
 
+        this.userActionLogger().putActionLog(
+          Action.readVocabularyLists, 1
+        )
+
         return vocabularyLists
       } catch(e) {
         throw e
@@ -110,6 +128,11 @@ export class VocabularyListApplication
         } else {
           throw new VocabularyListApplicationUnauthorizationError(`Delete vocabularyList not authorized`)
         }
+
+        this.userActionLogger().putActionLog(
+          Action.deleteVocabularyList, 1
+        )
+
       } catch(e) {
         throw e
       } finally {
@@ -122,9 +145,11 @@ applyMixins(
   VocabularyListApplication,
   [
     DbClientComponent,
+    LoggerDBClientComponent,
     UserHelperComponent,
     VocabularyListVocabularyRelationComponent,
     VocabularyListRepository,
     VocabularyRepository,
+    UserActionLogHelperComponent
   ]
 )
