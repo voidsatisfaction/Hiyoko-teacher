@@ -4,26 +4,42 @@ import { IUserBootstrap, IUserLoader } from "../domain/repository/UserRepository
 import { applyMixins } from "../../util/Mixin"
 import { DbClientComponent } from "../infrastructure/db/client"
 import { IDbClient } from "../interface/infrastructure/db"
+import { UserActionLogHelperComponent, IUserActionLoggerObject, Action } from "./helper/UserActionLogHelper";
+import { LoggerDBClientComponent } from "../infrastructure/loggerDb/client";
+import { ILoggerDBClient } from "../interface/infrastructure/LoggerDB";
 
 export class UserApplication
-  implements DbClientComponent, UserRepository {
+  implements DbClientComponent,
+    LoggerDBClientComponent,
+    UserRepository,
+    UserActionLogHelperComponent
+  {
 
   readonly dbc: IDbClient
-  private userId: string
+  readonly loggerDBC: ILoggerDBClient
+  readonly userId: string
 
   dbClient: () => IDbClient
+  loggerDBClient: () => ILoggerDBClient
 
   userBootstrap: () => IUserBootstrap
   userLoader: () => IUserLoader
 
+  userActionLogger: () => IUserActionLoggerObject
+
   constructor(userId: string) {
     this.dbc = this.dbClient()
+    this.loggerDBC = this.loggerDBClient()
     this.userId = userId
   }
 
   async getOrAdd(): Promise<UserEntity> {
     try {
       const userBootstrap = this.userBootstrap()
+
+      this.userActionLogger().putActionLog(
+        Action.follow, 1
+      )
 
       return await userBootstrap.findOrCreate(this.userId)
     } catch(e) {
@@ -36,5 +52,10 @@ export class UserApplication
 
 applyMixins(
   UserApplication,
-  [DbClientComponent, UserRepository]
+  [
+    DbClientComponent,
+    LoggerDBClientComponent,
+    UserRepository,
+    UserActionLogHelperComponent
+  ]
 )
