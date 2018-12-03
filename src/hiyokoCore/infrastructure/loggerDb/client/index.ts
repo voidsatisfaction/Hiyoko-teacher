@@ -23,7 +23,14 @@ export class LoggerDBClient implements ILoggerDBClient {
         accessKeyId: config.awsAccessKeyId,
         secretAccessKey: config.awsSecretAccessKey
       })
-    } else {
+    } else if (this.nodeEnv === 'DEV') {
+      AWS.config.update({
+        region: 'ap-northeast-1',
+        endpoint: 'http://LogDb:8000',
+        accessKeyId: config.awsAccessKeyId,
+        secretAccessKey: config.awsSecretAccessKey
+      }, true)
+    } else if (this.nodeEnv === 'TEST') {
       AWS.config.update({
         region: 'ap-northeast-1',
         endpoint: 'http://localhost:18000',

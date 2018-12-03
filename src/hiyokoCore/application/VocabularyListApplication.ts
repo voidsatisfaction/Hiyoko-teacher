@@ -44,7 +44,6 @@ export class VocabularyListApplication
     readonly dbc: IDbClient
     readonly loggerDBC: ILoggerDBClient
     readonly vocabularyListVocabularyRelationObject: IVocabularyListVocabularyRelationObject
-    private readonly action: Action
     userId: string
 
     dbClient: () => IDbClient
