@@ -27,6 +27,8 @@ export class LoggerDBClient implements ILoggerDBClient {
       AWS.config.update({
         region: 'ap-northeast-1',
         endpoint: 'http://localhost:18000',
+        accessKeyId: config.awsAccessKeyId,
+        secretAccessKey: config.awsSecretAccessKey
       }, true)
     }
 

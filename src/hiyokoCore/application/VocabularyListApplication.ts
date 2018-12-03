@@ -79,6 +79,7 @@ export class VocabularyListApplication
           user, vocabulary, meaning, contextSentence
         )
 
+        // FIXME: input productId later
         this.userActionLogger().putActionLog(
           Action.addVocabularyList, 1, vocabularyList
         )

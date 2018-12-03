@@ -50,6 +50,9 @@ export class Configure {
         // TEST(CI / local unit test npm run test)
         this.nodeEnv = 'TEST'
 
+        this.awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID
+        this.awsSecretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
+
         this.dbName = 'Hiyoko_core'
         this.dbUserName = 'root'
         this.dbPassword = ''
