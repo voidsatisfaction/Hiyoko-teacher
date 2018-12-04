@@ -1,6 +1,6 @@
 import { TLambdaHttpEvent, responseHTML, response } from "../types"
-import { TemplateEngine } from "./util/templateEngine"
-import { PathMethodResolver } from "./util/pathResolver"
+import { TemplateEngine } from "../util/templateEngine"
+import { PathMethodResolver } from "../util/pathResolver"
 import { HiyokoCoreService } from "../../service/HiyokoCore"
 import { HiyokoCoreClient } from "../../hiyokoCore";
 
