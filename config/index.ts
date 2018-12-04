@@ -49,7 +49,7 @@ export class Configure {
         this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
         this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
 
-        this.adminToken = '123'
+        this.adminToken = process.env.ADMIN_TOKEN
         break
       case 'TEST':
         // TEST(CI / local unit test npm run test)

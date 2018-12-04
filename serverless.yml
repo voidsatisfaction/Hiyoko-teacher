@@ -58,6 +58,10 @@ functions:
           path: hiyokoSensei/pusher/message/users
           method: post
           cors: true
+      - http:
+          path: hiyokoSensei/pusher/message/users/all
+          method: post
+          cors: true
 package:
   include:
     - src/hiyokoMantle/web/liff/template
