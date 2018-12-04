@@ -48,6 +48,20 @@ export class UserApplication
       await this.dbc.close()
     }
   }
+
+  async adminListAll(): Promise<UserEntity[]> {
+    try {
+      const userLoader = this.userLoader()
+
+      const userEntities = await userLoader.listAll()
+
+      return userEntities
+    } catch(e) {
+      throw e
+    } finally {
+      await this.dbc.close()
+    }
+  }
 }
 
 applyMixins(
