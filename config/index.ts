@@ -10,6 +10,7 @@ export class Configure {
   readonly lineBotAccessToken: string
   readonly lineBotSecretToken: string
   readonly coreURL: string
+  readonly adminToken: string
 
   constructor() {
     switch (process.env.NODE_ENV) {
@@ -28,6 +29,8 @@ export class Configure {
 
         this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
         this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
+
+        this.adminToken = process.env.ADMIN_TOKEN
         break
       case 'DEV':
         // DEV(sh ./script/dev.sh)
@@ -45,6 +48,8 @@ export class Configure {
 
         this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
         this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
+
+        this.adminToken = '123'
         break
       case 'TEST':
         // TEST(CI / local unit test npm run test)
@@ -63,6 +68,8 @@ export class Configure {
 
         this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
         this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
+
+        this.adminToken = '123'
         break
       default:
         throw `NODE_ENV environment variable is not valid value NODE_ENV: ${process.env.NODE_ENV}`
