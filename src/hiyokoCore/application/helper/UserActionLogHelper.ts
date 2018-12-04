@@ -27,7 +27,7 @@ export class UserActionLogHelperComponent {
         content?: object,
       ): Promise<void> => {
         try {
-          const createdAt = new Date().toISOString()
+          const createdAt = new Date().toLocaleString()
 
           await this.loggerDBC.putItem(
             TableNames.HiyokoActionLogs,
