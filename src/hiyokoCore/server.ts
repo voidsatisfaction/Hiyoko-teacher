@@ -3,6 +3,7 @@ import * as morgan from 'morgan'
 
 import UserRouter from './web/UserWeb'
 import VocabularyListRouter from './web/VocabularyListWeb'
+import AdminRouter from './web/AdminWeb'
 
 const app = express()
 
@@ -29,7 +30,15 @@ app.use('/vocabularyLists', VocabularyListRouter)
 
 app.get('/', (req, res) => {
   res.send(`worked ${process.env.NODE_ENV}`)
-});
+})
+
+// admin
+app.use('/admin', AdminRouter)
+
+// error
+app.use('*', (req, res) => {
+  res.status(404).json('not found')
+})
 
 const port = process.env.PORT || 3000
 

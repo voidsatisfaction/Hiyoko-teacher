@@ -9,6 +9,7 @@ provider:
     LINE_BOT_ACCESS_TOKEN: ${env:LINE_BOT_ACCESS_TOKEN}
     LINE_BOT_SECRET_TOKEN: ${env:LINE_BOT_SECRET_TOKEN}
     CORE_URL: ${env:CORE_URL}
+    ADMIN_TOKEN: ${env:ADMIN_TOKEN}
 plugins:
   - serverless-plugin-typescript
 functions:
