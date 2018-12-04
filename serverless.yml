@@ -48,6 +48,15 @@ functions:
           path: hiyokoSensei/api/vocabularyLists
           method: delete
           cors: true
+  # For push message
+  # FIXME: This setting makes two pushers(DEV / PROD)
+  hiyokoSenseiPusher:
+    handler: src/hiyokoMantle/web/pusher/index.handler
+    events:
+      - http:
+          path: hiyokoSensei/pusher/message/users
+          method: post
+          cors: true
 package:
   include:
     - src/hiyokoMantle/web/liff/template

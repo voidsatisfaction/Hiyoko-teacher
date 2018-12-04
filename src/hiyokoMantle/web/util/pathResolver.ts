@@ -1,5 +1,3 @@
-import { TLambdaHttpEvent } from "../../types"
-
 type HTTPMethods = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
 export class PathMethodResolver {
