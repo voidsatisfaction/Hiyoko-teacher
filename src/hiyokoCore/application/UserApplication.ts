@@ -53,6 +53,7 @@ export class UserApplication
     try {
       const userLoader = this.userLoader()
 
+      // TODO: all user meta data
       const userEntities = await userLoader.listAll()
 
       return userEntities

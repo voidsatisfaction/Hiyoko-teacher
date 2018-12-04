@@ -35,6 +35,11 @@ app.get('/', (req, res) => {
 // admin
 app.use('/admin', AdminRouter)
 
+// error
+app.use('*', (req, res) => {
+  res.status(404).json('not found')
+})
+
 const port = process.env.PORT || 3000
 
 app.listen(port, () =>
