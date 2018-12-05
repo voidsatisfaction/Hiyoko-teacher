@@ -111,5 +111,6 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
           vocaListId
         }
       })
+      return
     }
 }
