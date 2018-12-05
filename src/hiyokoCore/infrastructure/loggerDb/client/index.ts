@@ -1,6 +1,6 @@
 import * as AWS from 'aws-sdk'
 import { Configure } from '../../../../../config'
-import { TableNames, ILoggerDBClient } from '../../../interface/infrastructure/LoggerDB'
+import { TableNames, ILoggerDBClient, IHiyokoActionLoggerParam } from '../../../interface/infrastructure/LoggerDB'
 
 export class LoggerDBClientComponent {
   loggerDBClient(): ILoggerDBClient {
@@ -68,6 +68,34 @@ export class LoggerDBClient implements ILoggerDBClient {
           return
         }
         resolve(data)
+      })
+    })
+  }
+
+  getItem<T>(
+    tableName: TableNames,
+    userId: string,
+    createdAt: string
+  ): Promise<T | null> {
+    const params = {
+      TableName: tableName,
+      Key: {
+        userId,
+        createdAt
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      this.dynamodb.get(params, (err, data) => {
+        if (err) {
+          reject(err)
+          return
+        }
+        if (!data.Item) {
+          resolve(null)
+          return
+        }
+        resolve(<T>data.Item)
       })
     })
   }

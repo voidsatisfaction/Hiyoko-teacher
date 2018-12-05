@@ -19,4 +19,10 @@ export interface ILoggerDBClient {
     createdAt: string,
     content?: object,
   ): Promise<object>
+
+  getItem<T>(
+    tableName: TableNames,
+    userId: string,
+    createdAt: string
+  ): Promise<T | null>
 }

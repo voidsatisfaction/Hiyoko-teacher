@@ -79,7 +79,7 @@ export class VocabularyListApplication
         )
 
         // FIXME: input productId later
-        await this.userActionLogger().putActionLog(
+        this.userActionLogger().putActionLog(
           Action.addVocabularyList, 1, vocabularyList.toLogObject()
         )
 
@@ -129,8 +129,7 @@ export class VocabularyListApplication
           throw new VocabularyListApplicationUnauthorizationError(`Delete vocabularyList not authorized`)
         }
 
-        // ensure delete log is put
-        await this.userActionLogger().putActionLog(
+        this.userActionLogger().putActionLog(
           Action.deleteVocabularyList, 1, vocabularyList.toLogObject()
         )
 
