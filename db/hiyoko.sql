@@ -25,10 +25,12 @@ CREATE TABLE Hiyoko_core.Vocabulary_lists (
   `meaning` VARCHAR(200) DEFAULT NULL,
   `contextSentence` VARCHAR(500) DEFAULT NULL,
   `contextPictureURL` VARCHAR(500) DEFAULT NULL,
+  `priority` INTEGER(3) DEFAULT 100,
   `createdAt` datetime NOT NULL,
   PRIMARY KEY (`vocaListId`),
   UNIQUE KEY `userId_vocaId_createdAt` (`userId`, `vocaId`, `createdAt`),
   KEY `userId_createdAt` (`userId`, `createdAt`),
+  KEY `userId_priority_createdAt` (`userId`, `priority`, `createdAt`),
   KEY `vocaId` (`vocaId`),
   KEY `createdAt` (`createdAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
