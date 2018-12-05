@@ -24,15 +24,13 @@ switch (process.env.NODE_ENV) {
     throw `NODE_ENV is not set properly`
 }
 
-// custom router
+// normal router
 app.use('/users', UserRouter)
 app.use('/vocabularyLists', VocabularyListRouter)
-
 app.get('/', (req, res) => {
   res.send(`worked ${process.env.NODE_ENV}`)
 })
-
-// admin
+// admin router
 app.use('/admin', AdminRouter)
 
 // error

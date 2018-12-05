@@ -5,6 +5,8 @@ build
 .env.dev
 .env.prod
 
+prac
+
 # serverless directories
 .serverless
 # Elastic Beanstalk Files

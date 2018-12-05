@@ -130,7 +130,7 @@ export class VocabularyListApplication
         }
 
         this.userActionLogger().putActionLog(
-          Action.deleteVocabularyList, 1
+          Action.deleteVocabularyList, 1, vocabularyList
         )
 
       } catch(e) {
