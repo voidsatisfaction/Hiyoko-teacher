@@ -1,6 +1,6 @@
 import { TLambdaHttpEvent, responseHTML, response } from "../types"
 import { TemplateEngine } from "../util/templateEngine";
-import { PathMethodResolver } from "../util/pathResolver";
+import { PathMethodResolver } from "../../../util/LambdaUtil/pathResolver";
 import { HiyokoCoreClient } from "../../hiyokoCore";
 
 export const handler = async (event: TLambdaHttpEvent, context, callback) => {

@@ -1,5 +1,5 @@
 import { TLambdaHttpEvent, response } from "../types"
-import { PathMethodResolver } from "..//util/pathResolver"
+import { PathMethodResolver } from "../../../util/LambdaUtil/pathResolver"
 import { LineMessageApiClient } from "../../lineMessageApi"
 import { AdminHiyokoCoreClient } from "../../hiyokoCore/admin";
 
