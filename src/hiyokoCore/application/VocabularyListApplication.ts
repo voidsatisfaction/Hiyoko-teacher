@@ -125,13 +125,13 @@ export class VocabularyListApplication
 
         if (vocabularyList.userId === user.userId) {
           await this.vocabularyListAction().delete(vocaListId)
+
+          this.userActionLogger().putActionLog(
+            Action.deleteVocabularyList, 1, vocabularyList.toLogObject()
+          )
         } else {
           throw new VocabularyListApplicationUnauthorizationError(`Delete vocabularyList not authorized`)
         }
-
-        this.userActionLogger().putActionLog(
-          Action.deleteVocabularyList, 1, vocabularyList.toLogObject()
-        )
 
       } catch(e) {
         throw e
