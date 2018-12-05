@@ -57,7 +57,7 @@
       try {
         const res = await axios.get(`/<%= process.env.NODE_ENV %>/hiyokoSensei/api/vocabularyLists?userId=${this.userId}`)
 
-        this.normalizedVocabularyLists = res.data
+        this.normalizedVocabularyLists = res.data || { allIds: [], byId: {} }
         this.vocabularyListsNum = res.data.allDates.reduce((num, date) => num + this.normalizedVocabularyLists.byDate[date].length, 0)
       } catch (error) {
         throw error
