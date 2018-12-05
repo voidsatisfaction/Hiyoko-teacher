@@ -56,6 +56,10 @@ class VocaDB extends RepositoryBase<VocabularyEntity>
   }
 
   async findAll(ids: number[]): Promise<VocabularyEntity[]> {
+    // Always be careful when use WHERE IN statement
+    if (ids.length === 0) {
+      return []
+    }
     const res = await this.dbc.query(`
       SELECT * FROM Vocabularies
         WHERE vocaId IN (:ids)
