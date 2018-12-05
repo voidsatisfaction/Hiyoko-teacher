@@ -80,7 +80,7 @@ export class VocabularyListApplication
 
         // FIXME: input productId later
         this.userActionLogger().putActionLog(
-          Action.addVocabularyList, 1, vocabularyList
+          Action.addVocabularyList, 1, vocabularyList.toLogObject()
         )
 
         return new VocabularyList(
@@ -130,7 +130,7 @@ export class VocabularyListApplication
         }
 
         this.userActionLogger().putActionLog(
-          Action.deleteVocabularyList, 1, vocabularyList
+          Action.deleteVocabularyList, 1, vocabularyList.toLogObject()
         )
 
       } catch(e) {

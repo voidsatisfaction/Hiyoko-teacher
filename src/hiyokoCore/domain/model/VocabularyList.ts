@@ -24,4 +24,16 @@ export class VocabularyListEntity {
     this.contextSentence = contextSentece
     this.contextPictureURL = contextPictureURL
   }
+
+  toLogObject() {
+    return ({
+      vocaListId: this.vocaListId,
+      userId: this.userId,
+      vocaId: this.vocaId,
+      meaning: this.meaning,
+      createdAt: this.createdAt.toLocaleString(),
+      contextSentence: this.contextSentence,
+      contextPictureURL: this.contextPictureURL
+    })
+  }
 }
