@@ -40,6 +40,7 @@ export class UserActionLogHelperComponent {
         } catch (e) {
           // TODO: send slack error message
           console.error(e)
+          return null
         }
       }
     })
