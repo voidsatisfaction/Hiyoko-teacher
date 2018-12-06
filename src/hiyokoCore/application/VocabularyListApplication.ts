@@ -1,7 +1,7 @@
 import { applyMixins } from "../../util/Mixin"
 import { DbClientComponent } from "../infrastructure/db/client"
 import { UserHelperComponent } from "./helper/UserHelper"
-import { UserEntity } from "../domain/model/User"
+import { UserEntity, UserProductEntity } from "../domain/model/User"
 import { IUserLoader } from "../domain/repository/UserRepository"
 import { IDbClient } from "../interface/infrastructure/db"
 import { VocabularyListRepository } from "../infrastructure/db/VocabularyListRepository"
@@ -13,6 +13,8 @@ import { VocabularyListApplicationUnauthorizationError } from "./error";
 import { LoggerDBClientComponent } from "../infrastructure/loggerDb/client";
 import { ILoggerDBClient } from "../interface/infrastructure/LoggerDB";
 import { UserActionLogHelperComponent, IUserActionLoggerObject, Action } from "./helper/UserActionLogHelper";
+import { IUserProductRepository } from "../domain/repository/UserProductRepository";
+import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
 
 export class VocabularyList {
   readonly userId: string
@@ -50,6 +52,8 @@ export class VocabularyListApplication
     loggerDBClient: () => ILoggerDBClient
 
     getCurrentUser: () => Promise<UserEntity>
+    getCurrentUserProduct: (userEntity: UserEntity) => Promise<UserProductEntity>
+
     userBootstrap: () => null
     userLoader: () => IUserLoader
 
@@ -60,6 +64,9 @@ export class VocabularyListApplication
 
     vocabularyBootstrap: () => IVocabularyBootstrap
     vocabularyLoader: () => IVocabularyLoader
+
+    userProductRepository: () => IUserProductRepository
+    userProductRelation: () => IUserProductRelationObject
 
     userActionLogger: () => IUserActionLoggerObject
 
@@ -72,15 +79,15 @@ export class VocabularyListApplication
     async addVocabularyToList(name: string, meaning: string, contextSentence?: string): Promise<VocabularyList> {
       try {
         const user = await this.getCurrentUser()
+        const userProduct = await this.getCurrentUserProduct(user)
 
         const vocabulary = await this.vocabularyBootstrap().findOrCreate(name)
         const vocabularyList = await this.vocabularyListAction().create(
           user, vocabulary, meaning, contextSentence
         )
 
-        // FIXME: input productId later
         this.userActionLogger().putActionLog(
-          Action.addVocabularyList, 1, vocabularyList.toLogObject()
+          Action.addVocabularyList, userProduct.productId, vocabularyList.toLogObject()
         )
 
         return new VocabularyList(
@@ -101,12 +108,13 @@ export class VocabularyListApplication
     async getUserVocabularyLists(): Promise<VocabularyList[]> {
       try {
         const user = await this.getCurrentUser()
+        const userProduct = await this.getCurrentUserProduct(user)
 
         const vocabularyListEntities = await this.vocabularyListLoader().findAllByUser(user)
         const vocabularyLists = await this.vocabularyListVocabularyRelation().mergeVocabulary(vocabularyListEntities)
 
         this.userActionLogger().putActionLog(
-          Action.readVocabularyLists, 1
+          Action.readVocabularyLists, userProduct.productId
         )
 
         return vocabularyLists
@@ -120,6 +128,7 @@ export class VocabularyListApplication
     async deleteVocabularyList(vocaListId: number): Promise<void> {
       try {
         const user = await this.getCurrentUser()
+        const userProduct = await this.getCurrentUserProduct(user)
 
         const vocabularyList = await this.vocabularyListLoader().find(vocaListId)
 
@@ -130,7 +139,7 @@ export class VocabularyListApplication
         }
 
         this.userActionLogger().putActionLog(
-          Action.deleteVocabularyList, 1, vocabularyList.toLogObject()
+          Action.deleteVocabularyList, userProduct.productId, vocabularyList.toLogObject()
         )
 
       } catch(e) {

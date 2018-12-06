@@ -4,6 +4,7 @@ import { IUserProductLoader, IUserProductRepository } from '../repository/UserPr
 
 export interface IUserProductRelationObject {
   toUserProducts(users: UserEntity[]): Promise<UserProductEntity[]>
+  toUserProduct(user: UserEntity): Promise<UserProductEntity>
 }
 
 export class UserProductRelationComponent {
@@ -18,6 +19,9 @@ export class UserProductRelationComponent {
         return Promise.all(
           users.map(user => this.userProductRepository().userProductLoader().findByUserId(user.userId))
         )
+      },
+      toUserProduct: async (user: UserEntity): Promise<UserProductEntity> => {
+        return await this.userProductRepository().userProductLoader().findByUserId(user.userId)
       }
     })
   }
