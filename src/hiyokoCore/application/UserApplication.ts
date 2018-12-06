@@ -8,14 +8,14 @@ import { UserActionLogHelperComponent, IUserActionLoggerObject, Action } from ".
 import { LoggerDBClientComponent } from "../infrastructure/loggerDb/client";
 import { ILoggerDBClient } from "../interface/infrastructure/LoggerDB";
 import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
-import { UserProductRepositoryImplement } from "../infrastructure/db/UserProductImplement";
+import { UserProductRepositoryComponent } from "../infrastructure/db/UserProductImplement";
 import { IUserProductRepository } from "../domain/repository/UserProductRepository";
 
 export class UserApplication
   implements DbClientComponent,
     LoggerDBClientComponent,
     UserRepository,
-    UserProductRepositoryImplement,
+    UserProductRepositoryComponent,
     UserActionLogHelperComponent
   {
 
@@ -82,7 +82,7 @@ applyMixins(
     DbClientComponent,
     LoggerDBClientComponent,
     UserRepository,
-    UserProductRepositoryImplement,
+    UserProductRepositoryComponent,
     UserActionLogHelperComponent
   ]
 )
