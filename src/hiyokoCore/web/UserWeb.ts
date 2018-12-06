@@ -7,7 +7,8 @@ import { UserEntity } from '../domain/model/User';
 const UserRouter = express.Router()
 
 UserRouter.post('/', [
-  check('userId').isString()
+  check('userId').isString(),
+  check('productId').isNumeric(),
 ], async (req: express.Request, res: express.Response) => {
   try {
     const bodyErrors = validationResult(req)
@@ -16,9 +17,10 @@ UserRouter.post('/', [
     }
 
     const userId: string = req.body.userId
+    const productId: number = req.body.productId
     const userApplication: UserApplication = new UserApplication(userId)
 
-    const user: UserEntity = await userApplication.getOrAdd()
+    const user: UserEntity = await userApplication.getOrAdd(productId)
 
     res.json({ user })
   } catch(e) {

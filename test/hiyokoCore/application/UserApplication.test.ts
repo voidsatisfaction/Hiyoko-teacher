@@ -16,7 +16,8 @@ describe('User application test', () => {
   describe('getOrAdd()', () => {
     it('should add user if not exists', async () => {
       const userApplication = new UserApplication(userId)
-      const user = await userApplication.getOrAdd()
+      const productId = 123
+      const user = await userApplication.getOrAdd(productId)
 
       expect(user).to.be.a.instanceof(UserEntity)
       expect(user.userId).to.be.equal(userId)

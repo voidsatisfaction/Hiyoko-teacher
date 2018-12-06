@@ -8,7 +8,7 @@ describe('/users', () => {
     it('should successfully create user', (done) => {
       request(app)
         .post('/users')
-        .send({ userId: '123123123' })
+        .send({ userId: '123123123', productId: 123 })
         .set('Accept', 'application/json')
         .expect(200)
         .end((err, res) => {

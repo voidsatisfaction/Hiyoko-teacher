@@ -13,9 +13,10 @@ class UserProductRepositoryTest extends UserProductRepositoryImplement {
 
 describe('UserProduct repository test', () => {
   const dbc = new DbClient()
-  const userRepository = new UserProductRepositoryTest(dbc)
-  const userProductLoader = userRepository.userProductLoader()
+  const userRepositoryTest = new UserProductRepositoryTest(dbc)
+  const userRepository = userRepositoryTest.userProductRepository()
   const userProductAction = userRepository.userProductAction()
+  const userProductLoader = userRepository.userProductLoader()
 
   beforeEach(async () => {
     await dbc.truncateTable(dbc.UserProduct)

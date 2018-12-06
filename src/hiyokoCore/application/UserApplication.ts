@@ -7,11 +7,15 @@ import { IDbClient } from "../interface/infrastructure/db"
 import { UserActionLogHelperComponent, IUserActionLoggerObject, Action } from "./helper/UserActionLogHelper";
 import { LoggerDBClientComponent } from "../infrastructure/loggerDb/client";
 import { ILoggerDBClient } from "../interface/infrastructure/LoggerDB";
+import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
+import { UserProductRepositoryImplement } from "../infrastructure/db/UserProductImplement";
+import { IUserProductRepository } from "../domain/repository/UserProductRepository";
 
 export class UserApplication
   implements DbClientComponent,
     LoggerDBClientComponent,
     UserRepository,
+    UserProductRepositoryImplement,
     UserActionLogHelperComponent
   {
 
@@ -25,6 +29,9 @@ export class UserApplication
   userBootstrap: () => IUserBootstrap
   userLoader: () => IUserLoader
 
+  userProductRepository: () => IUserProductRepository
+  userProductRelation: () => IUserProductRelationObject
+
   userActionLogger: () => IUserActionLoggerObject
 
   constructor(userId: string) {
@@ -33,15 +40,19 @@ export class UserApplication
     this.userId = userId
   }
 
-  async getOrAdd(): Promise<UserEntity> {
+  async getOrAdd(productId: number): Promise<UserEntity> {
     try {
       const userBootstrap = this.userBootstrap()
 
+      const user = await userBootstrap.findOrCreate(this.userId)
+
+      await this.userProductRepository().userProductAction().create(user.userId, productId)
+
       this.userActionLogger().putActionLog(
-        Action.follow, 1
+        Action.follow, productId
       )
 
-      return await userBootstrap.findOrCreate(this.userId)
+      return user
     } catch(e) {
       throw e
     } finally {
@@ -71,6 +82,7 @@ applyMixins(
     DbClientComponent,
     LoggerDBClientComponent,
     UserRepository,
+    UserProductRepositoryImplement,
     UserActionLogHelperComponent
   ]
 )

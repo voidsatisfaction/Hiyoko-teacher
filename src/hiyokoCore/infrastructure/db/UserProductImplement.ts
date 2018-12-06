@@ -3,15 +3,14 @@ import { IDbClient } from "../../interface/infrastructure/db";
 import { UserProductEntity } from "../../domain/model/User";
 import { RepositoryBase } from "./RepositoryBase";
 
-export class UserProductRepositoryImplement implements IUserProductRepository {
+export class UserProductRepositoryImplement {
   dbc: IDbClient
 
-  userProductLoader(): IUserProductLoader {
-    return new UserProductDB(this.dbc)
-  }
-
-  userProductAction(): IUserProductAction {
-    return new UserProductDB(this.dbc)
+  userProductRepository(): IUserProductRepository {
+    return ({
+      userProductLoader: () => new UserProductDB(this.dbc),
+      userProductAction: () => new UserProductDB(this.dbc)
+    })
   }
 }
 

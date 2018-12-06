@@ -7,16 +7,18 @@ import app from '../../../src/hiyokoCore/server'
 describe('/vocabularyLists', () => {
 
   const userId = '12312sadfadf3123'
+  const productId = 1
   const userId2 = 'lskadmflmwkel12930u'
+  const productId2 = 2
   before (async () => {
     await request(app)
       .post('/users')
-      .send({ userId })
+      .send({ userId, productId })
       .set('Accept', 'application/json')
 
     await request(app)
       .post('/users')
-      .send({ userId: userId2 })
+      .send({ userId: userId2, productId: productId2 })
       .set('Accept', 'application/json')
   })
 
