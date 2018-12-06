@@ -34,6 +34,7 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
       botClient,
       botActionControllerResolver
     )
+    context.inject('productId', config.productId)
 
     const botBody = JSON.parse(event.body)
 

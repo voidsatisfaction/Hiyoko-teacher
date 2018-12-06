@@ -12,10 +12,11 @@ export class HiyokoCoreClient {
     })
   }
 
-  static async follow(userId: string): Promise<IUser> {
+  static async follow(userId: string, productId: number): Promise<IUser> {
     try {
       const result = await this._client().post('/users', {
-        userId
+        userId,
+        productId
       })
 
       return result.data

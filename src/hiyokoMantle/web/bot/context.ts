@@ -6,6 +6,7 @@ export class Context {
   readonly botClient: line.Client
   readonly botActionControllerResolver: BotActionControllerResolver
   readonly lineEvent: lineAvailableEvents
+  readonly productId: number
 
   constructor(
     botClient: line.Client,

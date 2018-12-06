@@ -10,11 +10,13 @@ export class Configure {
   readonly lineBotAccessToken: string
   readonly lineBotSecretToken: string
   readonly coreURL: string
+  readonly productId: string
   readonly adminToken: string
 
   constructor() {
     switch (process.env.NODE_ENV) {
       case 'PROD':
+        // core
         this.nodeEnv = 'PROD'
 
         this.awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID
@@ -25,7 +27,9 @@ export class Configure {
         this.dbHost = process.env.DB_HOST
         this.dbPort = process.env.DB_PORT
 
+        // mantle
         this.coreURL = process.env.CORE_URL
+        this.productId = '1'
 
         this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
         this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
@@ -34,6 +38,7 @@ export class Configure {
         break
       case 'DEV':
         // DEV(sh ./script/dev.sh)
+        // core
         this.nodeEnv = 'DEV'
 
         this.awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID
@@ -44,7 +49,9 @@ export class Configure {
         this.dbHost = 'db'
         this.dbPort = '3306'
 
+        // mantle
         this.coreURL = process.env.CORE_URL
+        this.productId = '2'
 
         this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
         this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
@@ -53,6 +60,7 @@ export class Configure {
         break
       case 'TEST':
         // TEST(CI / local unit test npm run test)
+        // core
         this.nodeEnv = 'TEST'
 
         this.awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID
@@ -64,7 +72,9 @@ export class Configure {
         this.dbHost = 'localhost'
         this.dbPort = '13306'
 
+        // mantle
         this.coreURL = 'http://localhost:13000'
+        this.productId = '0'
 
         this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
         this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
