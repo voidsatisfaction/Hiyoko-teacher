@@ -3,6 +3,7 @@ export class VocabularyListEntity {
   readonly userId: string
   readonly vocaId: number
   readonly meaning: string
+  readonly priority: number
   readonly contextSentence: string
   readonly contextPictureURL: string
   readonly createdAt: Date
@@ -12,6 +13,7 @@ export class VocabularyListEntity {
     userId: string,
     vocaId: number,
     meaning: string,
+    priority: number,
     createdAt?: Date,
     contextSentece?: string,
     contextPictureURL?: string,
@@ -20,6 +22,7 @@ export class VocabularyListEntity {
     this.userId = userId
     this.vocaId = vocaId
     this.meaning = meaning
+    this.priority = priority
     this.createdAt = createdAt || new Date()
     this.contextSentence = contextSentece
     this.contextPictureURL = contextPictureURL
@@ -31,9 +34,10 @@ export class VocabularyListEntity {
       userId: this.userId,
       vocaId: this.vocaId,
       meaning: this.meaning,
+      priority: this.priority,
       createdAt: this.createdAt.toLocaleString(),
       contextSentence: this.contextSentence,
-      contextPictureURL: this.contextPictureURL
+      contextPictureURL: this.contextPictureURL,
     })
   }
 }
