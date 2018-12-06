@@ -5,6 +5,7 @@ import { IDbClient } from '../../../interface/infrastructure/db'
 import { SequelizeUserTable } from '../model/User'
 import { SequelizeVocabularyTable } from '../model/Vocabulary'
 import { SequelizeVocabularyListTable } from '../model/VocabularyList'
+import { SequelizeUserProductTable } from '../model/UserProduct';
 
 interface ITableInstance {
   destroy(option: object)
@@ -20,6 +21,8 @@ export class DbClient implements IDbClient {
   readonly User
   readonly Vocabulary
   readonly VocabularyList
+  readonly UserProduct
+
   readonly Op
   readonly QueryTypes
   private readonly hiyokoCoreDB
@@ -54,13 +57,18 @@ export class DbClient implements IDbClient {
       SequelizeVocabularyListTable.model,
       SequelizeVocabularyListTable.options
     )
+    this.UserProduct = this.hiyokoCoreDB.define(
+      SequelizeUserProductTable.tableName,
+      SequelizeUserProductTable.model,
+      SequelizeUserProductTable.options
+    )
 
     this.Op = Sequelize.Op
 
     this.QueryTypes = this.hiyokoCoreDB.QueryTypes
   }
 
-  async query(sql: string, placeholders: object, ) {
+  async query(sql: string, placeholders: object) {
     return await this.hiyokoCoreDB.query(sql, placeholders)
   }
 

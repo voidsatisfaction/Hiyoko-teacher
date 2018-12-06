@@ -9,6 +9,13 @@ CREATE TABLE Hiyoko_core.Users (
   PRIMARY KEY (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS Hiyoko_core.User_products;
+CREATE TABLE Hiyoko_core.User_products (
+  `userId` VARCHAR(50) NOT NULL,
+  `productId` TINYINT(1) UNSIGNED DEFAULT 0, -- 1 -> v1, 2 -> v2
+  PRIMARY KEY (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS Hiyoko_core.Vocabularies;
 CREATE TABLE Hiyoko_core.Vocabularies (
   `vocaId` BIGINT(20) unsigned AUTO_INCREMENT NOT NULL,
