@@ -3,12 +3,12 @@ import * as sinon from 'sinon'
 import { DbClient } from '../../../src/hiyokoCore/infrastructure/db/client'
 import { VocabularyListApplication, VocabularyList } from '../../../src/hiyokoCore/application/VocabularyListApplication'
 import { UserEntityPersistMock, VocabularyListEntityPersistMock } from '../../helper/factory';
-import { VocabularyRepository } from '../../../src/hiyokoCore/infrastructure/db/VocabularyRepository';
+import { VocabularyRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyRepository';
 import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db';
 import { VocabularyListApplicationUnauthorizationError } from '../../../src/hiyokoCore/application/error';
-import { VocabularyListRepository } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository';
+import { VocabularyListRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository';
 
-class VocabularyRepositoryTest extends VocabularyRepository {
+class VocabularyRepositoryTest extends VocabularyRepositoryComponent {
   readonly dbc: IDbClient
 
   constructor(dbc: IDbClient) {
@@ -17,7 +17,7 @@ class VocabularyRepositoryTest extends VocabularyRepository {
   }
 }
 
-class VocabularyListRepositoryTest extends VocabularyListRepository {
+class VocabularyListRepositoryTest extends VocabularyListRepositoryComponent {
   readonly dbc: IDbClient
 
   constructor(dbc: IDbClient) {
@@ -52,7 +52,7 @@ describe('VocabularyListApplication test', () => {
       expect(vocaListEntity.meaning).to.be.equal(meaning)
       expect(vocaListEntity.contextSentence).to.be.equal(vocaContextSentence)
 
-      const vocabulary = await vocabularyRepository.vocabularyLoader().findByName(vocaName)
+      const vocabulary = await vocabularyRepository.vocabularyRepository().vocabularyLoader().findByName(vocaName)
 
       expect(vocabulary.name).to.be.equal(vocaName)
     })
@@ -107,7 +107,7 @@ describe('VocabularyListApplication test', () => {
 
       await vocabularyListApplication1.deleteVocabularyList(vocabularyListEntity.vocaListId)
 
-      const emptyVocabularyList = await vocabularyListRepository.vocabularyListLoader().find(vocabularyListEntity.vocaListId)
+      const emptyVocabularyList = await vocabularyListRepository.vocabularyListRepository().vocabularyListLoader().find(vocabularyListEntity.vocaListId)
 
       expect(emptyVocabularyList).to.be.equal(null)
     })

@@ -3,15 +3,14 @@ import { IVocabularyRepository, IVocabularyBootstrap, IVocabularyLoader } from "
 import { VocabularyEntity } from "../../domain/model/Vocabulary"
 import { IDbClient } from "../../interface/infrastructure/db"
 
-export class VocabularyRepository implements IVocabularyRepository {
+export class VocabularyRepositoryComponent {
   dbc: IDbClient
 
-  vocabularyBootstrap(): IVocabularyBootstrap {
-    return new VocaDB(this.dbc)
-  }
-
-  vocabularyLoader(): IVocabularyLoader {
-    return new VocaDB(this.dbc)
+  vocabularyRepository(): IVocabularyRepository {
+    return ({
+      vocabularyBootstrap: (): IVocabularyBootstrap => new VocaDB(this.dbc),
+      vocabularyLoader:    (): IVocabularyLoader    => new VocaDB(this.dbc)
+    })
   }
 }
 

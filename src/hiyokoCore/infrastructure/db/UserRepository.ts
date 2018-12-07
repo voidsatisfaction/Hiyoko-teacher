@@ -3,15 +3,14 @@ import { IUserRepository, IUserBootstrap, IUserLoader } from '../../domain/repos
 import { UserEntity } from '../../domain/model/User'
 import { IDbClient } from '../../interface/infrastructure/db';
 
-export class UserRepository implements IUserRepository {
+export class UserRepositoryComponent {
   dbc: IDbClient
 
-  userBootstrap(): IUserBootstrap {
-    return new UserDB(this.dbc)
-  }
-
-  userLoader(): IUserLoader {
-    return new UserDB(this.dbc)
+  userRepository(): IUserRepository {
+    return ({
+      userBootstrap: () => new UserDB(this.dbc),
+      userLoader: () => new UserDB(this.dbc)
+    })
   }
 }
 

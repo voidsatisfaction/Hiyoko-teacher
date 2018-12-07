@@ -2,13 +2,13 @@ import { expect } from 'chai'
 import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
 import { VocabularyListEntityPersistMock } from '../../../helper/factory'
 import { applyMixins } from '../../../../src/util/Mixin'
-import { VocabularyRepository } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
-import { IVocabularyBootstrap, IVocabularyLoader } from '../../../../src/hiyokoCore/domain/repository/VocabularyRepository'
+import { VocabularyRepositoryComponent } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
+import { IVocabularyRepository } from '../../../../src/hiyokoCore/domain/repository/VocabularyRepository'
 import { VocabularyListVocabularyRelationComponent, IVocabularyListVocabularyRelationObject } from '../../../../src/hiyokoCore/domain/relation/VocabularyListVocabularyRelation'
 import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db'
 
 class VocabularyListVocabularyRelationTest
-  implements VocabularyRepository, VocabularyListVocabularyRelationComponent {
+  implements VocabularyRepositoryComponent, VocabularyListVocabularyRelationComponent {
 
   readonly dbc: IDbClient
   readonly vocabularyListVocabularyRelationObject: IVocabularyListVocabularyRelationObject
@@ -17,8 +17,7 @@ class VocabularyListVocabularyRelationTest
     this.dbc = new DbClient()
   }
 
-  vocabularyBootstrap: () => IVocabularyBootstrap
-  vocabularyLoader: () => IVocabularyLoader
+  vocabularyRepository: () => IVocabularyRepository
 
   vocabularyListVocabularyRelation: () => IVocabularyListVocabularyRelationObject
 
@@ -54,7 +53,10 @@ class VocabularyListVocabularyRelationTest
 
 applyMixins(
   VocabularyListVocabularyRelationTest,
-  [VocabularyRepository, VocabularyListVocabularyRelationComponent]
+  [
+    VocabularyRepositoryComponent,
+    VocabularyListVocabularyRelationComponent
+  ]
 )
 
 new VocabularyListVocabularyRelationTest().do()

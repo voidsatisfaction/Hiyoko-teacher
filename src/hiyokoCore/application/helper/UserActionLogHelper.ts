@@ -5,7 +5,9 @@ export enum Action {
   follow                = 'follow',
   addVocabularyList     = 'add-vocabulary-list',
   deleteVocabularyList  = 'delete-vocabulary-list',
-  readVocabularyLists   = 'read-vocabulary-lists'
+  readVocabularyLists   = 'read-vocabulary-lists',
+
+  getSimpleQuizzes      = 'get-simple-quizzes',
 }
 
 export interface IUserActionLoggerObject {

@@ -1,18 +1,19 @@
 import { applyMixins } from "../../util/Mixin"
 import { DbClientComponent } from "../infrastructure/db/client"
-import { UserHelperComponent } from "./helper/UserHelper"
-import { UserEntity } from "../domain/model/User"
-import { IUserLoader } from "../domain/repository/UserRepository"
+import { UserHelperComponent, IUserHelper } from "./helper/UserHelper"
+import { IUserRepository } from "../domain/repository/UserRepository"
 import { IDbClient } from "../interface/infrastructure/db"
-import { VocabularyListRepository } from "../infrastructure/db/VocabularyListRepository"
-import { VocabularyRepository } from "../infrastructure/db/VocabularyRepository"
-import { IVocabularyListAction, IVocabularyListLoader } from "../domain/repository/VocabularyListRepository"
-import { IVocabularyBootstrap, IVocabularyLoader } from "../domain/repository/VocabularyRepository"
+import { VocabularyListRepositoryComponent } from "../infrastructure/db/VocabularyListRepository"
+import { VocabularyRepositoryComponent } from "../infrastructure/db/VocabularyRepository"
+import { IVocabularyListRepository } from "../domain/repository/VocabularyListRepository"
+import { IVocabularyRepository } from "../domain/repository/VocabularyRepository"
 import { VocabularyListVocabularyRelationComponent, IVocabularyListVocabularyRelationObject } from "../domain/relation/VocabularyListVocabularyRelation"
 import { VocabularyListApplicationUnauthorizationError } from "./error";
 import { LoggerDBClientComponent } from "../infrastructure/loggerDb/client";
 import { ILoggerDBClient } from "../interface/infrastructure/LoggerDB";
 import { UserActionLogHelperComponent, IUserActionLoggerObject, Action } from "./helper/UserActionLogHelper";
+import { IUserProductRepository } from "../domain/repository/UserProductRepository";
+import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
 
 export class VocabularyList {
   readonly userId: string
@@ -20,15 +21,22 @@ export class VocabularyList {
   readonly name: string
   readonly meaning: string
   readonly contextSentence: string
+  readonly priority: number
 
   constructor(
-    userId: string, vocaListId: number, name: string, meaning: string, contextSentence: string
+    userId: string,
+    vocaListId: number,
+    name: string,
+    meaning: string,
+    contextSentence: string,
+    priority: number
   ) {
     this.userId = userId
     this.vocaListId = vocaListId
     this.name = name
     this.meaning = meaning
     this.contextSentence = contextSentence
+    this.priority = priority
   }
 }
 
@@ -37,8 +45,8 @@ export class VocabularyListApplication
     LoggerDBClientComponent,
     UserHelperComponent,
     VocabularyListVocabularyRelationComponent,
-    VocabularyListRepository,
-    VocabularyRepository,
+    VocabularyListRepositoryComponent,
+    VocabularyRepositoryComponent,
     UserActionLogHelperComponent
   {
     readonly dbc: IDbClient
@@ -49,17 +57,18 @@ export class VocabularyListApplication
     dbClient: () => IDbClient
     loggerDBClient: () => ILoggerDBClient
 
-    getCurrentUser: () => Promise<UserEntity>
-    userBootstrap: () => null
-    userLoader: () => IUserLoader
+    userHelper: () => IUserHelper
+
+    userRepository: () => IUserRepository
 
     vocabularyListVocabularyRelation: () => IVocabularyListVocabularyRelationObject
 
-    vocabularyListLoader: () => IVocabularyListLoader
-    vocabularyListAction: () => IVocabularyListAction
+    vocabularyListRepository: () => IVocabularyListRepository
 
-    vocabularyBootstrap: () => IVocabularyBootstrap
-    vocabularyLoader: () => IVocabularyLoader
+    vocabularyRepository: () => IVocabularyRepository
+
+    userProductRepository: () => IUserProductRepository
+    userProductRelation: () => IUserProductRelationObject
 
     userActionLogger: () => IUserActionLoggerObject
 
@@ -71,16 +80,16 @@ export class VocabularyListApplication
 
     async addVocabularyToList(name: string, meaning: string, contextSentence?: string): Promise<VocabularyList> {
       try {
-        const user = await this.getCurrentUser()
+        const user = await this.userHelper().getCurrentUser()
+        const userProduct = await this.userHelper().getCurrentUserProduct(user)
 
-        const vocabulary = await this.vocabularyBootstrap().findOrCreate(name)
-        const vocabularyList = await this.vocabularyListAction().create(
+        const vocabulary = await this.vocabularyRepository().vocabularyBootstrap().findOrCreate(name)
+        const vocabularyList = await this.vocabularyListRepository().vocabularyListAction().create(
           user, vocabulary, meaning, contextSentence
         )
 
-        // FIXME: input productId later
         this.userActionLogger().putActionLog(
-          Action.addVocabularyList, 1, vocabularyList.toLogObject()
+          Action.addVocabularyList, userProduct.productId, vocabularyList.toLogObject()
         )
 
         return new VocabularyList(
@@ -88,7 +97,8 @@ export class VocabularyListApplication
           vocabularyList.vocaListId,
           vocabulary.name,
           vocabularyList.meaning,
-          vocabularyList.contextSentence
+          vocabularyList.contextSentence,
+          vocabularyList.priority
         )
       } catch(e) {
         throw e
@@ -100,13 +110,14 @@ export class VocabularyListApplication
     // TODO: add pagination
     async getUserVocabularyLists(): Promise<VocabularyList[]> {
       try {
-        const user = await this.getCurrentUser()
+        const user = await this.userHelper().getCurrentUser()
+        const userProduct = await this.userHelper().getCurrentUserProduct(user)
 
-        const vocabularyListEntities = await this.vocabularyListLoader().findAllByUser(user)
-        const vocabularyLists = await this.vocabularyListVocabularyRelation().mergeVocabulary(vocabularyListEntities)
+        const vocabularyListEntities = await this.vocabularyListRepository().vocabularyListLoader().findAllByUser(user)
+        const vocabularyLists = <VocabularyList[]>await this.vocabularyListVocabularyRelation().mergeVocabulary(vocabularyListEntities)
 
         this.userActionLogger().putActionLog(
-          Action.readVocabularyLists, 1
+          Action.readVocabularyLists, userProduct.productId
         )
 
         return vocabularyLists
@@ -119,18 +130,19 @@ export class VocabularyListApplication
 
     async deleteVocabularyList(vocaListId: number): Promise<void> {
       try {
-        const user = await this.getCurrentUser()
+        const user = await this.userHelper().getCurrentUser()
+        const userProduct = await this.userHelper().getCurrentUserProduct(user)
 
-        const vocabularyList = await this.vocabularyListLoader().find(vocaListId)
+        const vocabularyList = await this.vocabularyListRepository().vocabularyListLoader().find(vocaListId)
 
         if (vocabularyList.userId === user.userId) {
-          await this.vocabularyListAction().delete(vocaListId)
+          await this.vocabularyListRepository().vocabularyListAction().delete(vocaListId)
         } else {
           throw new VocabularyListApplicationUnauthorizationError(`Delete vocabularyList not authorized`)
         }
 
         this.userActionLogger().putActionLog(
-          Action.deleteVocabularyList, 1, vocabularyList.toLogObject()
+          Action.deleteVocabularyList, userProduct.productId, vocabularyList.toLogObject()
         )
 
       } catch(e) {
@@ -148,8 +160,8 @@ applyMixins(
     LoggerDBClientComponent,
     UserHelperComponent,
     VocabularyListVocabularyRelationComponent,
-    VocabularyListRepository,
-    VocabularyRepository,
+    VocabularyListRepositoryComponent,
+    VocabularyRepositoryComponent,
     UserActionLogHelperComponent
   ]
 )

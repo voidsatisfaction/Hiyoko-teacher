@@ -1,5 +1,5 @@
 import { VocabularyListEntity } from '../model/VocabularyList'
-import { IVocabularyLoader } from '../repository/VocabularyRepository'
+import { IVocabularyRepository } from '../repository/VocabularyRepository'
 import { Join } from '../../../util/Join'
 import { VocabularyEntity } from '../model/Vocabulary'
 
@@ -9,13 +9,13 @@ export interface IVocabularyListVocabularyRelationObject {
 
 export class VocabularyListVocabularyRelationComponent {
   // self type annotation
-  vocabularyLoader: () => IVocabularyLoader
+  vocabularyRepository: () => IVocabularyRepository
 
   // return singleton object
   vocabularyListVocabularyRelation(): IVocabularyListVocabularyRelationObject {
     return {
       mergeVocabulary: async (vocabularyLists: VocabularyListEntity[]): Promise<any[]> => {
-        const vocabularies = await this.vocabularyLoader().findAll(
+        const vocabularies = await this.vocabularyRepository().vocabularyLoader().findAll(
           vocabularyLists.map(d => d.vocaId)
         )
 

@@ -1,10 +1,10 @@
 import { expect } from 'chai'
 
 import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
-import { UserProductRepositoryImplement } from '../../../../src/hiyokoCore/infrastructure/db/UserProductImplement'
+import { UserProductRepositoryComponent } from '../../../../src/hiyokoCore/infrastructure/db/UserProductImplement'
 import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db'
 
-class UserProductRepositoryTest extends UserProductRepositoryImplement {
+class UserProductRepositoryTest extends UserProductRepositoryComponent {
   constructor(dbc: IDbClient) {
     super()
     this.dbc = dbc

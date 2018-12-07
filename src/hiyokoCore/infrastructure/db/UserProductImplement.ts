@@ -3,7 +3,7 @@ import { IDbClient } from "../../interface/infrastructure/db";
 import { UserProductEntity } from "../../domain/model/User";
 import { RepositoryBase } from "./RepositoryBase";
 
-export class UserProductRepositoryImplement {
+export class UserProductRepositoryComponent {
   dbc: IDbClient
 
   userProductRepository(): IUserProductRepository {

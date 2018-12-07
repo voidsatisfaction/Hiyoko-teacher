@@ -4,25 +4,39 @@ import { Random } from '../util'
 import { VocabularyEntity } from '../../../src/hiyokoCore/domain/model/Vocabulary'
 import { VocabularyListEntity } from '../../../src/hiyokoCore/domain/model/VocabularyList'
 
-import { UserRepository } from '../../../src/hiyokoCore/infrastructure/db/UserRepository'
+import { UserRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/UserRepository'
 import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db'
 
-import { VocabularyRepository } from '../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
-import { VocabularyListRepository } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
+import { VocabularyRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
+import { VocabularyListRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
+import { UserProductRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/UserProductImplement';
 
-class UserRepositoryMock extends UserRepository {
+class UserRepositoryMock extends UserRepositoryComponent {
   constructor(dbc: IDbClient) {
     super()
     this.dbc = dbc
   }
 }
 
-export const UserEntityPersistMock = async (dbc: IDbClient, userId?: string, createdAt?: Date): Promise<UserEntity> => {
+class UserProductRepositoryMock extends UserProductRepositoryComponent {
+  constructor(dbc: IDbClient) {
+    super()
+    this.dbc = dbc
+  }
+}
+
+export const UserEntityPersistMock = async (dbc: IDbClient, userId?: string, createdAt?: Date, productId?: number): Promise<UserEntity> => {
   userId = userId || Random.alphaNumeric(10)
   createdAt = createdAt || new Date()
+  productId = productId || 0
 
   const userRepositoryMock: UserRepositoryMock = new UserRepositoryMock(dbc)
-  return await userRepositoryMock.userBootstrap().findOrCreate(userId)
+  const userProductRepositoryMock: UserProductRepositoryMock = new UserProductRepositoryMock(dbc)
+
+  const user = await userRepositoryMock.userRepository().userBootstrap().findOrCreate(userId)
+  await userProductRepositoryMock.userProductRepository().userProductAction().create(user.userId, productId)
+
+  return user
 }
 
 export const UserEntityMock = (userId?: string, createdAt?: Date): UserEntity => {
@@ -32,7 +46,7 @@ export const UserEntityMock = (userId?: string, createdAt?: Date): UserEntity =>
   return new UserEntity(userId, createdAt)
 }
 
-class VocabularyRepositoryMock extends VocabularyRepository {
+class VocabularyRepositoryMock extends VocabularyRepositoryComponent {
   constructor(dbc: IDbClient) {
     super()
     this.dbc = dbc
@@ -46,7 +60,7 @@ export const VocabularyEntityMock = (vocaId?: number, name?: string): Vocabulary
   return new VocabularyEntity(vocaId, name)
 }
 
-class VocabularyListRepositoryMock extends VocabularyListRepository {
+class VocabularyListRepositoryMock extends VocabularyListRepositoryComponent {
   constructor(dbc: IDbClient) {
     super()
     this.dbc = dbc
@@ -68,8 +82,8 @@ export const VocabularyListEntityPersistMock = async (
   const vocabularyListRepositoryMock = new VocabularyListRepositoryMock(dbc)
 
   const userEntity = user || UserEntityMock()
-  const vocabularyEntity = await vocabularyRepositoryMock.vocabularyBootstrap().findOrCreate(name)
-  const vocabularyListEntity = await vocabularyListRepositoryMock.vocabularyListAction().create(
+  const vocabularyEntity = await vocabularyRepositoryMock.vocabularyRepository().vocabularyBootstrap().findOrCreate(name)
+  const vocabularyListEntity = await vocabularyListRepositoryMock.vocabularyListRepository().vocabularyListAction().create(
     userEntity, vocabularyEntity, meaning, contextSentence
   )
 
