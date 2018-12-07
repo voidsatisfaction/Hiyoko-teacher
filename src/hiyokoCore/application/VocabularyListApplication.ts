@@ -22,15 +22,22 @@ export class VocabularyList {
   readonly name: string
   readonly meaning: string
   readonly contextSentence: string
+  readonly priority: number
 
   constructor(
-    userId: string, vocaListId: number, name: string, meaning: string, contextSentence: string
+    userId: string,
+    vocaListId: number,
+    name: string,
+    meaning: string,
+    contextSentence: string,
+    priority: number
   ) {
     this.userId = userId
     this.vocaListId = vocaListId
     this.name = name
     this.meaning = meaning
     this.contextSentence = contextSentence
+    this.priority = priority
   }
 }
 
@@ -95,7 +102,8 @@ export class VocabularyListApplication
           vocabularyList.vocaListId,
           vocabulary.name,
           vocabularyList.meaning,
-          vocabularyList.contextSentence
+          vocabularyList.contextSentence,
+          vocabularyList.priority
         )
       } catch(e) {
         throw e
@@ -111,7 +119,7 @@ export class VocabularyListApplication
         const userProduct = await this.getCurrentUserProduct(user)
 
         const vocabularyListEntities = await this.vocabularyListLoader().findAllByUser(user)
-        const vocabularyLists = await this.vocabularyListVocabularyRelation().mergeVocabulary(vocabularyListEntities)
+        const vocabularyLists = <VocabularyList[]>await this.vocabularyListVocabularyRelation().mergeVocabulary(vocabularyListEntities)
 
         this.userActionLogger().putActionLog(
           Action.readVocabularyLists, userProduct.productId
