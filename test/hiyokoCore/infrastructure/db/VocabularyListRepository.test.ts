@@ -80,6 +80,50 @@ describe('VocabularyList repository test', () => {
     })
   })
 
+  describe('findByUserWithPriorityCreatedAt()', () => {
+    it('should be well ordered with priority and createdAt', async () => {
+      const now = sinon.useFakeTimers(new Date())
+
+      const userEntity = UserEntityMock()
+      const vocabularyEntity1 = VocabularyEntityMock()
+      const meaning1 = 'よくわからないけどね'
+      const contextSentence1 = 'there is no one in here hello world!'
+      const contextPictureURL1 = 'http://helloWOrld.com/picture.jpg'
+      const priority1 = 50
+
+      now.tick(0)
+      const createdVocabularyListEntity1 = await vocabularyListAction.create(
+        userEntity, vocabularyEntity1, meaning1, contextSentence1, contextPictureURL1, priority1
+      )
+
+      now.tick(20 * 1000)
+      const createdVocabularyListEntity2 = await vocabularyListAction.create(
+        userEntity, vocabularyEntity1, meaning1, contextSentence1, contextPictureURL1, priority1 + 20
+      )
+
+      now.tick(10 * 1000)
+      const createdVocabularyListEntity3 = await vocabularyListAction.create(
+        userEntity, vocabularyEntity1, meaning1, contextSentence1, contextPictureURL1, priority1 + 40
+      )
+
+      now.tick(30 * 1000)
+      const createdVocabularyListEntity4 = await vocabularyListAction.create(
+        userEntity, vocabularyEntity1, meaning1, contextSentence1, contextPictureURL1, priority1 + 20
+      )
+
+      now.restore()
+
+      const vocabularyLists = await vocabularyListLoader.findByUserWithPriorityCreatedAt(userEntity)
+
+      expect(vocabularyLists.length).to.be.equal(4)
+      expect(vocabularyLists[0]).to.be.instanceOf(VocabularyListEntity)
+      expect(vocabularyLists[0].vocaListId).to.be.equal(createdVocabularyListEntity3.vocaListId)
+      expect(vocabularyLists[1].vocaListId).to.be.equal(createdVocabularyListEntity2.vocaListId)
+      expect(vocabularyLists[2].vocaListId).to.be.equal(createdVocabularyListEntity4.vocaListId)
+      expect(vocabularyLists[3].vocaListId).to.be.equal(createdVocabularyListEntity1.vocaListId)
+    })
+  })
+
   describe('update()', () => {
     it('should update with vocabularyListEntity', async () => {
       const userEntity = UserEntityMock()

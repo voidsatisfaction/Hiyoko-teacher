@@ -69,6 +69,31 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       return this.parseAs(rows, VocabularyListEntity)
     }
 
+    async findByUserWithPriorityCreatedAt(
+      user: UserEntity,
+      limit?: number
+    ): Promise<VocabularyListEntity[]> {
+      const DEFAULT_LIMIT = 6
+
+      const userId = user.userId
+      limit = limit || DEFAULT_LIMIT
+
+      const rows = await this.dbc.query(`
+        SELECT * FROM Vocabulary_lists
+          WHERE userId = (:userId)
+          ORDER BY priority DESC, createdAt ASC
+          LIMIT :limit
+      `, {
+        replacements: {
+          userId,
+          limit
+        },
+        type: this.dbc.QueryTypes.SELECT
+      })
+
+      return this.parseAs(rows, VocabularyListEntity)
+    }
+
     async create(
       userEntity: UserEntity,
       vocabularyEntity: VocabularyEntity,
