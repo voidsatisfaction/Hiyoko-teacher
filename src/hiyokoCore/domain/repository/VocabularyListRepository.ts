@@ -13,6 +13,11 @@ export interface IVocabularyListLoader {
   findAllByUser(
     user: UserEntity
   ): Promise<VocabularyListEntity[]>
+
+  findByUserWithPriorityCreatedAt(
+    user: UserEntity,
+    limit?: number
+  ): Promise<VocabularyListEntity[]>
 }
 
 export interface IVocabularyListAction {
@@ -21,7 +26,12 @@ export interface IVocabularyListAction {
     vocabulary: VocabularyEntity,
     meaning: string,
     contextSentence?: string,
-    contextPirctureURL?: string
+    contextPirctureURL?: string,
+    priority?: number
+  ): Promise<VocabularyListEntity>
+
+  update(
+    vocabularyListEntity: VocabularyListEntity
   ): Promise<VocabularyListEntity>
 
   delete(

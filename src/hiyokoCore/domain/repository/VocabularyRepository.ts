@@ -1,4 +1,4 @@
-import { VocabularyEntity } from "../model/Vocabulary";
+import { VocabularyEntity } from "../model/Vocabulary"
 
 export interface IVocabularyRepository {
   vocabularyBootstrap: () => IVocabularyBootstrap

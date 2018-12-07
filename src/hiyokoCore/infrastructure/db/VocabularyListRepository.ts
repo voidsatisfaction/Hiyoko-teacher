@@ -75,14 +75,16 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       meaning: string,
       contextSentence?: string,
       contextPictureURL?: string,
+      priority?: number
     ): Promise<VocabularyListEntity> {
       const createdAt = new Date()
+      priority = priority || 100
 
       const res = await this.dbc.query(`
         INSERT INTO Vocabulary_lists
-          (userId, vocaId, meaning, contextSentence, contextPictureURL, createdAt)
+          (userId, vocaId, meaning, contextSentence, contextPictureURL, createdAt, priority)
         VALUES
-          (:userId, :vocaId, :meaning, :contextSentence, :contextPictureURL, :createdAt)
+          (:userId, :vocaId, :meaning, :contextSentence, :contextPictureURL, :createdAt, :priority)
       `, {
         replacements: {
           userId: userEntity.userId,
@@ -90,6 +92,7 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
           meaning,
           contextSentence,
           contextPictureURL: contextPictureURL || null,
+          priority,
           createdAt
         },
         type: this.dbc.QueryTypes.INSERT
@@ -98,6 +101,40 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       const vocaListId = res[0]
 
       return await this.find(vocaListId)
+    }
+
+    async update(
+      vocabularyListEntity: VocabularyListEntity
+    ): Promise<VocabularyListEntity> {
+      // TODO: add updatedAt column
+      const {
+        vocaListId, userId, vocaId, meaning, contextSentence, contextPictureURL, priority, createdAt
+      } = vocabularyListEntity
+
+      await this.dbc.query(`
+        INSERT INTO Vocabulary_lists
+          (vocaListId, userId, vocaId, meaning, contextSentence, contextPictureURL, priority, createdAt)
+        VALUES
+          (:vocaListId, :userId, :vocaId, :meaning, :contextSentence, :contextPictureURL, :priority, :createdAt)
+        ON DUPLICATE KEY UPDATE
+          meaning = VALUES(meaning),
+          contextSentence = VALUES(contextSentence),
+          contextPictureURL = VALUES(contextPictureURL),
+          priority = VALUES(priority)
+      `, {
+        replacements: {
+          vocaListId,
+          userId,
+          vocaId,
+          meaning,
+          contextSentence,
+          contextPictureURL,
+          priority,
+          createdAt
+        }
+      })
+
+      return vocabularyListEntity
     }
 
     async delete(

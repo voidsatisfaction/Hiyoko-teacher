@@ -80,6 +80,54 @@ describe('VocabularyList repository test', () => {
     })
   })
 
+  describe('update()', () => {
+    it('should update with vocabularyListEntity', async () => {
+      const userEntity = UserEntityMock()
+      const vocabularyEntity1 = VocabularyEntityMock()
+      const meaning1 = 'よくわからないけどね'
+      const contextSentence1 = 'there is no one in here hello world!'
+      const contextPictureURL1 = 'http://helloWOrld.com/picture.jpg'
+
+      const createdVocabularyListEntity = await vocabularyListAction.create(
+        userEntity, vocabularyEntity1, meaning1, contextSentence1, contextPictureURL1
+      )
+
+      const vocaListId2 = createdVocabularyListEntity.vocaListId
+      const priority2 = 10
+      const meaning2 = 'よくわからないけどね2222'
+      const contextSentence2 = 'there is no one in here hello 2222222!'
+      const contextPictureURL2 = 'http://helloWOrld.com/picture.jpg/2222'
+
+      const newVocabularyListEntity = new VocabularyListEntity(
+        vocaListId2,
+        createdVocabularyListEntity.userId,
+        createdVocabularyListEntity.vocaId,
+        meaning2,
+        priority2,
+        new Date(),
+        contextSentence2,
+        contextPictureURL2
+      )
+
+      const updatedVocabularyListEntity = await vocabularyListAction.update(
+        newVocabularyListEntity
+      )
+
+      const foundVocabularyListEntity = await vocabularyListLoader.find(
+        vocaListId2
+      )
+
+      expect(updatedVocabularyListEntity.meaning).to.be.equal(foundVocabularyListEntity.meaning)
+      expect(updatedVocabularyListEntity.priority).to.be.equal(foundVocabularyListEntity.priority)
+      expect(updatedVocabularyListEntity.contextSentence).to.be.equal(foundVocabularyListEntity.contextSentence)
+      expect(updatedVocabularyListEntity.contextPictureURL).to.be.equal(foundVocabularyListEntity.contextPictureURL)
+
+      expect(updatedVocabularyListEntity.vocaListId).to.be.equal(createdVocabularyListEntity.vocaListId)
+      expect(updatedVocabularyListEntity.vocaId).to.be.equal(createdVocabularyListEntity.vocaId)
+      expect(updatedVocabularyListEntity.userId).to.be.equal(createdVocabularyListEntity.userId)
+    })
+  })
+
   describe('delete()', () => {
     it('should delete when there is corresponding vocabularyList', async () => {
       const userEntity = UserEntityMock()
