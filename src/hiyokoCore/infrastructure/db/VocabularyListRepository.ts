@@ -5,15 +5,14 @@ import { UserEntity } from "../../domain/model/User"
 import { VocabularyEntity } from "../../domain/model/Vocabulary"
 import { IDbClient } from "../../interface/infrastructure/db"
 
-export class VocabularyListRepository implements IVocabularyListRepository {
+export class VocabularyListRepositoryComponent {
   dbc: IDbClient
 
-  vocabularyListLoader(): IVocabularyListLoader {
-    return new VocabularyListDB(this.dbc)
-  }
-
-  vocabularyListAction(): IVocabularyListAction {
-    return new VocabularyListDB(this.dbc)
+  vocabularyListRepository(): IVocabularyListRepository {
+    return ({
+      vocabularyListLoader: () => new VocabularyListDB(this.dbc),
+      vocabularyListAction: () => new VocabularyListDB(this.dbc)
+    })
   }
 }
 

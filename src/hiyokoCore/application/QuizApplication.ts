@@ -8,8 +8,8 @@ import { IUserRepository } from "../domain/repository/UserRepository";
 import { IUserProductRepository } from "../domain/repository/UserProductRepository";
 import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
 import { UserEntity, UserProductEntity } from "../domain/model/User";
-import { VocabularyListRepository } from "../infrastructure/db/VocabularyListRepository";
-import { IVocabularyListLoader, IVocabularyListAction } from "../domain/repository/VocabularyListRepository";
+import { VocabularyListRepositoryComponent } from "../infrastructure/db/VocabularyListRepository";
+import { IVocabularyListRepository } from "../domain/repository/VocabularyListRepository";
 import { VocabularyListVocabularyRelationComponent, IVocabularyListVocabularyRelationObject } from "../domain/relation/VocabularyListVocabularyRelation";
 import { VocabularyRepositoryComponent } from "../infrastructure/db/VocabularyRepository";
 import { IVocabularyRepository } from "../domain/repository/VocabularyRepository";
@@ -31,7 +31,7 @@ export class QuizApplication
     LoggerDBClientComponent,
     UserHelperComponent,
     UserActionLogHelperComponent,
-    VocabularyListRepository,
+    VocabularyListRepositoryComponent,
     VocabularyRepositoryComponent,
     VocabularyListVocabularyRelationComponent
   {
@@ -47,16 +47,12 @@ export class QuizApplication
   getCurrentUserProduct: (userEntity: UserEntity) => Promise<UserProductEntity>
 
   userRepository: () => IUserRepository
-
   userProductRepository: () => IUserProductRepository
   userProductRelation: () => IUserProductRelationObject
 
   vocabularyListVocabularyRelation: () => IVocabularyListVocabularyRelationObject
-
   vocabularyRepository: () => IVocabularyRepository
-
-  vocabularyListLoader: () => IVocabularyListLoader
-  vocabularyListAction: () => IVocabularyListAction
+  vocabularyListRepository: () => IVocabularyListRepository
 
   userActionLogger: () => IUserActionLoggerObject
 
@@ -70,7 +66,7 @@ export class QuizApplication
     const currentUser = await this.getCurrentUser()
     const userProduct = await this.userProductRelation().toUserProduct(currentUser)
 
-    const vocabularyListsWithTopPriority = await this.vocabularyListLoader().findByUserWithPriorityCreatedAt(
+    const vocabularyListsWithTopPriority = await this.vocabularyListRepository().vocabularyListLoader().findByUserWithPriorityCreatedAt(
       currentUser
     )
 
@@ -95,7 +91,7 @@ applyMixins(
     LoggerDBClientComponent,
     UserHelperComponent,
     UserActionLogHelperComponent,
-    VocabularyListRepository,
+    VocabularyListRepositoryComponent,
     VocabularyRepositoryComponent,
     VocabularyListVocabularyRelationComponent
   ]

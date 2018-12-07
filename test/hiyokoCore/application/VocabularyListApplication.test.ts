@@ -6,7 +6,7 @@ import { UserEntityPersistMock, VocabularyListEntityPersistMock } from '../../he
 import { VocabularyRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyRepository';
 import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db';
 import { VocabularyListApplicationUnauthorizationError } from '../../../src/hiyokoCore/application/error';
-import { VocabularyListRepository } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository';
+import { VocabularyListRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository';
 
 class VocabularyRepositoryTest extends VocabularyRepositoryComponent {
   readonly dbc: IDbClient
@@ -17,7 +17,7 @@ class VocabularyRepositoryTest extends VocabularyRepositoryComponent {
   }
 }
 
-class VocabularyListRepositoryTest extends VocabularyListRepository {
+class VocabularyListRepositoryTest extends VocabularyListRepositoryComponent {
   readonly dbc: IDbClient
 
   constructor(dbc: IDbClient) {
@@ -107,7 +107,7 @@ describe('VocabularyListApplication test', () => {
 
       await vocabularyListApplication1.deleteVocabularyList(vocabularyListEntity.vocaListId)
 
-      const emptyVocabularyList = await vocabularyListRepository.vocabularyListLoader().find(vocabularyListEntity.vocaListId)
+      const emptyVocabularyList = await vocabularyListRepository.vocabularyListRepository().vocabularyListLoader().find(vocabularyListEntity.vocaListId)
 
       expect(emptyVocabularyList).to.be.equal(null)
     })

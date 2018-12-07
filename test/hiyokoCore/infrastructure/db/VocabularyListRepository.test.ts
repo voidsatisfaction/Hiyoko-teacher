@@ -2,12 +2,12 @@ import { expect } from 'chai'
 import * as sinon from 'sinon'
 
 import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
-import { VocabularyListRepository } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
+import { VocabularyListRepositoryComponent } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
 import { UserEntityMock, VocabularyEntityMock } from '../../../helper/factory'
 import { VocabularyListEntity } from '../../../../src/hiyokoCore/domain/model/VocabularyList'
 import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db'
 
-class VocabularyListRepositoryTest extends VocabularyListRepository {
+class VocabularyListRepositoryTest extends VocabularyListRepositoryComponent {
   readonly dbc: IDbClient
   constructor(dbc: IDbClient) {
     super()
@@ -18,8 +18,8 @@ class VocabularyListRepositoryTest extends VocabularyListRepository {
 describe('VocabularyList repository test', () => {
   const dbc = new DbClient()
   const vocabularyListRepository = new VocabularyListRepositoryTest(dbc)
-  const vocabularyListLoader = vocabularyListRepository.vocabularyListLoader()
-  const vocabularyListAction = vocabularyListRepository.vocabularyListAction()
+  const vocabularyListLoader = vocabularyListRepository.vocabularyListRepository().vocabularyListLoader()
+  const vocabularyListAction = vocabularyListRepository.vocabularyListRepository().vocabularyListAction()
 
   beforeEach(async () => {
     await Promise.all([
