@@ -2,12 +2,11 @@ import { DbClientComponent } from "../infrastructure/db/client";
 import { applyMixins } from "../../util/Mixin";
 import { IDbClient } from "../interface/infrastructure/db";
 import { LoggerDBClientComponent } from "../infrastructure/loggerDb/client";
-import { UserHelperComponent } from "./helper/UserHelper";
+import { UserHelperComponent, IUserHelper } from "./helper/UserHelper";
 import { ILoggerDBClient } from "../interface/infrastructure/LoggerDB";
 import { IUserRepository } from "../domain/repository/UserRepository";
 import { IUserProductRepository } from "../domain/repository/UserProductRepository";
 import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
-import { UserEntity, UserProductEntity } from "../domain/model/User";
 import { VocabularyListRepositoryComponent } from "../infrastructure/db/VocabularyListRepository";
 import { IVocabularyListRepository } from "../domain/repository/VocabularyListRepository";
 import { VocabularyListVocabularyRelationComponent, IVocabularyListVocabularyRelationObject } from "../domain/relation/VocabularyListVocabularyRelation";
@@ -43,8 +42,7 @@ export class QuizApplication
   dbClient: () => IDbClient
   loggerDBClient: () => ILoggerDBClient
 
-  getCurrentUser: () => Promise<UserEntity>
-  getCurrentUserProduct: (userEntity: UserEntity) => Promise<UserProductEntity>
+  userHelper: () => IUserHelper
 
   userRepository: () => IUserRepository
   userProductRepository: () => IUserProductRepository
@@ -63,7 +61,7 @@ export class QuizApplication
   }
 
   async getSimpleQuizzes(): Promise<SimpleQuiz[]> {
-    const currentUser = await this.getCurrentUser()
+    const currentUser = await this.userHelper().getCurrentUser()
     const userProduct = await this.userProductRelation().toUserProduct(currentUser)
 
     const vocabularyListsWithTopPriority = await this.vocabularyListRepository().vocabularyListLoader().findByUserWithPriorityCreatedAt(

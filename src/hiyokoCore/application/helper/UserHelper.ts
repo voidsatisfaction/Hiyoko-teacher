@@ -1,19 +1,23 @@
 import { UserEntity, UserProductEntity } from "../../domain/model/User"
 import { IUserRepository } from "../../domain/repository/UserRepository"
-import { applyMixins } from "../../../util/Mixin"
-import { UserRepositoryComponent } from "../../infrastructure/db/UserRepository"
 import { IDbClient } from "../../interface/infrastructure/db"
 import { UserHelperUnauthorizedError } from "../error"
-import { UserProductRepositoryComponent } from "../../infrastructure/db/UserProductImplement"
-import { UserProductRelationComponent, IUserProductRelationObject } from "../../domain/relation/UserProductRelation"
+import { IUserProductRelationObject, UserProductRelationComponent } from "../../domain/relation/UserProductRelation"
 import { IUserProductRepository } from "../../domain/repository/UserProductRepository"
+import { UserRepositoryComponent } from "../../infrastructure/db/UserRepository"
+import { applyMixins } from "../../../util/Mixin"
+import { UserProductRepositoryComponent } from "../../infrastructure/db/UserProductImplement"
 
-export class UserHelperComponent
-  implements UserRepositoryComponent,
-  UserProductRepositoryComponent,
-  UserProductRelationComponent
-  {
+export interface IUserHelper {
+  getCurrentUser: () => Promise<UserEntity>
+  getCurrentUserProduct: (userEntity: UserEntity) => Promise<UserProductEntity>
+}
 
+export class UserHelperComponent implements
+  UserRepositoryComponent,
+  UserProductRelationComponent,
+  UserProductRepositoryComponent
+{
   userId: string
   dbc: IDbClient
 
@@ -22,20 +26,23 @@ export class UserHelperComponent
   userProductRepository: () => IUserProductRepository
   userProductRelation: () => IUserProductRelationObject
 
-  async getCurrentUser(): Promise<UserEntity> {
-    const userEntity = await this.userRepository().userLoader().findByUserId(this.userId)
-    if (!userEntity) {
-      throw new UserHelperUnauthorizedError(`Unauthorized user action`)
-    }
-    return userEntity
-  }
-
-  async getCurrentUserProduct(userEntity: UserEntity): Promise<UserProductEntity | 0> {
-    try {
-      return await this.userProductRelation().toUserProduct(userEntity)
-    } catch(e) {
-      return new UserProductEntity(userEntity.userId, 0)
-    }
+  userHelper(): IUserHelper {
+    return ({
+      getCurrentUser: async (): Promise<UserEntity> => {
+        const userEntity = await this.userRepository().userLoader().findByUserId(this.userId)
+        if (!userEntity) {
+          throw new UserHelperUnauthorizedError(`Unauthorized user action`)
+        }
+        return userEntity
+      },
+      getCurrentUserProduct: async (userEntity: UserEntity): Promise<UserProductEntity> => {
+        try {
+          return await this.userProductRelation().toUserProduct(userEntity)
+        } catch (e) {
+          return new UserProductEntity(userEntity.userId, 0)
+        }
+      }
+    })
   }
 }
 
@@ -43,7 +50,7 @@ applyMixins(
   UserHelperComponent,
   [
     UserRepositoryComponent,
-    UserProductRepositoryComponent,
-    UserProductRelationComponent
+    UserProductRelationComponent,
+    UserProductRepositoryComponent
   ]
 )

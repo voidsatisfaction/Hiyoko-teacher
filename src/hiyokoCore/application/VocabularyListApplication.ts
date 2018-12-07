@@ -1,7 +1,6 @@
 import { applyMixins } from "../../util/Mixin"
 import { DbClientComponent } from "../infrastructure/db/client"
-import { UserHelperComponent } from "./helper/UserHelper"
-import { UserEntity, UserProductEntity } from "../domain/model/User"
+import { UserHelperComponent, IUserHelper } from "./helper/UserHelper"
 import { IUserRepository } from "../domain/repository/UserRepository"
 import { IDbClient } from "../interface/infrastructure/db"
 import { VocabularyListRepositoryComponent } from "../infrastructure/db/VocabularyListRepository"
@@ -58,8 +57,7 @@ export class VocabularyListApplication
     dbClient: () => IDbClient
     loggerDBClient: () => ILoggerDBClient
 
-    getCurrentUser: () => Promise<UserEntity>
-    getCurrentUserProduct: (userEntity: UserEntity) => Promise<UserProductEntity>
+    userHelper: () => IUserHelper
 
     userRepository: () => IUserRepository
 
@@ -82,8 +80,8 @@ export class VocabularyListApplication
 
     async addVocabularyToList(name: string, meaning: string, contextSentence?: string): Promise<VocabularyList> {
       try {
-        const user = await this.getCurrentUser()
-        const userProduct = await this.getCurrentUserProduct(user)
+        const user = await this.userHelper().getCurrentUser()
+        const userProduct = await this.userHelper().getCurrentUserProduct(user)
 
         const vocabulary = await this.vocabularyRepository().vocabularyBootstrap().findOrCreate(name)
         const vocabularyList = await this.vocabularyListRepository().vocabularyListAction().create(
@@ -112,8 +110,8 @@ export class VocabularyListApplication
     // TODO: add pagination
     async getUserVocabularyLists(): Promise<VocabularyList[]> {
       try {
-        const user = await this.getCurrentUser()
-        const userProduct = await this.getCurrentUserProduct(user)
+        const user = await this.userHelper().getCurrentUser()
+        const userProduct = await this.userHelper().getCurrentUserProduct(user)
 
         const vocabularyListEntities = await this.vocabularyListRepository().vocabularyListLoader().findAllByUser(user)
         const vocabularyLists = <VocabularyList[]>await this.vocabularyListVocabularyRelation().mergeVocabulary(vocabularyListEntities)
@@ -132,8 +130,8 @@ export class VocabularyListApplication
 
     async deleteVocabularyList(vocaListId: number): Promise<void> {
       try {
-        const user = await this.getCurrentUser()
-        const userProduct = await this.getCurrentUserProduct(user)
+        const user = await this.userHelper().getCurrentUser()
+        const userProduct = await this.userHelper().getCurrentUserProduct(user)
 
         const vocabularyList = await this.vocabularyListRepository().vocabularyListLoader().find(vocaListId)
 

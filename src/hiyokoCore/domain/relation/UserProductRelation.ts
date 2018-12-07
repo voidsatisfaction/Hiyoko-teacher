@@ -1,6 +1,6 @@
 import { UserEntity, UserProductEntity } from '../model/User';
 import { IDbClient } from '../../interface/infrastructure/db';
-import { IUserProductLoader, IUserProductRepository } from '../repository/UserProductRepository';
+import { IUserProductRepository } from '../repository/UserProductRepository';
 
 export interface IUserProductRelationObject {
   toUserProducts(users: UserEntity[]): Promise<UserProductEntity[]>

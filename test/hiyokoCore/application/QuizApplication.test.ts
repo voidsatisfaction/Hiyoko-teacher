@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { QuizApplication, SimpleQuiz } from '../../../src/hiyokoCore/application/QuizApplication'
+import { QuizApplication } from '../../../src/hiyokoCore/application/QuizApplication'
 import { DbClient } from '../../../src/hiyokoCore/infrastructure/db/client';
 import { UserEntityPersistMock, VocabularyListEntityPersistMock } from '../../helper/factory';
 import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db';
