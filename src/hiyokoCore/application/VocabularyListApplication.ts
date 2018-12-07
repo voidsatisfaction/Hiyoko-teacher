@@ -2,12 +2,12 @@ import { applyMixins } from "../../util/Mixin"
 import { DbClientComponent } from "../infrastructure/db/client"
 import { UserHelperComponent } from "./helper/UserHelper"
 import { UserEntity, UserProductEntity } from "../domain/model/User"
-import { IUserLoader, IUserRepository } from "../domain/repository/UserRepository"
+import { IUserRepository } from "../domain/repository/UserRepository"
 import { IDbClient } from "../interface/infrastructure/db"
 import { VocabularyListRepository } from "../infrastructure/db/VocabularyListRepository"
-import { VocabularyRepository } from "../infrastructure/db/VocabularyRepository"
+import { VocabularyRepositoryComponent } from "../infrastructure/db/VocabularyRepository"
 import { IVocabularyListAction, IVocabularyListLoader } from "../domain/repository/VocabularyListRepository"
-import { IVocabularyBootstrap, IVocabularyLoader } from "../domain/repository/VocabularyRepository"
+import { IVocabularyRepository } from "../domain/repository/VocabularyRepository"
 import { VocabularyListVocabularyRelationComponent, IVocabularyListVocabularyRelationObject } from "../domain/relation/VocabularyListVocabularyRelation"
 import { VocabularyListApplicationUnauthorizationError } from "./error";
 import { LoggerDBClientComponent } from "../infrastructure/loggerDb/client";
@@ -47,7 +47,7 @@ export class VocabularyListApplication
     UserHelperComponent,
     VocabularyListVocabularyRelationComponent,
     VocabularyListRepository,
-    VocabularyRepository,
+    VocabularyRepositoryComponent,
     UserActionLogHelperComponent
   {
     readonly dbc: IDbClient
@@ -68,8 +68,7 @@ export class VocabularyListApplication
     vocabularyListLoader: () => IVocabularyListLoader
     vocabularyListAction: () => IVocabularyListAction
 
-    vocabularyBootstrap: () => IVocabularyBootstrap
-    vocabularyLoader: () => IVocabularyLoader
+    vocabularyRepository: () => IVocabularyRepository
 
     userProductRepository: () => IUserProductRepository
     userProductRelation: () => IUserProductRelationObject
@@ -87,7 +86,7 @@ export class VocabularyListApplication
         const user = await this.getCurrentUser()
         const userProduct = await this.getCurrentUserProduct(user)
 
-        const vocabulary = await this.vocabularyBootstrap().findOrCreate(name)
+        const vocabulary = await this.vocabularyRepository().vocabularyBootstrap().findOrCreate(name)
         const vocabularyList = await this.vocabularyListAction().create(
           user, vocabulary, meaning, contextSentence
         )
@@ -165,7 +164,7 @@ applyMixins(
     UserHelperComponent,
     VocabularyListVocabularyRelationComponent,
     VocabularyListRepository,
-    VocabularyRepository,
+    VocabularyRepositoryComponent,
     UserActionLogHelperComponent
   ]
 )

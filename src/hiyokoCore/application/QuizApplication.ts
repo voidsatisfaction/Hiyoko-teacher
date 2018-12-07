@@ -4,15 +4,15 @@ import { IDbClient } from "../interface/infrastructure/db";
 import { LoggerDBClientComponent } from "../infrastructure/loggerDb/client";
 import { UserHelperComponent } from "./helper/UserHelper";
 import { ILoggerDBClient } from "../interface/infrastructure/LoggerDB";
-import { IUserLoader, IUserRepository } from "../domain/repository/UserRepository";
+import { IUserRepository } from "../domain/repository/UserRepository";
 import { IUserProductRepository } from "../domain/repository/UserProductRepository";
 import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
 import { UserEntity, UserProductEntity } from "../domain/model/User";
 import { VocabularyListRepository } from "../infrastructure/db/VocabularyListRepository";
 import { IVocabularyListLoader, IVocabularyListAction } from "../domain/repository/VocabularyListRepository";
 import { VocabularyListVocabularyRelationComponent, IVocabularyListVocabularyRelationObject } from "../domain/relation/VocabularyListVocabularyRelation";
-import { VocabularyRepository } from "../infrastructure/db/VocabularyRepository";
-import { IVocabularyBootstrap, IVocabularyLoader } from "../domain/repository/VocabularyRepository";
+import { VocabularyRepositoryComponent } from "../infrastructure/db/VocabularyRepository";
+import { IVocabularyRepository } from "../domain/repository/VocabularyRepository";
 import { IUserActionLoggerObject, UserActionLogHelperComponent, Action } from "./helper/UserActionLogHelper";
 import { VocabularyList } from "./VocabularyListApplication";
 
@@ -32,7 +32,7 @@ export class QuizApplication
     UserHelperComponent,
     UserActionLogHelperComponent,
     VocabularyListRepository,
-    VocabularyRepository,
+    VocabularyRepositoryComponent,
     VocabularyListVocabularyRelationComponent
   {
 
@@ -53,8 +53,7 @@ export class QuizApplication
 
   vocabularyListVocabularyRelation: () => IVocabularyListVocabularyRelationObject
 
-  vocabularyBootstrap: () => IVocabularyBootstrap
-  vocabularyLoader: () => IVocabularyLoader
+  vocabularyRepository: () => IVocabularyRepository
 
   vocabularyListLoader: () => IVocabularyListLoader
   vocabularyListAction: () => IVocabularyListAction
@@ -97,7 +96,7 @@ applyMixins(
     UserHelperComponent,
     UserActionLogHelperComponent,
     VocabularyListRepository,
-    VocabularyRepository,
+    VocabularyRepositoryComponent,
     VocabularyListVocabularyRelationComponent
   ]
 )

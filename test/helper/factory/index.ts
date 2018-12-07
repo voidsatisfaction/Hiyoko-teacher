@@ -7,7 +7,7 @@ import { VocabularyListEntity } from '../../../src/hiyokoCore/domain/model/Vocab
 import { UserRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/UserRepository'
 import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db'
 
-import { VocabularyRepository } from '../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
+import { VocabularyRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
 import { VocabularyListRepository } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
 import { UserProductRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/UserProductImplement';
 
@@ -46,7 +46,7 @@ export const UserEntityMock = (userId?: string, createdAt?: Date): UserEntity =>
   return new UserEntity(userId, createdAt)
 }
 
-class VocabularyRepositoryMock extends VocabularyRepository {
+class VocabularyRepositoryMock extends VocabularyRepositoryComponent {
   constructor(dbc: IDbClient) {
     super()
     this.dbc = dbc
@@ -82,7 +82,7 @@ export const VocabularyListEntityPersistMock = async (
   const vocabularyListRepositoryMock = new VocabularyListRepositoryMock(dbc)
 
   const userEntity = user || UserEntityMock()
-  const vocabularyEntity = await vocabularyRepositoryMock.vocabularyBootstrap().findOrCreate(name)
+  const vocabularyEntity = await vocabularyRepositoryMock.vocabularyRepository().vocabularyBootstrap().findOrCreate(name)
   const vocabularyListEntity = await vocabularyListRepositoryMock.vocabularyListAction().create(
     userEntity, vocabularyEntity, meaning, contextSentence
   )

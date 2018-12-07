@@ -1,11 +1,11 @@
 import { expect } from 'chai'
 
 import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
-import { VocabularyRepository } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
+import { VocabularyRepositoryComponent } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
 import { VocabularyEntity } from '../../../../src/hiyokoCore/domain/model/Vocabulary'
 import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db';
 
-class VocabularyRepositoryTest extends VocabularyRepository {
+class VocabularyRepositoryTest extends VocabularyRepositoryComponent {
   readonly dbc: IDbClient
 
   constructor(dbc: IDbClient) {
@@ -17,8 +17,8 @@ class VocabularyRepositoryTest extends VocabularyRepository {
 describe('Vocabulary repository test', () => {
   const dbc = new DbClient()
   const vocabularyRepository = new VocabularyRepositoryTest(dbc)
-  const vocabularyBootstrap = vocabularyRepository.vocabularyBootstrap()
-  const vocabularyLoader = vocabularyRepository.vocabularyLoader()
+  const vocabularyBootstrap = vocabularyRepository.vocabularyRepository().vocabularyBootstrap()
+  const vocabularyLoader = vocabularyRepository.vocabularyRepository().vocabularyLoader()
 
   beforeEach(async () => {
     await dbc.truncateTable(dbc.Vocabulary)
