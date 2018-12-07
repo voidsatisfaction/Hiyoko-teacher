@@ -2,7 +2,7 @@ import { applyMixins } from "../../util/Mixin"
 import { DbClientComponent } from "../infrastructure/db/client"
 import { UserHelperComponent } from "./helper/UserHelper"
 import { UserEntity, UserProductEntity } from "../domain/model/User"
-import { IUserLoader } from "../domain/repository/UserRepository"
+import { IUserLoader, IUserRepository } from "../domain/repository/UserRepository"
 import { IDbClient } from "../interface/infrastructure/db"
 import { VocabularyListRepository } from "../infrastructure/db/VocabularyListRepository"
 import { VocabularyRepository } from "../infrastructure/db/VocabularyRepository"
@@ -61,8 +61,7 @@ export class VocabularyListApplication
     getCurrentUser: () => Promise<UserEntity>
     getCurrentUserProduct: (userEntity: UserEntity) => Promise<UserProductEntity>
 
-    userBootstrap: () => null
-    userLoader: () => IUserLoader
+    userRepository: () => IUserRepository
 
     vocabularyListVocabularyRelation: () => IVocabularyListVocabularyRelationObject
 

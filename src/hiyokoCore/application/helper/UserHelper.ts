@@ -1,7 +1,7 @@
 import { UserEntity, UserProductEntity } from "../../domain/model/User"
-import { IUserLoader } from "../../domain/repository/UserRepository"
+import { IUserRepository } from "../../domain/repository/UserRepository"
 import { applyMixins } from "../../../util/Mixin"
-import { UserRepository } from "../../infrastructure/db/UserRepository"
+import { UserRepositoryComponent } from "../../infrastructure/db/UserRepository"
 import { IDbClient } from "../../interface/infrastructure/db"
 import { UserHelperUnauthorizedError } from "../error"
 import { UserProductRepositoryComponent } from "../../infrastructure/db/UserProductImplement"
@@ -9,7 +9,7 @@ import { UserProductRelationComponent, IUserProductRelationObject } from "../../
 import { IUserProductRepository } from "../../domain/repository/UserProductRepository"
 
 export class UserHelperComponent
-  implements UserRepository,
+  implements UserRepositoryComponent,
   UserProductRepositoryComponent,
   UserProductRelationComponent
   {
@@ -17,14 +17,13 @@ export class UserHelperComponent
   userId: string
   dbc: IDbClient
 
-  userBootstrap: () => null
-  userLoader: () => IUserLoader
+  userRepository: () => IUserRepository
 
   userProductRepository: () => IUserProductRepository
   userProductRelation: () => IUserProductRelationObject
 
   async getCurrentUser(): Promise<UserEntity> {
-    const userEntity = await this.userLoader().findByUserId(this.userId)
+    const userEntity = await this.userRepository().userLoader().findByUserId(this.userId)
     if (!userEntity) {
       throw new UserHelperUnauthorizedError(`Unauthorized user action`)
     }
@@ -43,7 +42,7 @@ export class UserHelperComponent
 applyMixins(
   UserHelperComponent,
   [
-    UserRepository,
+    UserRepositoryComponent,
     UserProductRepositoryComponent,
     UserProductRelationComponent
   ]

@@ -4,7 +4,7 @@ import { IDbClient } from "../interface/infrastructure/db";
 import { LoggerDBClientComponent } from "../infrastructure/loggerDb/client";
 import { UserHelperComponent } from "./helper/UserHelper";
 import { ILoggerDBClient } from "../interface/infrastructure/LoggerDB";
-import { IUserLoader } from "../domain/repository/UserRepository";
+import { IUserLoader, IUserRepository } from "../domain/repository/UserRepository";
 import { IUserProductRepository } from "../domain/repository/UserProductRepository";
 import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
 import { UserEntity, UserProductEntity } from "../domain/model/User";
@@ -46,8 +46,7 @@ export class QuizApplication
   getCurrentUser: () => Promise<UserEntity>
   getCurrentUserProduct: (userEntity: UserEntity) => Promise<UserProductEntity>
 
-  userBootstrap: () => null
-  userLoader: () => IUserLoader
+  userRepository: () => IUserRepository
 
   userProductRepository: () => IUserProductRepository
   userProductRelation: () => IUserProductRelationObject

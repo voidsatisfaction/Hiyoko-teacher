@@ -1,6 +1,6 @@
 import { UserEntity } from "../domain/model/User"
-import { UserRepository } from "../infrastructure/db/UserRepository"
-import { IUserBootstrap, IUserLoader } from "../domain/repository/UserRepository"
+import { UserRepositoryComponent } from "../infrastructure/db/UserRepository"
+import { IUserRepository } from "../domain/repository/UserRepository"
 import { applyMixins } from "../../util/Mixin"
 import { DbClientComponent } from "../infrastructure/db/client"
 import { IDbClient } from "../interface/infrastructure/db"
@@ -14,7 +14,7 @@ import { IUserProductRepository } from "../domain/repository/UserProductReposito
 export class UserApplication
   implements DbClientComponent,
     LoggerDBClientComponent,
-    UserRepository,
+    UserRepositoryComponent,
     UserProductRepositoryComponent,
     UserActionLogHelperComponent
   {
@@ -26,8 +26,7 @@ export class UserApplication
   dbClient: () => IDbClient
   loggerDBClient: () => ILoggerDBClient
 
-  userBootstrap: () => IUserBootstrap
-  userLoader: () => IUserLoader
+  userRepository: () => IUserRepository
 
   userProductRepository: () => IUserProductRepository
   userProductRelation: () => IUserProductRelationObject
@@ -42,7 +41,7 @@ export class UserApplication
 
   async getOrAdd(productId: number): Promise<UserEntity> {
     try {
-      const userBootstrap = this.userBootstrap()
+      const userBootstrap = this.userRepository().userBootstrap()
 
       const user = await userBootstrap.findOrCreate(this.userId)
 
@@ -62,7 +61,7 @@ export class UserApplication
 
   async adminListAll(): Promise<UserEntity[]> {
     try {
-      const userLoader = this.userLoader()
+      const userLoader = this.userRepository().userLoader()
 
       // TODO: all user meta data
       const userEntities = await userLoader.listAll()
@@ -81,7 +80,7 @@ applyMixins(
   [
     DbClientComponent,
     LoggerDBClientComponent,
-    UserRepository,
+    UserRepositoryComponent,
     UserProductRepositoryComponent,
     UserActionLogHelperComponent
   ]

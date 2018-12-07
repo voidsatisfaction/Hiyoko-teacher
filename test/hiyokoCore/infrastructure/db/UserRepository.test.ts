@@ -1,11 +1,11 @@
 import { expect } from 'chai'
 
 import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client'
-import { UserRepository } from '../../../../src/hiyokoCore/infrastructure/db/UserRepository'
+import { UserRepositoryComponent } from '../../../../src/hiyokoCore/infrastructure/db/UserRepository'
 import { UserEntity } from '../../../../src/hiyokoCore/domain/model/User'
 import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db'
 
-class UserRepositoryTest extends UserRepository {
+class UserRepositoryTest extends UserRepositoryComponent {
   constructor(dbc: IDbClient) {
     super()
     this.dbc = dbc
@@ -15,8 +15,8 @@ class UserRepositoryTest extends UserRepository {
 describe('User repository test', () => {
   const dbc = new DbClient()
   const userRepository = new UserRepositoryTest(dbc)
-  const userLoader = userRepository.userLoader()
-  const userBootstrap = userRepository.userBootstrap()
+  const userLoader = userRepository.userRepository().userLoader()
+  const userBootstrap = userRepository.userRepository().userBootstrap()
 
   beforeEach(async () => {
     await dbc.truncateTable(dbc.User)
