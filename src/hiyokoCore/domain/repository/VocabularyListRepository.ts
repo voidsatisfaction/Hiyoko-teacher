@@ -9,6 +9,7 @@ export interface IVocabularyListRepository {
 
 export interface IVocabularyListLoader {
   find(vocaListId: number): Promise<VocabularyListEntity | null>
+  findAll(vocaListIds: number[]): Promise<VocabularyListEntity[]>
 
   findAllByUser(
     user: UserEntity
@@ -27,7 +28,8 @@ export interface IVocabularyListAction {
     meaning: string,
     contextSentence?: string,
     contextPirctureURL?: string,
-    priority?: number
+    priority?: number,
+    createdAt?: Date
   ): Promise<VocabularyListEntity>
 
   update(

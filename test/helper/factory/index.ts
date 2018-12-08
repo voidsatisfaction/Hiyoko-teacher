@@ -72,11 +72,15 @@ export const VocabularyListEntityPersistMock = async (
   user?: UserEntity,
   name?: string,
   meaning?: string,
-  contextSentence?: string
+  contextSentence?: string,
+  priority?: number,
+  createdAt?: Date
 ): Promise<[VocabularyEntity, VocabularyListEntity]> => {
   name = name || Random.alphabetic(8)
   meaning = meaning || Random.alphaNumeric(10)
   contextSentence = contextSentence || Random.alphaNumeric(30)
+  priority = priority || 100
+  createdAt = createdAt || new Date()
 
   const vocabularyRepositoryMock = new VocabularyRepositoryMock(dbc)
   const vocabularyListRepositoryMock = new VocabularyListRepositoryMock(dbc)
@@ -84,7 +88,7 @@ export const VocabularyListEntityPersistMock = async (
   const userEntity = user || UserEntityMock()
   const vocabularyEntity = await vocabularyRepositoryMock.vocabularyRepository().vocabularyBootstrap().findOrCreate(name)
   const vocabularyListEntity = await vocabularyListRepositoryMock.vocabularyListRepository().vocabularyListAction().create(
-    userEntity, vocabularyEntity, meaning, contextSentence
+    userEntity, vocabularyEntity, meaning, contextSentence, undefined, priority, createdAt
   )
 
   return [vocabularyEntity, vocabularyListEntity]
