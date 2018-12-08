@@ -1,0 +1,149 @@
+<script>
+  function init(data) {
+    const container = document.querySelector('.container')
+
+    new SimpleQuizView({ container, data })
+  }
+
+  class SimpleQuizPresenter {
+    constructor(view, userId) {
+      this.view = view
+      this.userId = userId
+      this.simpleQuizzes = []
+    }
+
+    async fetchSimpleQuizzesAndRender() {
+      try {
+        const simpleQuizzes = await this._fetchSimpleQuizzes()
+
+        this.simpleQuizzes = [ ...simpleQuizzes ]
+
+        this.view.renderQuizzes({ simpleQuizzes })
+      } catch(e) {
+        alert(JSON.stringify(e))
+      }
+    }
+
+    checkAnswerAndRender({ userInputs }) {
+      const quizResults = { total: this.simpleQuizzes.length, correct: 0, incorrect: 0, detail: [] }
+      this.simpleQuizzes.forEach((simpleQuiz, i) => {
+        const userInput = userInputs[i]
+        const answer = simpleQuiz.answer
+
+        quizResults.detail.push(
+          {
+            quiz: simpleQuiz,
+            correct: answer === userInput
+          }
+        )
+        if (answer === userInput) {
+          quizResults.correct += 1
+        } else {
+          quizResults.incorrect += 1
+        }
+      })
+
+      alert(JSON.stringify(quizResults))
+
+      // send results to core
+
+      // render view
+      this.view.renderResults({ quizResults })
+    }
+
+    async _fetchSimpleQuizzes() {
+      const res = await axios.get('/<%= process.env.NODE_ENV %>/hiyokoSensei/api/simpleQuizzes', {
+        params: {
+          userId: this.userId
+        }
+      })
+
+      return res.data.simpleQuizzes
+    }
+  }
+
+  class SimpleQuizView {
+    constructor({ container, data }) {
+      this.liffData = data
+      this.presenter = new SimpleQuizPresenter(this, this.liffData.context.userId)
+      this.$container = container
+
+      this.initMembers()
+      this.initEvents()
+      this.initAction()
+    }
+
+    initMembers() {
+      this.$form = this.$container.querySelector('form')
+      this.$resultAlert = this.$container.querySelector('.result-alert')
+      this.$checkAnswerButton = this.$container.querySelector('#check-answer-button')
+      this.$nextProblemButton = this.$container.querySelector('#next-problem-button')
+      this.$problemSection1 = this.$container.querySelector('#problem1-section')
+      this.$problemSection2 = this.$container.querySelector('#problem2-section')
+      this.$problemSection3 = this.$container.querySelector('#problem3-section')
+      this.$problemSection4 = this.$container.querySelector('#problem4-section')
+      this.$problemSection5 = this.$container.querySelector('#problem5-section')
+      this.$problemSection6 = this.$container.querySelector('#problem6-section')
+    }
+
+    initEvents() {
+      this.$checkAnswerButton.addEventListener('click', this._onClickCheckAnswerButton.bind(this))
+    }
+
+    initAction() {
+      this.presenter.fetchSimpleQuizzesAndRender()
+    }
+
+    _onClickCheckAnswerButton() {
+      const userInputs = []
+      // check answer
+
+      this.presenter.simpleQuizzes.forEach((simpleQuiz, index) => {
+        const i = index + 1
+        const userInput = this.$container.querySelector(`#problem${i}-input`).value
+        userInputs.push(userInput)
+      })
+
+      this.presenter.checkAnswerAndRender({ userInputs })
+    }
+
+    renderQuizzes({ simpleQuizzes }) {
+      simpleQuizzes.forEach((simpleQuiz, index) => {
+        const i = index + 1
+        const { problem, answer } = simpleQuiz
+        this[`$problemSection${i}`].innerHTML = `
+          <label id="problem${i}-label" for="problem${i}">${problem}</label>
+          <input id="problem${i}-input" type="text" class="form-control" data-answer="${answer}">
+        `
+      })
+    }
+
+    renderResults({ quizResults }) {
+      this.$resultAlert.innerHTML = `
+        <div class="alert alert-success" role="alert">
+          Total: ${quizResults.total}, Correct: ${quizResults.correct}, Incorrect: ${quizResults.incorrect}
+        </div>
+      `
+
+      quizResults.detail.forEach((quizResult, index) => {
+        const i = index + 1
+        const $label = this.$container.querySelector(`#problem${i}-label`)
+        if (quizResult.correct) {
+          $label.style.color = 'green'
+        } else {
+          $label.style.color = 'red'
+        }
+      })
+
+      this.$checkAnswerButton.hidden = true
+      this.$nextProblemButton.hidden = false
+    }
+  }
+
+  (() => {
+    // liff.init((data) => {
+    //   init(data)
+    // })
+    init({ context: { userId: 'Udb96ac94624e156d11bd9e76dce0e1a0' } })
+  })()
+</script>

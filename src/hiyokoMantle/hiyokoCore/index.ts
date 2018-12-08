@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from 'axios'
 import { Configure } from '../../../config'
 import { IVocabularyList } from '../model/VocabularyList'
 import { IUser } from '../model/User'
+import { ISimpleQuiz } from '../model/SimpleQuiz';
 
 export class HiyokoCoreClient {
   private static _client(): AxiosInstance {
@@ -66,6 +67,22 @@ export class HiyokoCoreClient {
       })
 
       return
+    } catch(error) {
+      throw error
+    }
+  }
+
+  static async getSimpleQuizzes(
+    userId: string
+  ): Promise<ISimpleQuiz[]> {
+    try {
+      const response = await this._client().get('/quizzes/simple', {
+        params: {
+          userId
+        }
+      })
+
+      return response.data.quizzes
     } catch(error) {
       throw error
     }
