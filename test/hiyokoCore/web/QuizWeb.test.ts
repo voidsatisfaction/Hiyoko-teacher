@@ -60,4 +60,25 @@ describe('/quizzes', () => {
       expect(res.body.quizzes.length).to.be.equal(3)
     })
   })
+
+  describe('POST /quizzes/simple/result', () => {
+    it('should successfully update simple quizzes result with empty payload', async () => {
+      const payload = {
+        userId,
+        total: 4,
+        correct: 2,
+        incorrect: 2,
+        detail: []
+      }
+      const res = await request(app)
+        .post('/quizzes/simple/result')
+        .send(payload)
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      expect(res.body.result).to.be.equal('success')
+    })
+
+    // TODO: with parameter should be tested
+  })
 })

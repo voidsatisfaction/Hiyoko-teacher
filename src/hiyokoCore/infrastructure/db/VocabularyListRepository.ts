@@ -50,6 +50,9 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
     }
 
     async findAll(vocaListIds: number[]): Promise<VocabularyListEntity[]> {
+      if (vocaListIds.length === 0) {
+        return []
+      }
       const rows = await this.dbc.query(`
         SELECT * FROM Vocabulary_lists
           WHERE vocaListId IN (:vocaListIds)
