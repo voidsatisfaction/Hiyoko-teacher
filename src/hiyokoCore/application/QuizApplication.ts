@@ -16,10 +16,12 @@ import { IUserActionLoggerObject, UserActionLogHelperComponent, Action } from ".
 import { VocabularyList } from "./VocabularyListApplication";
 
 export class SimpleQuiz {
+  readonly vocaListId: number
   readonly problem: string
   readonly answer: string
 
-  constructor(problem: string, answer: string) {
+  constructor(vocaListId: number, problem: string, answer: string) {
+    this.vocaListId = vocaListId
     this.problem = problem
     this.answer = answer
   }
@@ -77,7 +79,7 @@ export class QuizApplication
     )
 
     return vocabularyListsVocabularyWithTopPriority.map(
-      vocabularyList => new SimpleQuiz(vocabularyList.meaning, vocabularyList.name)
+      vocabularyList => new SimpleQuiz(vocabularyList.vocaListId, vocabularyList.meaning, vocabularyList.name)
     )
   }
 }

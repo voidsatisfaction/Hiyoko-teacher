@@ -49,6 +49,23 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       return this.parseAs(rows, VocabularyListEntity)[0] || null
     }
 
+    async findAll(vocaListIds: number[]): Promise<VocabularyListEntity[]> {
+      if (vocaListIds.length === 0) {
+        return []
+      }
+      const rows = await this.dbc.query(`
+        SELECT * FROM Vocabulary_lists
+          WHERE vocaListId IN (:vocaListIds)
+      `, {
+        replacements: {
+          vocaListIds
+        },
+        type: this.dbc.QueryTypes.SELECT
+      })
+
+      return this.parseAs(rows, VocabularyListEntity)
+    }
+
     async findAllByUser(
       user: UserEntity
     ): Promise<VocabularyListEntity[]> {
@@ -99,9 +116,10 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       meaning: string,
       contextSentence?: string,
       contextPictureURL?: string,
-      priority?: number
+      priority?: number,
+      createdAt?: Date
     ): Promise<VocabularyListEntity> {
-      const createdAt = new Date()
+      createdAt = createdAt || new Date()
       priority = priority || 100
 
       const res = await this.dbc.query(`
@@ -152,7 +170,7 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
           vocaId,
           meaning,
           contextSentence,
-          contextPictureURL,
+          contextPictureURL: contextPictureURL || null,
           priority,
           createdAt
         }
