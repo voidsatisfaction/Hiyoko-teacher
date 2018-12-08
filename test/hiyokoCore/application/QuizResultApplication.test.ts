@@ -46,12 +46,10 @@ class QuizResultApplicationTest extends QuizResultApplication {
 
           now.restore()
 
-          const [[a, vocabularyList1], [b, vocabularyList2], [c, vocabularyList3], [d, vocabularyList4]] = await Promise.all([
-            VocabularyListEntityPersistMock(this.dbc, user, name, meaning, contextSentence, 40, createdAt1),
-            VocabularyListEntityPersistMock(this.dbc, user, name, meaning, contextSentence, 60, createdAt2),
-            VocabularyListEntityPersistMock(this.dbc, user, name, meaning, contextSentence, 80, createdAt3),
-            VocabularyListEntityPersistMock(this.dbc, user, name, meaning, contextSentence, 100, createdAt4)
-          ])
+          const [a, vocabularyList1] = await VocabularyListEntityPersistMock(this.dbc, user, name, meaning, contextSentence, 40, createdAt1)
+          const [b, vocabularyList2] = await VocabularyListEntityPersistMock(this.dbc, user, name, meaning, contextSentence, 60, createdAt2)
+          const [c, vocabularyList3] = await VocabularyListEntityPersistMock(this.dbc, user, name, meaning, contextSentence, 80, createdAt3)
+          const [d, vocabularyList4] = await VocabularyListEntityPersistMock(this.dbc, user, name, meaning, contextSentence, 100, createdAt4)
 
           const simpleQuiz1 = new SimpleQuiz(vocabularyList1.vocaListId, 'asdlkfm', 'alsdkmf')
           const simpleQuiz2 = new SimpleQuiz(vocabularyList2.vocaListId, 'asdlkfm', 'alsdkmf')
