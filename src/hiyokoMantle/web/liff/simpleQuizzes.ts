@@ -7,21 +7,21 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
   const pathMethodResolver = new PathMethodResolver()
 
   pathMethodResolver.setFunction(
-    '/hiyokoSensei/liff/simpleQuizzes',
+    '/hiyokoSensei/liff/quizzes/simple',
     'GET',
     getSimpleQuizzesHTML
   )
 
   pathMethodResolver.setFunction(
-    '/hiyokoSensei/api/simpleQuizzes',
+    '/hiyokoSensei/api/quizzes/simple',
     'GET',
     getSimpleQuizzesJSON
   )
 
   pathMethodResolver.setFunction(
-    '/hiyokoSensei/api/simpleQuizzes/results',
+    '/hiyokoSensei/api/quizzes/simple',
     'POST',
-    getSimpleQuizzesJSON
+    postSimpleQuizzesResultJSON
   )
 
   const func = pathMethodResolver.getFunction(event.path, event.httpMethod)
@@ -50,7 +50,19 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
     }
   }
 
-  async function postSimpleQuizzesResultsJSON() {
-    
+  async function postSimpleQuizzesResultJSON() {
+    try {
+      const body = JSON.parse(event.body)
+      const { userId, total, correct, incorrect, detail } = body
+
+      const res = await HiyokoCoreClient.postSimpleQuizzesResult(
+        userId, total, correct, incorrect, detail
+      )
+
+      callback(null, response(200, { result: res.result }))
+    } catch (error) {
+      console.error(error)
+      callback(null, response(500, { result: 'fail' }))
+    }
   }
 }

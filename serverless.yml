@@ -49,6 +49,22 @@ functions:
           path: hiyokoSensei/api/vocabularyLists
           method: delete
           cors: true
+  # For simple quizzes
+  hiyokoSenseiLiff-SimpleQuizzes:
+    handler: src/hiyokoMantle/web/liff/simpleQuizzes.handler
+    events:
+      - http:
+          path: hiyokoSensei/liff/quizzes/simple
+          method: get
+          cors: true
+      - http:
+          path: hiyokoSensei/api/quizzes/simple
+          method: get
+          cors: true
+      - http:
+          path: hiyokoSensei/api/quizzes/simple
+          method: post
+          cors: true
   # For push message
   # FIXME: This setting makes two pushers(DEV / PROD)
   hiyokoSenseiPusher:

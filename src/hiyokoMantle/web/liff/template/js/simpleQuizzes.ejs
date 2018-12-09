@@ -10,6 +10,12 @@
       this.view = view
       this.userId = userId
       this.simpleQuizzes = []
+      this.quizResult = {
+        total: 0,
+        correct: 0,
+        incorrect: 0,
+        detail: []
+      }
     }
 
     async fetchSimpleQuizzesAndRender() {
@@ -24,35 +30,43 @@
       }
     }
 
-    checkAnswerAndRender({ userInputs }) {
-      const quizResults = { total: this.simpleQuizzes.length, correct: 0, incorrect: 0, detail: [] }
-      this.simpleQuizzes.forEach((simpleQuiz, i) => {
-        const userInput = userInputs[i]
-        const answer = simpleQuiz.answer
+    async checkAnswerAndRender({ userInputs }) {
+      try {
+        this.quizResult.total = this.simpleQuizzes.length
 
-        quizResults.detail.push(
-          {
-            quiz: simpleQuiz,
-            correct: answer === userInput
+        this.simpleQuizzes.forEach((simpleQuiz, i) => {
+          const userInput = userInputs[i]
+          const answer = simpleQuiz.answer
+
+          this.quizResult.detail.push(
+            {
+              quiz: simpleQuiz,
+              correct: answer === userInput
+            }
+          )
+          if (answer === userInput) {
+            this.quizResult.correct += 1
+          } else {
+            this.quizResult.incorrect += 1
           }
-        )
-        if (answer === userInput) {
-          quizResults.correct += 1
-        } else {
-          quizResults.incorrect += 1
-        }
-      })
+        })
 
-      alert(JSON.stringify(quizResults))
+        // send results to core
+        await axios.post('/<%= process.env.NODE_ENV %>/hiyokoSensei/api/quizzes/simple', {
+          ...this.quizResult,
+          userId: this.userId
+        })
 
-      // send results to core
-
-      // render view
-      this.view.renderResults({ quizResults })
+        // render view
+        this.view.renderQuizResult({ quizResult: this.quizResult })
+      } catch(e) {
+        console.error(e)
+        alert(JSON.stringify(e))
+      }
     }
 
     async _fetchSimpleQuizzes() {
-      const res = await axios.get('/<%= process.env.NODE_ENV %>/hiyokoSensei/api/simpleQuizzes', {
+      const res = await axios.get('/<%= process.env.NODE_ENV %>/hiyokoSensei/api/quizzes/simple', {
         params: {
           userId: this.userId
         }
@@ -118,14 +132,14 @@
       })
     }
 
-    renderResults({ quizResults }) {
+    renderQuizResult({ quizResult }) {
       this.$resultAlert.innerHTML = `
         <div class="alert alert-success" role="alert">
-          Total: ${quizResults.total}, Correct: ${quizResults.correct}, Incorrect: ${quizResults.incorrect}
+          Total: ${quizResult.total}, Correct: ${quizResult.correct}, Incorrect: ${quizResult.incorrect}
         </div>
       `
 
-      quizResults.detail.forEach((quizResult, index) => {
+      quizResult.detail.forEach((quizResult, index) => {
         const i = index + 1
         const $label = this.$container.querySelector(`#problem${i}-label`)
         if (quizResult.correct) {
@@ -141,9 +155,8 @@
   }
 
   (() => {
-    // liff.init((data) => {
-    //   init(data)
-    // })
-    init({ context: { userId: 'Udb96ac94624e156d11bd9e76dce0e1a0' } })
+    liff.init((data) => {
+      init(data)
+    })
   })()
 </script>
