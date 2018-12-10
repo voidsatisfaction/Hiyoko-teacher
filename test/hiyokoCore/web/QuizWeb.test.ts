@@ -61,6 +61,20 @@ describe('/quizzes', () => {
     })
   })
 
+  describe('GET /quizzes/composite', () => {
+    it('should successfully get composite quizzes', async () => {
+      const res = await request(app)
+        .get('/quizzes/composite')
+        .query({
+          userId
+        })
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      expect(res.body.quizzes.length).to.be.equal(3)
+    })
+  })
+
   describe('POST /quizzes/simple/result', () => {
     it('should successfully update simple quizzes result with empty payload', async () => {
       const payload = {

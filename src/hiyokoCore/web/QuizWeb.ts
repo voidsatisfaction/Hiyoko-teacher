@@ -27,6 +27,27 @@ QuizRouter.get('/simple', [
   }
 })
 
+QuizRouter.get('/composite', [
+  check('userId').isString(),
+], async (req: express.Request, res: express.Response) => {
+  try {
+    const bodyErrors = validationResult(req)
+    if (!bodyErrors.isEmpty()) {
+      return res.status(400).json({ errors: bodyErrors.array() })
+    }
+
+    const userId: string = req.query.userId
+
+    const quizApplication = new QuizApplication(userId)
+    const compositeQuizzes = await quizApplication.createCompositeQuizzes()
+
+    res.json({ quizzes: compositeQuizzes })
+  } catch (e) {
+    console.error(e)
+    res.status(500).json({ error: e.toString() })
+  }
+})
+
 QuizRouter.post('/simple/result', [
   check('userId').isString(),
   check('total').isNumeric(),
