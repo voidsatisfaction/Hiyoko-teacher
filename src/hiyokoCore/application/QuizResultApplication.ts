@@ -122,6 +122,10 @@ export class QuizResultApplication
     const user: UserEntity = await this.userHelper().getCurrentUser()
     const userProduct: UserProductEntity = await this.userProductRelation().toUserProduct(user)
 
+    this.userActionLogger().putActionLog(
+      Action.solveCompositeQuizzes, userProduct.productId, quizResult
+    )
+
     const correctVocaListIds = quizResult.detail.filter(d => d.correct).map(d => d.quiz.vocaListId)
     const incorrectVocabularyListIds = quizResult.detail.filter(d => !d.correct).map(d => d.quiz.vocaListId)
 
@@ -150,10 +154,6 @@ export class QuizResultApplication
     // FIXME: performance issue, bulk update
     await Promise.all(
       updatedVocabularyLists.map(vl => this.vocabularyListRepository().vocabularyListAction().update(vl))
-    )
-
-    this.userActionLogger().putActionLog(
-      Action.solveCompositeQuizzes, userProduct.productId, quizResult
     )
   }
 
