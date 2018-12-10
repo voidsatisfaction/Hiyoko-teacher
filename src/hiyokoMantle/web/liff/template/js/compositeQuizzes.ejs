@@ -1,0 +1,163 @@
+<script>
+  function init(data) {
+    const container = document.querySelector('.container')
+
+    new CompositeQuizView({ container, data })
+  }
+
+  class CompositeQuizPresenter {
+    constructor(view, userId) {
+      this.view = view
+      this.userId = userId
+      this.quizzes = []
+      this.quizResult = {
+        total: 0,
+        correct: 0,
+        incorrect: 0,
+        detail: []
+      }
+    }
+
+    async fetchQuizzesAndRender() {
+      try {
+        const compositeQuizzes = await this._fetchCompositeQuizzes()
+
+        this.quizzes = [...compositeQuizzes]
+
+        this.view.renderQuizzes({ quizzes: this.quizzes })
+      } catch (e) {
+        alert(JSON.stringify(e))
+      }
+    }
+
+    async checkAnswerAndRender({ userInputs }) {
+      try {
+        this.quizResult.total = this.quizzes.length
+
+        this.quizzes.forEach((quiz, i) => {
+          const userInput = userInputs[i]
+          const answer = quiz.answer
+
+          this.quizResult.detail.push(
+            {
+              quiz,
+              correct: answer === userInput
+            }
+          )
+          if (answer === userInput) {
+            this.quizResult.correct += 1
+          } else {
+            this.quizResult.incorrect += 1
+          }
+        })
+
+        // send results to core
+        await axios.post('/<%= process.env.NODE_ENV %>/hiyokoSensei/api/quizzes/composite', {
+          ...this.quizResult,
+          userId: this.userId
+        })
+
+        // render view
+        this.view.renderQuizResult({ quizResult: this.quizResult })
+      } catch (e) {
+        console.error(e)
+        alert(JSON.stringify(e))
+      }
+    }
+
+    async _fetchCompositeQuizzes() {
+      const res = await axios.get('/<%= process.env.NODE_ENV %>/hiyokoSensei/api/quizzes/composite', {
+        params: {
+          userId: this.userId
+        }
+      })
+
+      return res.data.compositeQuizzes
+    }
+  }
+
+  class CompositeQuizView {
+    constructor({ container, data }) {
+      this.liffData = data
+      this.presenter = new CompositeQuizPresenter(this, this.liffData.context.userId)
+      this.$container = container
+
+      this.initMembers()
+      this.initEvents()
+      this.initAction()
+    }
+
+    initMembers() {
+      this.$form = this.$container.querySelector('form')
+      this.$resultAlert = this.$container.querySelector('.result-alert')
+      this.$checkAnswerButton = this.$container.querySelector('#check-answer-button')
+      this.$nextProblemButton = this.$container.querySelector('#next-problem-button')
+      this.$problemSection1 = this.$container.querySelector('#problem1-section')
+      this.$problemSection2 = this.$container.querySelector('#problem2-section')
+      this.$problemSection3 = this.$container.querySelector('#problem3-section')
+      this.$problemSection4 = this.$container.querySelector('#problem4-section')
+      this.$problemSection5 = this.$container.querySelector('#problem5-section')
+      this.$problemSection6 = this.$container.querySelector('#problem6-section')
+    }
+
+    initEvents() {
+      this.$checkAnswerButton.addEventListener('click', this._onClickCheckAnswerButton.bind(this))
+    }
+
+    initAction() {
+      this.presenter.fetchQuizzesAndRender()
+    }
+
+    _onClickCheckAnswerButton() {
+      const userInputs = []
+      // check answer
+
+      this.presenter.quizzes.forEach((quiz, index) => {
+        const i = index + 1
+        const userInput = this.$container.querySelector(`#problem${i}-input`).value
+        userInputs.push(userInput)
+      })
+
+      this.presenter.checkAnswerAndRender({ userInputs })
+    }
+
+    renderQuizzes({ quizzes }) {
+      quizzes.forEach((quiz, index) => {
+        const i = index + 1
+        const { problem, answer } = quiz
+        this[`$problemSection${i}`].innerHTML = `
+          <label id="problem${i}-label" for="problem${i}">${problem}</label>
+          <input id="problem${i}-input" type="text" class="form-control" data-answer="${answer}">
+        `
+      })
+    }
+
+    renderQuizResult({ quizResult }) {
+      this.$resultAlert.innerHTML = `
+        <div class="alert alert-success" role="alert">
+          Total: ${quizResult.total}, Correct: ${quizResult.correct}, Incorrect: ${quizResult.incorrect}
+        </div>
+      `
+
+      quizResult.detail.forEach((quizResult, index) => {
+        const i = index + 1
+        const $label = this.$container.querySelector(`#problem${i}-label`)
+        if (quizResult.correct) {
+          $label.style.color = 'green'
+        } else {
+          $label.style.color = 'red'
+        }
+      })
+
+      this.$checkAnswerButton.hidden = true
+      this.$nextProblemButton.hidden = false
+    }
+  }
+
+  (() => {
+    // liff.init((data) => {
+    //   init(data)
+    // })
+    init({ context: { userId: 'Udb96ac94624e156d11bd9e76dce0e1a0' } })
+  })()
+</script>

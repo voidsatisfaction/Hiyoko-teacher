@@ -65,6 +65,22 @@ functions:
           path: hiyokoSensei/api/quizzes/simple
           method: post
           cors: true
+  # For composite quizzes
+  hiyokoSenseiLiff-CompositeQuizzes:
+    handler: src/hiyokoMantle/web/liff/compositeQuizzes.handler
+    events:
+      - http:
+          path: hiyokoSensei/liff/quizzes/composite
+          method: get
+          cors: true
+      - http:
+          path: hiyokoSensei/api/quizzes/composite
+          method: get
+          cors: true
+      - http:
+          path: hiyokoSensei/api/quizzes/composite
+          method: post
+          cors: true
   # For push message
   # FIXME: This setting makes two pushers(DEV / PROD)
   hiyokoSenseiPusher:

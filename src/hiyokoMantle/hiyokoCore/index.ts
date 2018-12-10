@@ -2,8 +2,7 @@ import axios, { AxiosInstance } from 'axios'
 import { Configure } from '../../../config'
 import { IVocabularyList } from '../model/VocabularyList'
 import { IUser } from '../model/User'
-import { ISimpleQuiz } from '../model/SimpleQuiz';
-import { IQuizResult } from '../../hiyokoCore/application/QuizResultApplication';
+import { ISimpleQuiz, IQuiz } from '../model/SimpleQuiz';
 
 export class HiyokoCoreClient {
   private static _client(): AxiosInstance {
@@ -106,6 +105,43 @@ export class HiyokoCoreClient {
 
       return response.data.result
     } catch(error) {
+      throw error
+    }
+  }
+
+  static async getCompositeQuizzes (
+    userId: string
+  ): Promise<IQuiz[]> {
+    try {
+      const response = await this._client().get('/quizzes/composite', {
+        params: {
+          userId
+        }
+      })
+
+      return response.data.quizzes
+    } catch(error) {
+      throw error
+    }
+  }
+
+  static async postCompositeQuizzesResult(
+    userId: string,
+    total: number,
+    correct: number,
+    incorrect: number,
+    detail: {
+      quiz: IQuiz,
+      correct: boolean
+    }[]
+  ): Promise<{ result: 'success' | 'fail' }> {
+    try {
+      const response = await this._client().post('/quizzes/composite/result', {
+        userId, total, correct, incorrect, detail
+      })
+
+      return response.data.result
+    } catch (error) {
       throw error
     }
   }

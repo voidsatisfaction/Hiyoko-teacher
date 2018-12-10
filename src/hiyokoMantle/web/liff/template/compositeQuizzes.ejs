@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('common/header', { title: 'compositeQuizzes' }) %>
+
+  <%- include('css/compositeQuizzes') %>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row header">
+      <h5>Input adequate word for the meaning</h5>
+    </div>
+    <hr />
+    <div class="row result-alert">
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <div id="problem1-section" class="form-group">
+        </div>
+      </div>
+      <div class="col-4">
+        <div id="problem2-section" class="form-group">
+        </div>
+      </div>
+      <div class="col-4">
+        <div id="problem3-section" class="form-group">
+        </div>
+      </div>
+    </div>
+    <div class="row header">
+      <h5>Input adequate word for the sentence</h5>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div id="problem4-section" class="form-group">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div id="problem5-section" class="form-group">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div id="problem6-section" class="form-group">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <button id="check-answer-button" class="btn btn-primary">Check Answer</button>
+    </div>
+    <div class="row">
+      <a href="./composite">
+        <button id="next-problem-button" class="btn btn-info" hidden>Next Quizzes</button>
+      </a>
+    </div>
+  </div>
+
+  <%- include('common/script') %>
+
+  <%- include('js/compositeQuizzes') %>
+</body>
+
+</html>
