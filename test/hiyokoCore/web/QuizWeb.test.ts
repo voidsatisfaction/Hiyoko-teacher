@@ -2,12 +2,18 @@ import * as request from 'supertest'
 import { expect } from 'chai'
 
 import app from '../../../src/hiyokoCore/server'
+import { DbClient } from '../../../src/hiyokoCore/infrastructure/db/client';
 
 describe('/quizzes', () => {
+  const dbc = new DbClient()
   const userId = '12312sadfadf3123'
   const productId = 1
 
   before(async () => {
+    await Promise.all([
+      dbc.truncateTable(dbc.VocabularyList)
+    ])
+
     await request(app)
       .post('/users')
       .send({ userId, productId })
@@ -37,14 +43,17 @@ describe('/quizzes', () => {
     await request(app)
       .post('/vocabularyLists')
       .send(payload1)
+      .set('Accept', 'application/json')
 
     await request(app)
       .post('/vocabularyLists')
       .send(payload2)
+      .set('Accept', 'application/json')
 
     await request(app)
       .post('/vocabularyLists')
       .send(payload3)
+      .set('Accept', 'application/json')
   })
 
   describe('GET /quizzes/simple', () => {
@@ -100,8 +109,8 @@ describe('/quizzes', () => {
     it('should successfully update composite quizzes result with empty payload', async () => {
       const payload = {
         userId,
-        total: 4,
-        correct: 2,
+        total: 5,
+        correct: 3,
         incorrect: 2,
         detail: []
       }
