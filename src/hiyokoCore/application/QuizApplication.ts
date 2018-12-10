@@ -160,7 +160,7 @@ export class QuizApplication
       }
       let noTouchUntil = 0
       if (str.length <= 1) {
-        return '_'
+        noTouchUntil = -1
       } else if (str.length <= 3) {
         noTouchUntil = 0
       } else if (str.length <= 6) {

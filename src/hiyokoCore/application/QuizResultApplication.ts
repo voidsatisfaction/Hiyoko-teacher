@@ -152,7 +152,7 @@ export class QuizResultApplication
       updatedVocabularyLists.map(vl => this.vocabularyListRepository().vocabularyListAction().update(vl))
     )
 
-    await this.userActionLogger().putActionLog(
+    this.userActionLogger().putActionLog(
       Action.solveCompositeQuizzes, userProduct.productId, quizResult
     )
   }
