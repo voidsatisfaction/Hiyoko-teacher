@@ -8,6 +8,7 @@ export enum Action {
   readVocabularyLists   = 'read-vocabulary-lists',
 
   getSimpleQuizzes      = 'get-simple-quizzes',
+  getCompositeQuizzes   = 'get-composite-quizzes',
   solveSimpleQuizzes    = 'solve-simple-quizzes',
 }
 
