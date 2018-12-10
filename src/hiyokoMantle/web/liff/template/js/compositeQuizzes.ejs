@@ -127,7 +127,7 @@
         const { problem, answer } = quiz
         this[`$problemSection${i}`].innerHTML = `
           <label id="problem${i}-label" for="problem${i}">${problem}</label>
-          <input id="problem${i}-input" type="text" class="form-control" data-answer="${answer}">
+          <input id="problem${i}-input" type="text" class="form-control" data-answer="${answer}" autocapitalize="none">
         `
       })
     }
@@ -155,9 +155,8 @@
   }
 
   (() => {
-    // liff.init((data) => {
-    //   init(data)
-    // })
-    init({ context: { userId: 'Udb96ac94624e156d11bd9e76dce0e1a0' } })
+    liff.init((data) => {
+      init(data)
+    })
   })()
 </script>
