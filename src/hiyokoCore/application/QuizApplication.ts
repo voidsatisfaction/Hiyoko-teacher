@@ -15,7 +15,7 @@ import { IVocabularyRepository } from "../domain/repository/VocabularyRepository
 import { IUserActionLoggerObject, UserActionLogHelperComponent, Action } from "./helper/UserActionLogHelper";
 import { VocabularyList } from "./VocabularyListApplication";
 
-abstract class Quiz {
+export abstract class Quiz {
   abstract readonly vocaListId: number
   abstract readonly problem: string
   abstract readonly answer: string

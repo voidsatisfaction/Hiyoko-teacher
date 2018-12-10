@@ -9,7 +9,7 @@ import { IUserProductRepository } from "../domain/repository/UserProductReposito
 import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
 import { VocabularyListRepositoryComponent } from "../infrastructure/db/VocabularyListRepository";
 import { IVocabularyListRepository } from "../domain/repository/VocabularyListRepository";
-import { SimpleQuiz } from "./QuizApplication";
+import { SimpleQuiz, Quiz } from "./QuizApplication";
 import { VocabularyListEntity } from "../domain/model/VocabularyList";
 import { UserActionLogHelperComponent, IUserActionLoggerObject, Action } from "./helper/UserActionLogHelper";
 import { UserEntity, UserProductEntity } from "../domain/model/User";
@@ -115,6 +115,45 @@ export class QuizResultApplication
 
     this.userActionLogger().putActionLog(
       Action.solveSimpleQuizzes, userProduct.productId, simpleQuizResult
+    )
+  }
+
+  async updateCompositeQuizResult(quizResult: QuizResult<Quiz>): Promise<void> {
+    const user: UserEntity = await this.userHelper().getCurrentUser()
+    const userProduct: UserProductEntity = await this.userProductRelation().toUserProduct(user)
+
+    const correctVocaListIds = quizResult.detail.filter(d => d.correct).map(d => d.quiz.vocaListId)
+    const incorrectVocabularyListIds = quizResult.detail.filter(d => !d.correct).map(d => d.quiz.vocaListId)
+
+    // TODO: merge two query
+    const [correctVocabularyLists, incorrectVocabularyLists] = await Promise.all([
+      this.vocabularyListRepository().vocabularyListLoader().findAll(correctVocaListIds),
+      this.vocabularyListRepository().vocabularyListLoader().findAll(incorrectVocabularyListIds),
+    ])
+
+    const updatedCorrectVocabularyLists = correctVocabularyLists.map(vl => {
+      const nextPriority = this.calculateCorrectNextPriority(vl.priority)
+      return new VocabularyListEntity(
+        vl.vocaListId, vl.userId, vl.vocaId, vl.meaning, nextPriority, vl.createdAt, vl.contextSentence
+      )
+    })
+
+    const updatedIncorrectVocabularyLists = incorrectVocabularyLists.map(vl => {
+      const nextPriority = this.calculateIncorrectNextPriority(vl.priority)
+      return new VocabularyListEntity(
+        vl.vocaListId, vl.userId, vl.vocaId, vl.meaning, nextPriority, vl.createdAt, vl.contextSentence
+      )
+    })
+
+    const updatedVocabularyLists = [...updatedCorrectVocabularyLists, ...updatedIncorrectVocabularyLists]
+
+    // FIXME: performance issue, bulk update
+    await Promise.all(
+      updatedVocabularyLists.map(vl => this.vocabularyListRepository().vocabularyListAction().update(vl))
+    )
+
+    this.userActionLogger().putActionLog(
+      Action.solveCompositeQuizzes, userProduct.productId, quizResult
     )
   }
 

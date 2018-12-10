@@ -10,6 +10,7 @@ export enum Action {
   getSimpleQuizzes      = 'get-simple-quizzes',
   getCompositeQuizzes   = 'get-composite-quizzes',
   solveSimpleQuizzes    = 'solve-simple-quizzes',
+  solveCompositeQuizzes = 'solve-composite-quizzes',
 }
 
 export interface IUserActionLoggerObject {

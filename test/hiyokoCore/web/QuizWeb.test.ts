@@ -95,4 +95,25 @@ describe('/quizzes', () => {
 
     // TODO: with parameter should be tested
   })
+
+  describe('POST /quizzes/composite/result', () => {
+    it('should successfully update composite quizzes result with empty payload', async () => {
+      const payload = {
+        userId,
+        total: 4,
+        correct: 2,
+        incorrect: 2,
+        detail: []
+      }
+      const res = await request(app)
+        .post('/quizzes/composite/result')
+        .send(payload)
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      expect(res.body.result).to.be.equal('success')
+    })
+
+    // TODO: with parameter should be tested
+  })
 })

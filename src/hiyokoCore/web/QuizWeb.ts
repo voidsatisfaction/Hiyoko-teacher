@@ -1,7 +1,7 @@
 import * as express from 'express'
 import { validationResult, check } from 'express-validator/check'
 
-import { QuizApplication, SimpleQuiz } from '../application/QuizApplication';
+import { QuizApplication, SimpleQuiz, Quiz } from '../application/QuizApplication';
 import { QuizResultApplication, QuizResult } from '../application/QuizResultApplication';
 
 const QuizRouter = express.Router()
@@ -70,6 +70,33 @@ QuizRouter.post('/simple/result', [
 
     res.json({ result: 'success' })
   } catch(e) {
+    console.error(e)
+    res.status(500).json({ error: e.toString() })
+  }
+})
+
+QuizRouter.post('/composite/result', [
+  check('userId').isString(),
+  check('total').isNumeric(),
+  check('correct').isNumeric(),
+  check('incorrect').isNumeric(),
+  check('detail').isArray()
+], async (req: express.Request, res: express.Response) => {
+  try {
+    const bodyErrors = validationResult(req)
+    if (!bodyErrors.isEmpty()) {
+      return res.status(400).json({ errors: bodyErrors.array() })
+    }
+
+    const { userId, total, correct, incorrect, detail } = req.body
+
+    const quizResult = new QuizResult<Quiz>(total, correct, incorrect, detail)
+    const quizResultApplication = new QuizResultApplication(userId)
+
+    await quizResultApplication.updateCompositeQuizResult(quizResult)
+
+    res.json({ result: 'success' })
+  } catch (e) {
     console.error(e)
     res.status(500).json({ error: e.toString() })
   }
