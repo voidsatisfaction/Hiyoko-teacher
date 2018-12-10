@@ -127,7 +127,7 @@
         const { problem, answer } = simpleQuiz
         this[`$problemSection${i}`].innerHTML = `
           <label id="problem${i}-label" for="problem${i}">${problem}</label>
-          <input id="problem${i}-input" type="text" class="form-control" data-answer="${answer}">
+          <input id="problem${i}-input" type="text" class="form-control" data-answer="${answer}" autocapitalize="none">
         `
       })
     }
