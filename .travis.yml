@@ -9,13 +9,14 @@ services:
 cache:
   - "node_modules"
 before_install:
-  - sudo ln -f -s /usr/share/zoneinfo/Japan /etc/localtime
   - touch .env.dev
   - sh script/ci.sh
 install:
   - npm i -g npx
   - npm i
 before_script:
+  - sudo ln -f -s /usr/share/zoneinfo/Japan /etc/localtime
+  - date
   - sh script/setup_local_db.sh
 script:
   - npm test
