@@ -73,7 +73,9 @@ describe('UserVocabularyListAddedCount repository test', () => {
 
       now.restore()
 
-      const dates = DateUtil.getThisWeekDateString(now.Date())
+      const dates = DateUtil.getThisWeekDateStrings(now.Date())
+
+      console.log(dates)
 
       const userVocabularyListAddedCounts = await userVocabularyListAddedCountLoader.findAll(userEntity.userId, dates)
 

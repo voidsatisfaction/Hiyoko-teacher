@@ -1,6 +1,6 @@
 export type DateString = string
 
-export function getThisWeekDateString(date: Date): DateString[] {
+export function getThisWeekDateStrings(date: Date): DateString[] {
   const thisWeekDateStrings = []
 
   // JST based mondayDate
