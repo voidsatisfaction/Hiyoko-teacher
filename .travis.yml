@@ -10,14 +10,12 @@ cache:
   - "node_modules"
 before_install:
   - touch .env.dev
-  - export TZ=Japan
   - sh script/ci.sh
 install:
   - npm i -g npx
   - npm i
 before_script:
-  - echo 'Asia/Japan' | sudo tee /etc/timezone
-  - sudo dpkg-reconfigure --frontend noninteractive tzdata
+  - export TZ=Japan
   - date
   - sh script/setup_local_db.sh
 script:
