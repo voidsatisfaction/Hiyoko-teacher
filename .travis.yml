@@ -9,6 +9,7 @@ services:
 cache:
   - "node_modules"
 before_install:
+  - sudo ln -f -s /usr/share/zoneinfo/Japan /etc/localtime
   - touch .env.dev
   - sh script/ci.sh
 install:

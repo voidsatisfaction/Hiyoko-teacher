@@ -142,8 +142,6 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
           type: this.dbc.QueryTypes.INSERT
         })
 
-        console.log('test')
-
         await this.dbc.query(`
           INSERT INTO Vocabulary_lists_added_count
             (userId, date, count)
