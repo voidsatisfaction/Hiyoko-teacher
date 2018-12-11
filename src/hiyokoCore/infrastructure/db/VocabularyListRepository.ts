@@ -4,6 +4,7 @@ import { IVocabularyListRepository, IVocabularyListLoader, IVocabularyListAction
 import { UserEntity } from "../../domain/model/User"
 import { VocabularyEntity } from "../../domain/model/Vocabulary"
 import { IDbClient } from "../../interface/infrastructure/db"
+import { CountCategory } from "../../domain/model/CountSummary";
 
 export class VocabularyListRepositoryComponent {
   dbc: IDbClient
@@ -143,16 +144,17 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
         })
 
         await this.dbc.query(`
-          INSERT INTO Vocabulary_lists_added_count
-            (userId, date, count)
+          INSERT INTO Count_summary_table
+            (userId, countCategory, date, count)
           VALUES
-            (:userId, :date, :count)
+            (:userId, :countCategory, :date, :count)
           ON DUPLICATE KEY UPDATE
             count = count + 1
         `, {
           transaction: t,
           replacements: {
             userId: userEntity.userId,
+            countCategory: CountCategory.addingVocabularyList,
             date: createdAt,
             count: 1
           },

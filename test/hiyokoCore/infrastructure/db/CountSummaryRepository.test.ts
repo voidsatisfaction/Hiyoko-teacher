@@ -5,9 +5,9 @@ import { UserEntityMock, VocabularyEntityMock } from "../../../helper/factory"
 import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client';
 import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db';
 import { VocabularyListRepositoryComponent } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
-import { UserVocabularyListAddedCountRepositoryComponent } from '../../../../src/hiyokoCore/infrastructure/db/UserVocabularyListAddedCountRepository';
+import { CountSummaryRepositoryComponent } from '../../../../src/hiyokoCore/infrastructure/db/CountSummaryRepository';
 import * as DateUtil from '../../../../src/util/Date'
-import { UserVocabularyListAddedCountEntity } from '../../../../src/hiyokoCore/domain/model/UserVocabularyListAddedCount';
+import { CountSummaryEntity, CountCategory } from '../../../../src/hiyokoCore/domain/model/CountSummary';
 
 class VocabularyListRepositoryTest extends VocabularyListRepositoryComponent {
   readonly dbc: IDbClient
@@ -17,7 +17,7 @@ class VocabularyListRepositoryTest extends VocabularyListRepositoryComponent {
   }
 }
 
-class UserVocabularyListAddedCountRepositoryTest extends UserVocabularyListAddedCountRepositoryComponent {
+class CountSummaryRepositoryTest extends CountSummaryRepositoryComponent {
   readonly dbc: IDbClient
   constructor(dbc: IDbClient) {
     super()
@@ -25,13 +25,13 @@ class UserVocabularyListAddedCountRepositoryTest extends UserVocabularyListAdded
   }
 }
 
-describe('UserVocabularyListAddedCount repository test', () => {
+describe('CountSummary repository test', () => {
   const dbc = new DbClient()
   const vocabularyListRepository = new VocabularyListRepositoryTest(dbc)
   const vocabularyListAction = vocabularyListRepository.vocabularyListRepository().vocabularyListAction()
 
-  const userVocabularyListAddedCountRepository = new UserVocabularyListAddedCountRepositoryTest(dbc)
-  const userVocabularyListAddedCountLoader = userVocabularyListAddedCountRepository.userVocabularyListAddedCountRepository().userVocabulayListAddedCountLoader()
+  const countSummaryRepository = new CountSummaryRepositoryTest(dbc)
+  const countSummaryLoader = countSummaryRepository.countSummaryRepository().countSummaryLoader()
 
   beforeEach(async () => {
     await Promise.all([
@@ -66,7 +66,7 @@ describe('UserVocabularyListAddedCount repository test', () => {
         userEntity, vocabularyEntity1, meaning1, contextSentence1, contextPictureURL1, priority1
       )
 
-      now.tick(24 * 60 * 60 * 1000)
+      now.tick(48 * 60 * 60 * 1000)
       await vocabularyListAction.create(
         userEntity, vocabularyEntity1, meaning1, contextSentence1, contextPictureURL1, priority1
       )
@@ -75,13 +75,17 @@ describe('UserVocabularyListAddedCount repository test', () => {
 
       const dates = DateUtil.getThisWeekDateStrings(now.Date())
 
-      const userVocabularyListAddedCounts = await userVocabularyListAddedCountLoader.findAll(userEntity.userId, dates)
+      const countSummaries = await countSummaryLoader.findAll(userEntity.userId, CountCategory.addingVocabularyList, dates)
 
-      expect(userVocabularyListAddedCounts.length).to.be.equal(3)
-      expect(userVocabularyListAddedCounts[0]).to.be.instanceOf(UserVocabularyListAddedCountEntity)
-      expect(userVocabularyListAddedCounts[0].count).to.be.equal(2)
-      expect(userVocabularyListAddedCounts[1].count).to.be.equal(1)
-      expect(userVocabularyListAddedCounts[2].count).to.be.equal(1)
+      expect(countSummaries.length).to.be.equal(7)
+      expect(countSummaries[0]).to.be.instanceOf(CountSummaryEntity)
+      expect(countSummaries[0].count).to.be.equal(2)
+      expect(countSummaries[1].count).to.be.equal(1)
+      expect(countSummaries[2].count).to.be.equal(0)
+      expect(countSummaries[3].count).to.be.equal(1)
+      expect(countSummaries[4].count).to.be.equal(0)
+      expect(countSummaries[5].count).to.be.equal(0)
+      expect(countSummaries[6].count).to.be.equal(0)
     })
   })
 

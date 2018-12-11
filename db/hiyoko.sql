@@ -42,12 +42,13 @@ CREATE TABLE Hiyoko_core.Vocabulary_lists (
   KEY `createdAt` (`createdAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS Hiyoko_core.Vocabulary_lists_added_count;
-CREATE TABLE Hiyoko_core.Vocabulary_lists_added_count (
+DROP TABLE IF EXISTS Hiyoko_core.Count_summary_table;
+CREATE TABLE Hiyoko_core.Count_summary_table (
   `userId` VARCHAR(50) NOT NULL,
+  `countCategory` ENUM('adding_vocabulary_list', 'taking_quiz'),
   `date` DATE NOT NULL,
   `count` BIGINT unsigned NOT NULL,
-  PRIMARY KEY (`userId`, `date`),
+  PRIMARY KEY (`userId`, `countCategory`, `date`),
   KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
