@@ -9,7 +9,7 @@ services:
 cache:
   - "node_modules"
 before_install:
-  - export TZ=Japan
+  - export TZ=Asia/Japan
   - touch .env.dev
   - sh script/ci.sh
 install:
