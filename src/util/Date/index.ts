@@ -12,7 +12,7 @@ export function getThisWeekDateStrings(date: Date): DateString[] {
     thisWeekDateStrings.push(date)
   }
 
-  return thisWeekDateStrings.map((date: Date) => date.toLocaleDateString())
+  return thisWeekDateStrings.map((date: Date) => date.toLocaleDateString().split('/').join('-'))
 }
 
 export function getThisWeekMondayDate(date: Date): Date {
