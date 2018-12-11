@@ -77,6 +77,8 @@ describe('UserVocabularyListAddedCount repository test', () => {
 
       const userVocabularyListAddedCounts = await userVocabularyListAddedCountLoader.findAll(userEntity.userId, dates)
 
+      console.log(userVocabularyListAddedCounts)
+
       expect(userVocabularyListAddedCounts.length).to.be.equal(3)
       expect(userVocabularyListAddedCounts[0]).to.be.instanceOf(UserVocabularyListAddedCountEntity)
       expect(userVocabularyListAddedCounts[0].count).to.be.equal(2)
