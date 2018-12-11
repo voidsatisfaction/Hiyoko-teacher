@@ -81,6 +81,17 @@ functions:
           path: hiyokoSensei/api/quizzes/composite
           method: post
           cors: true
+  hiyokoSenseiLiff-UserSetting:
+    handler: src/hiyokoMantle/web/liff/userSetting.handler
+    events:
+      - http:
+          path: hiyokoSensei/liff/userSetting/home
+          method: get
+          cors: true
+      - http:
+          path: hiyokoSensei/liff/userSetting/planning
+          method: get
+          cors: true
   # For push message
   # FIXME: This setting makes two pushers(DEV / PROD)
   hiyokoSenseiPusher:
