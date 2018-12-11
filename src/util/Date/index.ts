@@ -12,7 +12,8 @@ export function getThisWeekDateStrings(date: Date): DateString[] {
     thisWeekDateStrings.push(date)
   }
 
-  return thisWeekDateStrings.map((date: Date) => date.toLocaleDateString().split('/').reverse().join('-'))
+  // FIXME: UTC -> 06/03/2018, JST -> 2018-10-11
+  return thisWeekDateStrings.map((date: Date) => swap(date.toLocaleDateString().split('/').reverse(), 1, 2).join('-'))
 }
 
 export function getThisWeekMondayDate(date: Date): Date {
@@ -24,4 +25,17 @@ export function getThisWeekMondayDate(date: Date): Date {
   }
 
   return newDate
+}
+
+function swap(array: Array<any>, i: number, j: number): Array<any> {
+  let temp: any
+  return array.map((e, k) => {
+    if (k === i) {
+      temp = e
+      return array[j]
+    } else if (k === j) {
+      return temp
+    }
+    return e
+  })
 }
