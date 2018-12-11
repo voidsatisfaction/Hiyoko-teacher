@@ -122,25 +122,47 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       createdAt = createdAt || new Date()
       priority = priority || 100
 
-      const res = await this.dbc.query(`
-        INSERT INTO Vocabulary_lists
-          (userId, vocaId, meaning, contextSentence, contextPictureURL, createdAt, priority)
-        VALUES
-          (:userId, :vocaId, :meaning, :contextSentence, :contextPictureURL, :createdAt, :priority)
-      `, {
-        replacements: {
-          userId: userEntity.userId,
-          vocaId: vocabularyEntity.vocaId,
-          meaning,
-          contextSentence,
-          contextPictureURL: contextPictureURL || null,
-          priority,
-          createdAt
-        },
-        type: this.dbc.QueryTypes.INSERT
-      })
+      const vocaListId = await this.dbc.transaction(async (t) => {
+        const res = await this.dbc.query(`
+          INSERT INTO Vocabulary_lists
+            (userId, vocaId, meaning, contextSentence, contextPictureURL, createdAt, priority)
+          VALUES
+            (:userId, :vocaId, :meaning, :contextSentence, :contextPictureURL, :createdAt, :priority)
+        `, {
+          transaction: t,
+          replacements: {
+            userId: userEntity.userId,
+            vocaId: vocabularyEntity.vocaId,
+            meaning,
+            contextSentence,
+            contextPictureURL: contextPictureURL || null,
+            priority,
+            createdAt
+          },
+          type: this.dbc.QueryTypes.INSERT
+        })
 
-      const vocaListId = res[0]
+        await this.dbc.query(`
+          INSERT INTO Vocabulary_lists_added_count
+            (userId, date, count)
+          VALUES
+            (:userId, :date, :count)
+          ON DUPLICATE KEY UPDATE
+            count = count + 1
+        `, {
+          transaction: t,
+          replacements: {
+            userId: userEntity.userId,
+            date: createdAt,
+            count: 1
+          },
+          type: this.dbc.QueryTypes.INSERT
+        })
+
+        const vocaListId = res[0]
+
+        return vocaListId
+      })
 
       return await this.find(vocaListId)
     }

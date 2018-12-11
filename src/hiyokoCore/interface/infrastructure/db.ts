@@ -8,4 +8,5 @@ export interface IDbClient {
 
   close(): Promise<void>
   truncateTable(tableName: any): Promise<void>
+  transaction(callback): Promise<any>
 }

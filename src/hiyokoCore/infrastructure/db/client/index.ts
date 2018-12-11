@@ -68,6 +68,10 @@ export class DbClient implements IDbClient {
     this.QueryTypes = this.hiyokoCoreDB.QueryTypes
   }
 
+  async transaction(callback: (t) => Promise<any>): Promise<any> {
+    return await this.hiyokoCoreDB.transaction(callback)
+  }
+
   async query(sql: string, placeholders: object) {
     return await this.hiyokoCoreDB.query(sql, placeholders)
   }
