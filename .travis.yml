@@ -10,6 +10,7 @@ cache:
   - "node_modules"
 before_install:
   - touch .env.dev
+  - export TZ=Japan
   - sh script/ci.sh
 install:
   - npm i -g npx
