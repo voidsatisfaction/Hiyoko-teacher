@@ -50,3 +50,5 @@ CREATE TABLE Hiyoko_core.Vocabulary_lists_added_count (
   PRIMARY KEY (`userId`, `date`),
   KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+SHOW TABLES;
