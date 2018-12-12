@@ -2,7 +2,7 @@ import { RepositoryBase } from "./RepositoryBase"
 import { IDbClient } from "../../interface/infrastructure/db"
 import { ICountSummaryRepository, ICountSummaryLoader } from "../../domain/repository/CountSummaryRepository"
 import { CountSummaryEntity, CountCategory } from "../../domain/model/CountSummary"
-import { DateString, DateTime } from "../../../util/Date";
+import { DateString, DateTime } from "../../../util/DateTime"
 
 export class CountSummaryRepositoryComponent {
   dbc: IDbClient

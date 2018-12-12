@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { DateTime } from '../../../src/util/Date'
+import { DateTime } from '../../../src/util/DateTime'
 
 describe('Util/DateTime', () => {
   describe('appropriate timezone', () => {

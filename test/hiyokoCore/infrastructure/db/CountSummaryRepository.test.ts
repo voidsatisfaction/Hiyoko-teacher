@@ -6,7 +6,7 @@ import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client';
 import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db';
 import { VocabularyListRepositoryComponent } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
 import { CountSummaryRepositoryComponent } from '../../../../src/hiyokoCore/infrastructure/db/CountSummaryRepository';
-import { DateTime } from '../../../../src/util/Date'
+import { DateTime } from '../../../../src/util/DateTime'
 import { CountSummaryEntity, CountCategory } from '../../../../src/hiyokoCore/domain/model/CountSummary';
 
 class VocabularyListRepositoryTest extends VocabularyListRepositoryComponent {

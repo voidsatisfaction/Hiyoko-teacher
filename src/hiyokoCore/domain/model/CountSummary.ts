@@ -1,4 +1,4 @@
-import { DateTime } from "../../../util/Date";
+import { DateTime } from "../../../util/DateTime";
 
 export enum CountCategory {
   addingVocabularyList = 'adding_vocabulary_list',
