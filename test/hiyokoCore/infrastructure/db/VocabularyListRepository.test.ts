@@ -74,6 +74,8 @@ describe('VocabularyList repository test', () => {
 
       const vocabularyLists = await vocabularyListLoader.findAllByUser(userEntity)
 
+      now.restore()
+
       expect(vocabularyLists.length).to.be.equal(2)
       expect(vocabularyLists[0]).to.be.instanceof(VocabularyListEntity)
       expect(vocabularyLists[0]).to.be.deep.equal(createdVocabularyListEntity2)
@@ -149,7 +151,7 @@ describe('VocabularyList repository test', () => {
         createdVocabularyListEntity.vocaId,
         meaning2,
         priority2,
-        new Date(),
+        new DateTime(),
         contextSentence2,
         contextPictureURL2
       )

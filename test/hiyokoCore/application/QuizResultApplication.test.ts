@@ -34,16 +34,16 @@ class QuizResultApplicationTest extends QuizResultApplication {
           const contextSentence = 'contextSentence'
 
           now.tick(0)
-          const createdAt1 = new Date()
+          const createdAt1 = new DateTime()
 
           now.tick(10 * 1000)
-          const createdAt2 = new Date()
+          const createdAt2 = new DateTime()
 
           now.tick(10 * 1000)
-          const createdAt3 = new Date()
+          const createdAt3 = new DateTime()
 
           now.tick(10 * 1000)
-          const createdAt4 = new Date()
+          const createdAt4 = new DateTime()
 
           now.restore()
 

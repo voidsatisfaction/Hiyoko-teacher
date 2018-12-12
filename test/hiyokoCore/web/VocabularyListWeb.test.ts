@@ -7,7 +7,7 @@ import { DateTime } from '../../../src/util/DateTime';
 
 describe('/vocabularyLists', () => {
 
-  const userId = '12312sadfadf3123'
+  const userId = '12312sadfadf3123123123'
   const productId = 1
   const userId2 = 'lskadmflmwkel12930u'
   const productId2 = 2

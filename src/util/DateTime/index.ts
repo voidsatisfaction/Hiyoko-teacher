@@ -5,6 +5,7 @@ moment().tz('Asia/Tokyo').format()
 
 export type DateString = string
 
+// By default, this is Asia/Tokyo timezone
 export class DateTime {
   private value: moment.Moment
 
@@ -58,14 +59,15 @@ export class DateTime {
   }
 
   toDateTimeString(): string {
-    return this.value.format('YYYY-MM-DDTHH:mm:ss.SSSZ')
+    return this.value.format('YYYY-MM-DDTHH:mm:ss.SSS')
   }
 
   toDateString(): string {
     return this.value.format('YYYY-MM-DD')
   }
 
+  // changed to UTC timezone Date object so, -9 hours
   toDate(): Date {
-    return this.value.add(9, 'hours').toDate()
+    return this.value.toDate()
   }
 }
