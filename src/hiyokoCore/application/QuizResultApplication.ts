@@ -13,6 +13,10 @@ import { SimpleQuiz, Quiz } from "./QuizApplication";
 import { VocabularyListEntity } from "../domain/model/VocabularyList";
 import { UserActionLogHelperComponent, IUserActionLoggerObject, Action } from "./helper/UserActionLogHelper";
 import { UserEntity, UserProductEntity } from "../domain/model/User";
+import { CountSummaryRepositoryComponent } from "../infrastructure/db/CountSummaryRepository";
+import { ICountSummaryRepository } from "../domain/repository/CountSummaryRepository";
+import { CountCategory } from "../domain/model/CountSummary";
+import { DateTime } from "../../util/DateTime";
 
 export interface IQuizResult<Q> {
   total: number
@@ -54,6 +58,7 @@ export class QuizResultApplication
     LoggerDBClientComponent,
     UserHelperComponent,
     UserActionLogHelperComponent,
+    CountSummaryRepositoryComponent,
     VocabularyListRepositoryComponent
   {
 
@@ -70,6 +75,8 @@ export class QuizResultApplication
   userRepository: () => IUserRepository
   userProductRepository: () => IUserProductRepository
   userProductRelation: () => IUserProductRelationObject
+
+  countSummaryRepository: () => ICountSummaryRepository
 
   vocabularyListRepository: () => IVocabularyListRepository
 
@@ -113,6 +120,8 @@ export class QuizResultApplication
       updatedVocabularyLists.map(vl => this.vocabularyListRepository().vocabularyListAction().update(vl))
     )
 
+    await this.countSummaryRepository().countSummaryAction().createOrUpdate(user, CountCategory.takingQuiz, new DateTime())
+
     this.userActionLogger().putActionLog(
       Action.solveSimpleQuizzes, userProduct.productId, simpleQuizResult
     )
@@ -152,6 +161,8 @@ export class QuizResultApplication
       updatedVocabularyLists.map(vl => this.vocabularyListRepository().vocabularyListAction().update(vl))
     )
 
+    await this.countSummaryRepository().countSummaryAction().createOrUpdate(user, CountCategory.takingQuiz, new DateTime())
+
     this.userActionLogger().putActionLog(
       Action.solveCompositeQuizzes, userProduct.productId, quizResult
     )
@@ -173,6 +184,7 @@ applyMixins(
     LoggerDBClientComponent,
     UserHelperComponent,
     UserActionLogHelperComponent,
+    CountSummaryRepositoryComponent,
     VocabularyListRepositoryComponent
   ]
 )
