@@ -18,7 +18,7 @@ VocabularyListRouter.get('/:userId/all', [
     const vocabularyListApplication = new VocabularyListApplication(userId)
     const userVocabularyLists = await vocabularyListApplication.getUserVocabularyLists()
 
-    res.json(userVocabularyLists)
+    res.json(userVocabularyLists.map(vl => vl.toJSON()))
   } catch(e) {
     res.status(500).json({ error: e.toString() })
   }
@@ -44,7 +44,7 @@ VocabularyListRouter.post('/', [
     const vocabularyListApplication = new VocabularyListApplication(userId)
     const vocabularyList = await vocabularyListApplication.addVocabularyToList(name, meaning, contextSentence)
 
-    res.json({ vocabularyList })
+    res.json({ vocabularyList: vocabularyList.toJSON() })
   } catch(e) {
     return res.status(e.statusCode || 500).json({ error: e.toString() })
   }

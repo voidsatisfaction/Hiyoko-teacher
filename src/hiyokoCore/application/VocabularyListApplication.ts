@@ -14,6 +14,7 @@ import { ILoggerDBClient } from "../interface/infrastructure/LoggerDB";
 import { UserActionLogHelperComponent, IUserActionLoggerObject, Action } from "./helper/UserActionLogHelper";
 import { IUserProductRepository } from "../domain/repository/UserProductRepository";
 import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
+import { DateTime } from "../../util/DateTime";
 
 export class VocabularyList {
   readonly userId: string
@@ -22,6 +23,7 @@ export class VocabularyList {
   readonly meaning: string
   readonly contextSentence: string
   readonly priority: number
+  readonly createdAt: DateTime
 
   constructor(
     userId: string,
@@ -29,7 +31,8 @@ export class VocabularyList {
     name: string,
     meaning: string,
     contextSentence: string,
-    priority: number
+    priority: number,
+    createdAt: DateTime
   ) {
     this.userId = userId
     this.vocaListId = vocaListId
@@ -37,6 +40,19 @@ export class VocabularyList {
     this.meaning = meaning
     this.contextSentence = contextSentence
     this.priority = priority
+    this.createdAt = createdAt
+  }
+
+  toJSON() {
+    return ({
+      userId: this.userId,
+      vocaListId: this.vocaListId,
+      name: this.name,
+      meaning: this.meaning,
+      contextSentence: this.contextSentence,
+      priority: this.priority,
+      createdAt: this.createdAt.toDateTimeString()
+    })
   }
 }
 
@@ -89,7 +105,7 @@ export class VocabularyListApplication
         )
 
         this.userActionLogger().putActionLog(
-          Action.addVocabularyList, userProduct.productId, vocabularyList.toLogObject()
+          Action.addVocabularyList, userProduct.productId, vocabularyList.toJSON()
         )
 
         return new VocabularyList(
@@ -98,7 +114,8 @@ export class VocabularyListApplication
           vocabulary.name,
           vocabularyList.meaning,
           vocabularyList.contextSentence,
-          vocabularyList.priority
+          vocabularyList.priority,
+          vocabularyList.createdAt
         )
       } catch(e) {
         throw e
@@ -120,7 +137,11 @@ export class VocabularyListApplication
           Action.readVocabularyLists, userProduct.productId
         )
 
-        return vocabularyLists
+        return vocabularyLists.map(
+          vl => new VocabularyList(
+            vl.userId, vl.vocaListId, vl.name, vl.meaning, vl.contextSentence, vl.priority, vl.createdAt
+          )
+        )
       } catch(e) {
         throw e
       } finally {
@@ -142,7 +163,7 @@ export class VocabularyListApplication
         }
 
         this.userActionLogger().putActionLog(
-          Action.deleteVocabularyList, userProduct.productId, vocabularyList.toLogObject()
+          Action.deleteVocabularyList, userProduct.productId, vocabularyList.toJSON()
         )
 
       } catch(e) {

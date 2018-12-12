@@ -30,7 +30,7 @@ export class VocabularyListEntity {
     this.contextPictureURL = contextPictureURL
   }
 
-  toLogObject() {
+  toJSON() {
     return ({
       vocaListId: this.vocaListId,
       userId: this.userId,
