@@ -2,6 +2,7 @@ import { RepositoryBase } from './RepositoryBase'
 import { IUserRepository, IUserBootstrap, IUserLoader } from '../../domain/repository/UserRepository'
 import { UserEntity } from '../../domain/model/User'
 import { IDbClient } from '../../interface/infrastructure/db';
+import { DateTime } from '../../../util/DateTime';
 
 export class UserRepositoryComponent {
   dbc: IDbClient
@@ -26,7 +27,7 @@ class UserDB extends RepositoryBase<UserEntity> implements IUserBootstrap, IUser
     data: any[],
     UserEntityClass: { new(...args: any[]): UserEntity }
   ): UserEntity[] {
-    return data.map(d => new UserEntityClass(d.userId, d.userCreatedAt))
+    return data.map(d => new UserEntityClass(d.userId, new DateTime(d.createdAt)))
   }
 
   async findOrCreate(userId: string): Promise<UserEntity> {

@@ -33,8 +33,8 @@ describe('User application test', () => {
       const userApplication = new UserApplication(userId)
       const users = await userApplication.adminListAll()
 
-      const sortedFoundUsers = users.sort((a, b) => (a.userId >= b.userId) ? 1 : 0)
-      const sortedCreatedUsers = [user1, user2, user3].sort((a, b) => (a.userId >= b.userId) ? 1 : 0)
+      const sortedFoundUsers = users.sort((a, b) => (a.userId >= b.userId) ? 1 : 0).map(user => user.userId)
+      const sortedCreatedUsers = [user1, user2, user3].sort((a, b) => (a.userId >= b.userId) ? 1 : 0).map(user => user.userId)
 
       expect(sortedFoundUsers).to.be.deep.equal(sortedCreatedUsers)
     })
