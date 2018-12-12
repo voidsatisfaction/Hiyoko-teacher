@@ -10,6 +10,7 @@ import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db'
 import { VocabularyRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
 import { VocabularyListRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
 import { UserProductRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/UserProductImplement';
+import { DateTime } from '../../../src/util/DateTime';
 
 class UserRepositoryMock extends UserRepositoryComponent {
   constructor(dbc: IDbClient) {
@@ -39,9 +40,9 @@ export const UserEntityPersistMock = async (dbc: IDbClient, userId?: string, cre
   return user
 }
 
-export const UserEntityMock = (userId?: string, createdAt?: Date): UserEntity => {
+export const UserEntityMock = (userId?: string, createdAt?: DateTime): UserEntity => {
   userId = userId || Random.alphaNumeric(10)
-  createdAt = createdAt || new Date()
+  createdAt = createdAt || new DateTime()
 
   return new UserEntity(userId, createdAt)
 }

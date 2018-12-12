@@ -6,6 +6,7 @@ import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db';
 import { ILoggerDBClient } from '../../../src/hiyokoCore/interface/infrastructure/LoggerDB';
 import { VocabularyListEntityPersistMock, UserEntityMock, UserEntityPersistMock } from '../../helper/factory';
 import { SimpleQuiz } from '../../../src/hiyokoCore/application/QuizApplication';
+import { DateTime } from '../../../src/util/DateTime';
 
 class QuizResultApplicationTest extends QuizResultApplication {
   readonly dbc: IDbClient
@@ -26,7 +27,7 @@ class QuizResultApplicationTest extends QuizResultApplication {
 
       describe('updateSimpleQuizResult()', async () => {
         it('should properly update quiz result', async () => {
-          const now = sinon.useFakeTimers(new Date())
+          const now = sinon.useFakeTimers(new DateTime().toDate())
           const user = await UserEntityPersistMock(this.dbc, this.userId)
           const name = 'name'
           const meaning = 'meaning'
