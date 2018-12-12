@@ -1,21 +1,25 @@
 import { RepositoryBase } from "./RepositoryBase"
 import { IDbClient } from "../../interface/infrastructure/db"
-import { ICountSummaryRepository, ICountSummaryLoader } from "../../domain/repository/CountSummaryRepository"
+import { ICountSummaryRepository, ICountSummaryLoader, ICountSummaryAction } from "../../domain/repository/CountSummaryRepository"
 import { CountSummaryEntity, CountCategory } from "../../domain/model/CountSummary"
 import { DateString, DateTime } from "../../../util/DateTime"
+import { UserEntity } from "../../domain/model/User";
 
 export class CountSummaryRepositoryComponent {
   dbc: IDbClient
 
   countSummaryRepository(): ICountSummaryRepository {
     return ({
+      countSummaryAction: () => new CountSummaryRepositoryDB(this.dbc),
       countSummaryLoader: () => new CountSummaryRepositoryDB(this.dbc)
     })
   }
 }
 
 class CountSummaryRepositoryDB extends RepositoryBase<CountSummaryEntity>
-  implements ICountSummaryLoader {
+  implements ICountSummaryLoader,
+    ICountSummaryAction
+  {
   readonly dbc: IDbClient
   private readonly tableName: string
   constructor(dbc: IDbClient) {
@@ -33,7 +37,43 @@ class CountSummaryRepositoryDB extends RepositoryBase<CountSummaryEntity>
     ))
   }
 
-  // FIXME: datetime이 맞지 않을 수 있음
+  async createOrUpdate(
+    userEntity: UserEntity,
+    countCategory: CountCategory,
+    dateTime: DateTime
+  ): Promise<void> {
+    await this.dbc.query(`
+      INSERT INTO Count_summary_table
+        (userId, countCategory, date, count)
+      VALUES
+        (:userId, :countCategory, :date, :count)
+      ON DUPLICATE KEY UPDATE
+        count = count + 1
+    `, {
+      replacements: {
+        userId: userEntity.userId,
+        countCategory,
+        date: dateTime.toDateString(),
+        count: 1
+      },
+      type: this.dbc.QueryTypes.INSERT
+    })
+  }
+
+  async find(
+    userId: string,
+    countCategory: CountCategory,
+    date: DateString
+  ): Promise<CountSummaryEntity> {
+    const countSummaryEntities = await this.findAll(
+      userId,
+      countCategory,
+      [ date ]
+    )
+
+    return countSummaryEntities[0]
+  }
+
   async findAll(
     userId: string,
     countCategory: CountCategory,

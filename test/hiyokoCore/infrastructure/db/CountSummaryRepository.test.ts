@@ -32,6 +32,7 @@ describe('CountSummary repository test', () => {
 
   const countSummaryRepository = new CountSummaryRepositoryTest(dbc)
   const countSummaryLoader = countSummaryRepository.countSummaryRepository().countSummaryLoader()
+  const countSummaryAction = countSummaryRepository.countSummaryRepository().countSummaryAction()
 
   beforeEach(async () => {
     await Promise.all([
@@ -40,8 +41,68 @@ describe('CountSummary repository test', () => {
     ])
   })
 
-  describe('create()', () => {
-    it('should create vocabularyList and vocabualryLists added count also increased', async () => {
+  describe('createOrUpdate()', () => {
+    it('should create and increase count of countSummary', async () => {
+      const userEntity1 = UserEntityMock()
+      const dateTime = new DateTime()
+      const dateTimeTomorrow = dateTime.add(1, 'days')
+
+      await countSummaryAction.createOrUpdate(
+        userEntity1,
+        CountCategory.addingVocabularyList,
+        dateTime
+      )
+
+      await countSummaryAction.createOrUpdate(
+        userEntity1,
+        CountCategory.addingVocabularyList,
+        dateTime
+      )
+
+      await countSummaryAction.createOrUpdate(
+        userEntity1,
+        CountCategory.takingQuiz,
+        dateTime
+      )
+
+      await countSummaryAction.createOrUpdate(
+        userEntity1,
+        CountCategory.takingQuiz,
+        dateTimeTomorrow
+      )
+
+      const [countSummary1, countSummary2, countSummary3, countSummary4] = await Promise.all([
+        countSummaryLoader.find(
+          userEntity1.userId,
+          CountCategory.addingVocabularyList,
+          dateTime.toDateString()
+        ),
+        countSummaryLoader.find(
+          userEntity1.userId,
+          CountCategory.takingQuiz,
+          dateTime.toDateString()
+        ),
+        countSummaryLoader.find(
+          userEntity1.userId,
+          CountCategory.takingQuiz,
+          dateTimeTomorrow.toDateString()
+        ),
+        countSummaryLoader.find(
+          userEntity1.userId,
+          CountCategory.addingVocabularyList,
+          dateTimeTomorrow.toDateString()
+        ),
+      ])
+
+      expect(countSummary1.count).to.be.equal(2)
+      expect(countSummary2.count).to.be.equal(1)
+      expect(countSummary3.count).to.be.equal(1)
+      expect(countSummary4.count).to.be.equal(0)
+    })
+  })
+
+  describe('findAll()', () => {
+    it('should findAll countSummary added count which was increased', async () => {
       const now = sinon.useFakeTimers(DateTime.getThisWeekMondayDateTime(new DateTime()).toDate())
 
       const userEntity = UserEntityMock()

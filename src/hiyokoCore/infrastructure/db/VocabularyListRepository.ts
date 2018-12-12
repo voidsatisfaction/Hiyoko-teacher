@@ -156,7 +156,7 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
           replacements: {
             userId: userEntity.userId,
             countCategory: CountCategory.addingVocabularyList,
-            date: createdAt.toDateTimeString(),
+            date: createdAt.toDateString(),
             count: 1
           },
           type: this.dbc.QueryTypes.INSERT

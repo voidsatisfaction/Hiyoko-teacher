@@ -54,8 +54,9 @@ export class DateTime {
   }
 
   add(amount: number, b: 'days' | 'hours' | 'minutes' | 'seconds'): DateTime {
-    this.value.add(amount, b)
-    return new DateTime(this)
+    const that = new DateTime(this)
+    that.value.add(amount, b)
+    return that
   }
 
   toDateTimeString(): string {
