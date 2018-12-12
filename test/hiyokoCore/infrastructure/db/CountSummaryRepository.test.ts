@@ -75,19 +75,19 @@ describe('CountSummary repository test', () => {
 
       const dates = DateUtil.getThisWeekDateStrings(now.Date())
 
-      const countSummaries = await countSummaryLoader.findAll(userEntity.userId, CountCategory.addingVocabularyList, dates)
+      const addingVocabularyListCounts = await countSummaryLoader.findAll(userEntity.userId, CountCategory.addingVocabularyList, dates)
 
-      console.log(countSummaries)
+      console.log(addingVocabularyListCounts)
 
-      expect(countSummaries.length).to.be.equal(7)
-      expect(countSummaries[0]).to.be.instanceOf(CountSummaryEntity)
-      expect(countSummaries[0].count).to.be.equal(2)
-      expect(countSummaries[1].count).to.be.equal(1)
-      expect(countSummaries[2].count).to.be.equal(0)
-      expect(countSummaries[3].count).to.be.equal(1)
-      expect(countSummaries[4].count).to.be.equal(0)
-      expect(countSummaries[5].count).to.be.equal(0)
-      expect(countSummaries[6].count).to.be.equal(0)
+      expect(addingVocabularyListCounts.length).to.be.equal(7)
+      expect(addingVocabularyListCounts[0]).to.be.instanceOf(CountSummaryEntity)
+      expect(addingVocabularyListCounts[0].count).to.be.equal(2)
+      expect(addingVocabularyListCounts[1].count).to.be.equal(1)
+      expect(addingVocabularyListCounts[2].count).to.be.equal(0)
+      expect(addingVocabularyListCounts[3].count).to.be.equal(1)
+      expect(addingVocabularyListCounts[4].count).to.be.equal(0)
+      expect(addingVocabularyListCounts[5].count).to.be.equal(0)
+      expect(addingVocabularyListCounts[6].count).to.be.equal(0)
     })
   })
 

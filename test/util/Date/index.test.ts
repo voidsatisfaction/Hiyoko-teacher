@@ -8,7 +8,13 @@ describe('Util/DateTime', () => {
 
       const dateTimeWithParameter = new DateTime(new Date)
 
-      console.log(dateTime, dateTimeWithParameter)
+      const dateTimeWithStringParamter = new DateTime('2018-12-12T13:00:40.000+09:00')
+
+      expect(dateTime).to.be.instanceOf(DateTime)
+      expect(dateTimeWithParameter).to.be.instanceOf(DateTime)
+      expect(dateTimeWithStringParamter).to.be.instanceOf(DateTime)
+      expect(dateTimeWithStringParamter.toDateString()).to.be.equal('2018-12-12')
+      expect(dateTimeWithStringParamter.toDateTimeString()).to.be.equal('2018-12-12T13:00:40.000+09:00')
     })
   })
 })

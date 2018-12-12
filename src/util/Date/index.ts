@@ -15,11 +15,15 @@ export class DateTime {
   }
 
   toDateTimeString(): string {
-    return this.value.toISOString()
+    return this.value.format('YYYY-MM-DDTHH:mm:ss.SSSZ')
   }
 
   toDateString(): string {
     return this.value.format('YYYY-MM-DD')
+  }
+
+  toDate(): Date {
+    return this.value.toDate()
   }
 }
 
@@ -43,9 +47,6 @@ export function getThisWeekDateStrings(date: Date): DateString[] {
 
 export function getThisWeekMondayDate(date: Date): Date {
   const momentDate = moment(date)
-  console.log(date.toISOString())
-  console.log(momentDate)
-  console.log(momentDate.weekday())
   const day = date.getDay() || 7
   const newDate = new Date(date)
   if (day !== 1) {

@@ -2,7 +2,7 @@ import { RepositoryBase } from "./RepositoryBase"
 import { IDbClient } from "../../interface/infrastructure/db"
 import { ICountSummaryRepository, ICountSummaryLoader } from "../../domain/repository/CountSummaryRepository"
 import { CountSummaryEntity, CountCategory } from "../../domain/model/CountSummary"
-import { DateString } from "../../../util/Date";
+import { DateString, DateTime } from "../../../util/Date";
 
 export class CountSummaryRepositoryComponent {
   dbc: IDbClient
@@ -29,7 +29,7 @@ class CountSummaryRepositoryDB extends RepositoryBase<CountSummaryEntity>
     VocabularyListEntityClass: { new(...args: any[]): CountSummaryEntity }
   ): CountSummaryEntity[] {
     return data.map(d => new CountSummaryEntity(
-      d.userId, d.countCategory, new Date(d.date), d.count
+      d.userId, d.countCategory, new DateTime(d.date), d.count
     ))
   }
 
@@ -69,8 +69,8 @@ class CountSummaryRepositoryDB extends RepositoryBase<CountSummaryEntity>
     dates.forEach(date => {
       const userVocabularyListAddedCount = userVocabulryListAddedCounts[i]
 
-      if (i >= userVocabulryListAddedCounts.length || userVocabularyListAddedCount.date.toLocaleDateString() !== date) {
-        newArray.push(new CountSummaryEntity(userId, countCategory, new Date(date), 0))
+      if (i >= userVocabulryListAddedCounts.length || userVocabularyListAddedCount.date.toDateString() !== date) {
+        newArray.push(new CountSummaryEntity(userId, countCategory, new DateTime(date), 0))
       } else {
         newArray.push(userVocabularyListAddedCount)
         i += 1
