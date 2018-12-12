@@ -15,6 +15,8 @@ describe('Util/DateTime', () => {
       expect(dateTimeWithStringParamter).to.be.instanceOf(DateTime)
       expect(dateTimeWithStringParamter.toDateString()).to.be.equal('2018-12-12')
       expect(dateTimeWithStringParamter.toDateTimeString()).to.be.equal('2018-12-12T13:00:40.000+09:00')
+      // with z, parse it as raw data
+      expect(dateTimeWithStringParamter.toDate()).to.be.deep.equal(new Date('2018-12-12T13:00:40.000Z'))
     })
   })
 })

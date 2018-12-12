@@ -6,7 +6,7 @@ import { DbClient } from '../../../../src/hiyokoCore/infrastructure/db/client';
 import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db';
 import { VocabularyListRepositoryComponent } from '../../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
 import { CountSummaryRepositoryComponent } from '../../../../src/hiyokoCore/infrastructure/db/CountSummaryRepository';
-import * as DateUtil from '../../../../src/util/Date'
+import { DateTime } from '../../../../src/util/Date'
 import { CountSummaryEntity, CountCategory } from '../../../../src/hiyokoCore/domain/model/CountSummary';
 
 class VocabularyListRepositoryTest extends VocabularyListRepositoryComponent {
@@ -42,7 +42,7 @@ describe('CountSummary repository test', () => {
 
   describe('create()', () => {
     it('should create vocabularyList and vocabualryLists added count also increased', async () => {
-      const now = sinon.useFakeTimers(DateUtil.getThisWeekMondayDate(new Date()))
+      const now = sinon.useFakeTimers(DateTime.getThisWeekMondayDateTime(new DateTime()).toDate())
 
       const userEntity = UserEntityMock()
       const vocabularyEntity1 = VocabularyEntityMock()
@@ -73,11 +73,9 @@ describe('CountSummary repository test', () => {
 
       now.restore()
 
-      const dates = DateUtil.getThisWeekDateStrings(now.Date())
+      const dates = DateTime.getThisWeekDateStrings(new DateTime(now.Date()))
 
       const addingVocabularyListCounts = await countSummaryLoader.findAll(userEntity.userId, CountCategory.addingVocabularyList, dates)
-
-      console.log(addingVocabularyListCounts)
 
       expect(addingVocabularyListCounts.length).to.be.equal(7)
       expect(addingVocabularyListCounts[0]).to.be.instanceOf(CountSummaryEntity)
