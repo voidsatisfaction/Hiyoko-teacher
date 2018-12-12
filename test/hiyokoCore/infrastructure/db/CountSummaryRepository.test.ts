@@ -77,6 +77,8 @@ describe('CountSummary repository test', () => {
 
       const countSummaries = await countSummaryLoader.findAll(userEntity.userId, CountCategory.addingVocabularyList, dates)
 
+      console.log(countSummaries)
+
       expect(countSummaries.length).to.be.equal(7)
       expect(countSummaries[0]).to.be.instanceOf(CountSummaryEntity)
       expect(countSummaries[0].count).to.be.equal(2)
