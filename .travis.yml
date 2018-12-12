@@ -2,6 +2,7 @@ language: node_js
 env:
   global:
     - NODE_ENV=TEST
+    - TZ=Asia/Tokyo
 node_js:
   - "lts/*"
 services:
@@ -9,6 +10,7 @@ services:
 cache:
   - "node_modules"
 before_install:
+  - date
   - touch .env.dev
   - sh script/ci.sh
 install:

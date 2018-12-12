@@ -7,6 +7,7 @@ import { UserEntityPersistMock, VocabularyListEntityPersistMock } from '../../he
 import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db';
 import { ILoggerDBClient } from '../../../src/hiyokoCore/interface/infrastructure/LoggerDB';
 import { IVocabularyListVocabularyRelationObject } from '../../../src/hiyokoCore/domain/relation/VocabularyListVocabularyRelation';
+import { DateTime } from '../../../src/util/DateTime';
 
 class QuizApplicationTest extends QuizApplication {
   readonly dbc: IDbClient
@@ -50,7 +51,7 @@ class QuizApplicationTest extends QuizApplication {
 
       describe('createCompositeQuizzes()', () => {
         it('should create composite quizzes', async () => {
-          const now = sinon.useFakeTimers(new Date())
+          const now = sinon.useFakeTimers(new DateTime().toDate())
           const userEntity = await UserEntityPersistMock(dbc, this.userId)
           const meaning = 'meaning'
 

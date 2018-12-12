@@ -3,10 +3,11 @@ import * as sinon from 'sinon'
 import { expect } from 'chai'
 
 import app from '../../../src/hiyokoCore/server'
+import { DateTime } from '../../../src/util/DateTime';
 
 describe('/vocabularyLists', () => {
 
-  const userId = '12312sadfadf3123'
+  const userId = '12312sadfadf3123123123'
   const productId = 1
   const userId2 = 'lskadmflmwkel12930u'
   const productId2 = 2
@@ -23,7 +24,7 @@ describe('/vocabularyLists', () => {
   })
 
   describe('GET /vocabularyLists', () => {
-    const now = sinon.useFakeTimers(new Date())
+    const now = sinon.useFakeTimers(new DateTime().toDate())
 
     before(async () => {
       const payload1 = {

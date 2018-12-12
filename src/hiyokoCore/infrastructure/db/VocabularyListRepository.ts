@@ -4,6 +4,8 @@ import { IVocabularyListRepository, IVocabularyListLoader, IVocabularyListAction
 import { UserEntity } from "../../domain/model/User"
 import { VocabularyEntity } from "../../domain/model/Vocabulary"
 import { IDbClient } from "../../interface/infrastructure/db"
+import { CountCategory } from "../../domain/model/CountSummary";
+import { DateTime } from "../../../util/DateTime";
 
 export class VocabularyListRepositoryComponent {
   dbc: IDbClient
@@ -29,7 +31,7 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       VocabularyListEntityClass: { new(...args: any[]): VocabularyListEntity }
     ): VocabularyListEntity[] {
       return data.map(d => new VocabularyListEntityClass(
-          d.vocaListId, d.userId, d.vocaId, d.meaning, d.priority, d.createdAt, d.contextSentence, d.contextPictureURL
+          d.vocaListId, d.userId, d.vocaId, d.meaning, d.priority, new DateTime(d.createdAt), d.contextSentence, d.contextPictureURL
         )
       )
     }
@@ -117,30 +119,53 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
       contextSentence?: string,
       contextPictureURL?: string,
       priority?: number,
-      createdAt?: Date
+      createdAt?: DateTime
     ): Promise<VocabularyListEntity> {
-      createdAt = createdAt || new Date()
+      createdAt = createdAt || new DateTime()
       priority = priority || 100
 
-      const res = await this.dbc.query(`
-        INSERT INTO Vocabulary_lists
-          (userId, vocaId, meaning, contextSentence, contextPictureURL, createdAt, priority)
-        VALUES
-          (:userId, :vocaId, :meaning, :contextSentence, :contextPictureURL, :createdAt, :priority)
-      `, {
-        replacements: {
-          userId: userEntity.userId,
-          vocaId: vocabularyEntity.vocaId,
-          meaning,
-          contextSentence,
-          contextPictureURL: contextPictureURL || null,
-          priority,
-          createdAt
-        },
-        type: this.dbc.QueryTypes.INSERT
-      })
+      const vocaListId = await this.dbc.transaction(async (t) => {
+        const res = await this.dbc.query(`
+          INSERT INTO Vocabulary_lists
+            (userId, vocaId, meaning, contextSentence, contextPictureURL, createdAt, priority)
+          VALUES
+            (:userId, :vocaId, :meaning, :contextSentence, :contextPictureURL, :createdAt, :priority)
+        `, {
+          transaction: t,
+          replacements: {
+            userId: userEntity.userId,
+            vocaId: vocabularyEntity.vocaId,
+            meaning,
+            contextSentence,
+            contextPictureURL: contextPictureURL || null,
+            priority,
+            createdAt: createdAt.toDateTimeString()
+          },
+          type: this.dbc.QueryTypes.INSERT
+        })
 
-      const vocaListId = res[0]
+        await this.dbc.query(`
+          INSERT INTO Count_summary_table
+            (userId, countCategory, date, count)
+          VALUES
+            (:userId, :countCategory, :date, :count)
+          ON DUPLICATE KEY UPDATE
+            count = count + 1
+        `, {
+          transaction: t,
+          replacements: {
+            userId: userEntity.userId,
+            countCategory: CountCategory.addingVocabularyList,
+            date: createdAt.toDateString(),
+            count: 1
+          },
+          type: this.dbc.QueryTypes.INSERT
+        })
+
+        const vocaListId = res[0]
+
+        return vocaListId
+      })
 
       return await this.find(vocaListId)
     }
@@ -172,7 +197,7 @@ export class VocabularyListDB extends RepositoryBase<VocabularyListEntity>
           contextSentence,
           contextPictureURL: contextPictureURL || null,
           priority,
-          createdAt
+          createdAt: createdAt.toDateTimeString()
         }
       })
 

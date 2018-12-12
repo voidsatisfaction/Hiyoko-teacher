@@ -1,3 +1,5 @@
+import { DateTime } from "../../../util/DateTime";
+
 export class VocabularyListEntity {
   readonly vocaListId: number
   readonly userId: string
@@ -6,7 +8,7 @@ export class VocabularyListEntity {
   readonly priority: number
   readonly contextSentence: string
   readonly contextPictureURL: string
-  readonly createdAt: Date
+  readonly createdAt: DateTime
 
   constructor(
     vocaListId: number,
@@ -14,7 +16,7 @@ export class VocabularyListEntity {
     vocaId: number,
     meaning: string,
     priority: number,
-    createdAt?: Date,
+    createdAt?: DateTime,
     contextSentece?: string,
     contextPictureURL?: string,
   ) {
@@ -23,7 +25,7 @@ export class VocabularyListEntity {
     this.vocaId = vocaId
     this.meaning = meaning
     this.priority = priority
-    this.createdAt = createdAt || new Date()
+    this.createdAt = createdAt || new DateTime()
     this.contextSentence = contextSentece
     this.contextPictureURL = contextPictureURL
   }
@@ -35,7 +37,7 @@ export class VocabularyListEntity {
       vocaId: this.vocaId,
       meaning: this.meaning,
       priority: this.priority,
-      createdAt: this.createdAt.toLocaleString(),
+      createdAt: this.createdAt.toDateTimeString(),
       contextSentence: this.contextSentence,
       contextPictureURL: this.contextPictureURL,
     })

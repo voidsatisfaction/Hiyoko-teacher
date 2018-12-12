@@ -6,6 +6,7 @@ import { VocabularyListRepositoryComponent } from '../../../../src/hiyokoCore/in
 import { UserEntityMock, VocabularyEntityMock } from '../../../helper/factory'
 import { VocabularyListEntity } from '../../../../src/hiyokoCore/domain/model/VocabularyList'
 import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db'
+import { DateTime } from '../../../../src/util/DateTime';
 
 class VocabularyListRepositoryTest extends VocabularyListRepositoryComponent {
   readonly dbc: IDbClient
@@ -48,7 +49,7 @@ describe('VocabularyList repository test', () => {
 
   describe('findAllByUser()', () => {
     it('should get all vocabularyLists of the user', async () => {
-      const now = sinon.useFakeTimers(new Date())
+      const now = sinon.useFakeTimers(new DateTime().toDate())
 
       const userEntity = UserEntityMock()
       const vocabularyEntity1 = VocabularyEntityMock()
@@ -73,6 +74,8 @@ describe('VocabularyList repository test', () => {
 
       const vocabularyLists = await vocabularyListLoader.findAllByUser(userEntity)
 
+      now.restore()
+
       expect(vocabularyLists.length).to.be.equal(2)
       expect(vocabularyLists[0]).to.be.instanceof(VocabularyListEntity)
       expect(vocabularyLists[0]).to.be.deep.equal(createdVocabularyListEntity2)
@@ -82,7 +85,7 @@ describe('VocabularyList repository test', () => {
 
   describe('findByUserWithPriorityCreatedAt()', () => {
     it('should be well ordered with priority and createdAt', async () => {
-      const now = sinon.useFakeTimers(new Date())
+      const now = sinon.useFakeTimers(new DateTime().toDate())
 
       const userEntity = UserEntityMock()
       const vocabularyEntity1 = VocabularyEntityMock()
@@ -148,7 +151,7 @@ describe('VocabularyList repository test', () => {
         createdVocabularyListEntity.vocaId,
         meaning2,
         priority2,
-        new Date(),
+        new DateTime(),
         contextSentence2,
         contextPictureURL2
       )

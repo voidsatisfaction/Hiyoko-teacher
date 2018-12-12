@@ -7,6 +7,7 @@ import { VocabularyRepositoryComponent } from '../../../src/hiyokoCore/infrastru
 import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db';
 import { VocabularyListApplicationUnauthorizationError } from '../../../src/hiyokoCore/application/error';
 import { VocabularyListRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository';
+import { DateTime } from '../../../src/util/DateTime';
 
 class VocabularyRepositoryTest extends VocabularyRepositoryComponent {
   readonly dbc: IDbClient
@@ -60,7 +61,7 @@ describe('VocabularyListApplication test', () => {
 
   describe('getUserVocabularyLists()', () => {
     it('should list all of vocabularyList of a certain user', async () => {
-      const now = sinon.useFakeTimers(new Date())
+      const now = sinon.useFakeTimers(new DateTime().toDate())
       const persistUser = await UserEntityPersistMock(dbc)
       const vocabularyListApplication = new VocabularyListApplication(persistUser.userId)
 

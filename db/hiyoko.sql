@@ -28,7 +28,7 @@ DROP TABLE IF EXISTS Hiyoko_core.Vocabulary_lists;
 CREATE TABLE Hiyoko_core.Vocabulary_lists (
   `vocaListId` BIGINT(20) unsigned AUTO_INCREMENT NOT NULL,
   `userId` VARCHAR(50) NOT NULL,
-  `vocaId` BIGINT(20) NOT NULL,
+  `vocaId` BIGINT(20) unsigned NOT NULL,
   `meaning` VARCHAR(200) DEFAULT NULL,
   `contextSentence` VARCHAR(500) DEFAULT NULL,
   `contextPictureURL` VARCHAR(500) DEFAULT NULL,
@@ -41,3 +41,15 @@ CREATE TABLE Hiyoko_core.Vocabulary_lists (
   KEY `vocaId` (`vocaId`),
   KEY `createdAt` (`createdAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS Hiyoko_core.Count_summary_table;
+CREATE TABLE Hiyoko_core.Count_summary_table (
+  `userId` VARCHAR(50) NOT NULL,
+  `countCategory` ENUM('adding_vocabulary_list', 'taking_quiz'),
+  `date` DATE NOT NULL,
+  `count` BIGINT unsigned NOT NULL,
+  PRIMARY KEY (`userId`, `countCategory`, `date`),
+  KEY `date` (`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+SHOW TABLES;

@@ -6,6 +6,7 @@ import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db';
 import { ILoggerDBClient } from '../../../src/hiyokoCore/interface/infrastructure/LoggerDB';
 import { VocabularyListEntityPersistMock, UserEntityMock, UserEntityPersistMock } from '../../helper/factory';
 import { SimpleQuiz } from '../../../src/hiyokoCore/application/QuizApplication';
+import { DateTime } from '../../../src/util/DateTime';
 
 class QuizResultApplicationTest extends QuizResultApplication {
   readonly dbc: IDbClient
@@ -26,23 +27,23 @@ class QuizResultApplicationTest extends QuizResultApplication {
 
       describe('updateSimpleQuizResult()', async () => {
         it('should properly update quiz result', async () => {
-          const now = sinon.useFakeTimers(new Date())
+          const now = sinon.useFakeTimers(new DateTime().toDate())
           const user = await UserEntityPersistMock(this.dbc, this.userId)
           const name = 'name'
           const meaning = 'meaning'
           const contextSentence = 'contextSentence'
 
           now.tick(0)
-          const createdAt1 = new Date()
+          const createdAt1 = new DateTime()
 
           now.tick(10 * 1000)
-          const createdAt2 = new Date()
+          const createdAt2 = new DateTime()
 
           now.tick(10 * 1000)
-          const createdAt3 = new Date()
+          const createdAt3 = new DateTime()
 
           now.tick(10 * 1000)
-          const createdAt4 = new Date()
+          const createdAt4 = new DateTime()
 
           now.restore()
 

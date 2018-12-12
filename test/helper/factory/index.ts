@@ -10,6 +10,7 @@ import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db'
 import { VocabularyRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyRepository'
 import { VocabularyListRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository'
 import { UserProductRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/UserProductImplement';
+import { DateTime } from '../../../src/util/DateTime';
 
 class UserRepositoryMock extends UserRepositoryComponent {
   constructor(dbc: IDbClient) {
@@ -25,9 +26,9 @@ class UserProductRepositoryMock extends UserProductRepositoryComponent {
   }
 }
 
-export const UserEntityPersistMock = async (dbc: IDbClient, userId?: string, createdAt?: Date, productId?: number): Promise<UserEntity> => {
+export const UserEntityPersistMock = async (dbc: IDbClient, userId?: string, createdAt?: DateTime, productId?: number): Promise<UserEntity> => {
   userId = userId || Random.alphaNumeric(10)
-  createdAt = createdAt || new Date()
+  createdAt = createdAt || new DateTime()
   productId = productId || 0
 
   const userRepositoryMock: UserRepositoryMock = new UserRepositoryMock(dbc)
@@ -39,9 +40,9 @@ export const UserEntityPersistMock = async (dbc: IDbClient, userId?: string, cre
   return user
 }
 
-export const UserEntityMock = (userId?: string, createdAt?: Date): UserEntity => {
+export const UserEntityMock = (userId?: string, createdAt?: DateTime): UserEntity => {
   userId = userId || Random.alphaNumeric(10)
-  createdAt = createdAt || new Date()
+  createdAt = createdAt || new DateTime()
 
   return new UserEntity(userId, createdAt)
 }
@@ -74,13 +75,13 @@ export const VocabularyListEntityPersistMock = async (
   meaning?: string,
   contextSentence?: string,
   priority?: number,
-  createdAt?: Date
+  createdAt?: DateTime
 ): Promise<[VocabularyEntity, VocabularyListEntity]> => {
   name = name || Random.alphabetic(8)
   meaning = meaning || Random.alphaNumeric(10)
   contextSentence = contextSentence || Random.alphaNumeric(30)
   priority = priority || 100
-  createdAt = createdAt || new Date()
+  createdAt = createdAt || new DateTime()
 
   const vocabularyRepositoryMock = new VocabularyRepositoryMock(dbc)
   const vocabularyListRepositoryMock = new VocabularyListRepositoryMock(dbc)

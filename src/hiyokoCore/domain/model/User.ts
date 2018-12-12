@@ -1,10 +1,12 @@
+import { DateTime } from "../../../util/DateTime";
+
 export class UserEntity {
   readonly userId: string
-  readonly createdAt: Date
+  readonly createdAt: DateTime
 
-  constructor(userId: string, createdAt?: Date) {
+  constructor(userId: string, createdAt?: DateTime) {
     this.userId = userId
-    this.createdAt = createdAt || new Date()
+    this.createdAt = createdAt || new DateTime()
   }
 }
 

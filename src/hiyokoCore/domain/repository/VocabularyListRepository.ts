@@ -1,6 +1,7 @@
 import { UserEntity } from "../model/User";
 import { VocabularyEntity } from "../model/Vocabulary";
 import { VocabularyListEntity } from "../model/VocabularyList";
+import { DateTime } from "../../../util/DateTime";
 
 export interface IVocabularyListRepository {
   vocabularyListLoader(): IVocabularyListLoader
@@ -29,7 +30,7 @@ export interface IVocabularyListAction {
     contextSentence?: string,
     contextPirctureURL?: string,
     priority?: number,
-    createdAt?: Date
+    createdAt?: DateTime
   ): Promise<VocabularyListEntity>
 
   update(

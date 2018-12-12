@@ -1,5 +1,6 @@
 import { ILoggerDBClient, TableNames, IHiyokoActionLoggerParam } from "../../interface/infrastructure/LoggerDB"
 import { PromiseSleep } from "../../../util/PromiseSleep"
+import { DateTime } from "../../../util/DateTime";
 
 export enum Action {
   follow                = 'follow',
@@ -33,16 +34,16 @@ export class UserActionLogHelperComponent {
         content?: object,
       ): Promise<void> => {
         try {
-          let createdAt = new Date()
+          let createdAt = new DateTime()
 
           // check before put item
           // dynamo db overwrite data with same primary key
           while (true) {
-            createdAt = new Date()
+            createdAt = new DateTime()
             const actionLog = await this.loggerDBC.getItem<IHiyokoActionLoggerParam>(
               TableNames.HiyokoActionLogs,
               this.userId,
-              createdAt.toLocaleString()
+              createdAt.toDateTimeString()
             )
 
             if (actionLog) {
@@ -52,14 +53,14 @@ export class UserActionLogHelperComponent {
               break
             }
           }
-          createdAt = new Date()
+          createdAt = new DateTime()
 
           await this.loggerDBC.putItem(
             TableNames.HiyokoActionLogs,
             this.userId,
             productId,
             action,
-            createdAt.toLocaleString(),
+            createdAt.toDateTimeString(),
             content,
           )
         } catch (e) {

@@ -39,6 +39,7 @@ export class DbClient implements IDbClient {
         dialect: 'mysql',
         port: c.dbPort,
         logging: false,
+        timezone: '+09:00'
       }
     )
 
@@ -66,6 +67,10 @@ export class DbClient implements IDbClient {
     this.Op = Sequelize.Op
 
     this.QueryTypes = this.hiyokoCoreDB.QueryTypes
+  }
+
+  async transaction(callback: (t) => Promise<any>): Promise<any> {
+    return await this.hiyokoCoreDB.transaction(callback)
   }
 
   async query(sql: string, placeholders: object) {
