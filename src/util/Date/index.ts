@@ -1,3 +1,28 @@
+// import * as moment from 'moment'
+import * as moment from 'moment-timezone'
+
+moment().tz('Asia/Tokyo').format()
+
+export class DateTime {
+  private value: moment.Moment
+
+  constructor(input?: any) {
+    if (input) {
+      this.value = moment(input)
+      return
+    }
+    this.value = moment()
+  }
+
+  toDateTimeString(): string {
+    return this.value.toISOString()
+  }
+
+  toDateString(): string {
+    return this.value.format('YYYY-MM-DD')
+  }
+}
+
 export type DateString = string
 
 export function getThisWeekDateStrings(date: Date): DateString[] {
@@ -17,6 +42,10 @@ export function getThisWeekDateStrings(date: Date): DateString[] {
 }
 
 export function getThisWeekMondayDate(date: Date): Date {
+  const momentDate = moment(date)
+  console.log(date.toISOString())
+  console.log(momentDate)
+  console.log(momentDate.weekday())
   const day = date.getDay() || 7
   const newDate = new Date(date)
   if (day !== 1) {
