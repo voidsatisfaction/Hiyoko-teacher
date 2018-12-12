@@ -23,6 +23,12 @@ export class DbClient implements IDbClient {
   readonly VocabularyList
   readonly UserProduct
 
+  readonly UsersTableName: string = 'Users'
+  readonly UsersProductsTableName: string = 'User_products'
+  readonly VocabulariesTableName: string = 'Vocabularies'
+  readonly VocabularyListsTableName: string = 'Vocabulary_lists'
+  readonly CountSummaryTableName: string = 'Count_summary_table'
+
   readonly Op
   readonly QueryTypes
   private readonly hiyokoCoreDB
@@ -91,6 +97,16 @@ export class DbClient implements IDbClient {
       return await this.setForeginKeyConstraint();
     } catch (error) {
       throw error;
+    }
+  }
+
+  async truncateTableRaw(tableName: string): Promise<void> {
+    try {
+      await this.query(`
+        TRUNCATE ${tableName}
+      `, {})
+    } catch(error) {
+      throw error
     }
   }
 

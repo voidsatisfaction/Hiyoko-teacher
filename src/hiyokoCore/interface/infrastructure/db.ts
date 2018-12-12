@@ -6,7 +6,14 @@ export interface IDbClient {
   Op: any
   QueryTypes: any
 
+  readonly UsersTableName: string
+  readonly UsersProductsTableName: string
+  readonly VocabulariesTableName: string
+  readonly VocabularyListsTableName: string
+  readonly CountSummaryTableName: string
+
   close(): Promise<void>
   truncateTable(tableName: any): Promise<void>
+  truncateTableRaw(tableName: string): Promise<void>
   transaction(callback): Promise<any>
 }
