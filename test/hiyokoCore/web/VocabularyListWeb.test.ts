@@ -3,6 +3,7 @@ import * as sinon from 'sinon'
 import { expect } from 'chai'
 
 import app from '../../../src/hiyokoCore/server'
+import { DateTime } from '../../../src/util/DateTime';
 
 describe('/vocabularyLists', () => {
 
@@ -23,7 +24,7 @@ describe('/vocabularyLists', () => {
   })
 
   describe('GET /vocabularyLists', () => {
-    const now = sinon.useFakeTimers(new Date())
+    const now = sinon.useFakeTimers(new DateTime().toDate())
 
     before(async () => {
       const payload1 = {

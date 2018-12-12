@@ -1,5 +1,5 @@
-import { CountCategory, CountSummaryEntity } from "../model/CountSummary";
-import { DateString } from "../../../util/Date";
+import { CountCategory, CountSummaryEntity } from "../model/CountSummary"
+import { DateString } from "../../../util/DateTime"
 
 export interface ICountSummaryRepository {
   countSummaryLoader: () => ICountSummaryLoader

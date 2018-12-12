@@ -6,6 +6,7 @@ import { VocabularyListRepositoryComponent } from '../../../../src/hiyokoCore/in
 import { UserEntityMock, VocabularyEntityMock } from '../../../helper/factory'
 import { VocabularyListEntity } from '../../../../src/hiyokoCore/domain/model/VocabularyList'
 import { IDbClient } from '../../../../src/hiyokoCore/interface/infrastructure/db'
+import { DateTime } from '../../../../src/util/DateTime';
 
 class VocabularyListRepositoryTest extends VocabularyListRepositoryComponent {
   readonly dbc: IDbClient
@@ -48,7 +49,7 @@ describe('VocabularyList repository test', () => {
 
   describe('findAllByUser()', () => {
     it('should get all vocabularyLists of the user', async () => {
-      const now = sinon.useFakeTimers(new Date())
+      const now = sinon.useFakeTimers(new DateTime().toDate())
 
       const userEntity = UserEntityMock()
       const vocabularyEntity1 = VocabularyEntityMock()
@@ -82,7 +83,7 @@ describe('VocabularyList repository test', () => {
 
   describe('findByUserWithPriorityCreatedAt()', () => {
     it('should be well ordered with priority and createdAt', async () => {
-      const now = sinon.useFakeTimers(new Date())
+      const now = sinon.useFakeTimers(new DateTime().toDate())
 
       const userEntity = UserEntityMock()
       const vocabularyEntity1 = VocabularyEntityMock()
