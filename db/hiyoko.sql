@@ -45,7 +45,12 @@ CREATE TABLE Hiyoko_core.Vocabulary_lists (
 DROP TABLE IF EXISTS Hiyoko_core.Count_summary_table;
 CREATE TABLE Hiyoko_core.Count_summary_table (
   `userId` VARCHAR(50) NOT NULL,
-  `countCategory` ENUM('adding_vocabulary_list', 'taking_quiz'),
+  `countCategory` ENUM(
+    'adding_vocabulary_list',
+    'taking_quiz',
+    'plan_adding_vocabulary_list',
+    'plan_taking_quiz'
+  ),
   `date` DATE NOT NULL,
   `count` BIGINT unsigned NOT NULL,
   PRIMARY KEY (`userId`, `countCategory`, `date`),

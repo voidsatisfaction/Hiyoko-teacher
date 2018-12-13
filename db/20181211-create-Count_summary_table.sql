@@ -6,3 +6,11 @@ CREATE TABLE Hiyoko_core.Count_summary_table (
   PRIMARY KEY (`userId`, `countCategory`, `date`),
   KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE Hiyoko_core.Count_summary_table
+  MODIFY COLUMN `countCategory` ENUM(
+    'adding_vocabulary_list',
+    'taking_quiz',
+    'plan_adding_vocabulary_list',
+    'plan_taking_quiz'
+  )
