@@ -91,6 +91,15 @@ export class CountSummary {
       count: this.count
     })
   }
+
+  toCountSummaryEntity(): CountSummaryEntity {
+    return new CountSummaryEntity(
+      this.userId,
+      this.countCategory,
+      this.date,
+      this.count
+    )
+  }
 }
 
 export class CountAchievement extends CountSummary {}
@@ -168,7 +177,13 @@ export class PlanningApplication
     return planAchievement
   }
 
-  // async setThisWeekCountPlans()
+  async setCountPlans(countPlans: CountPlan[]): Promise<void> {
+    const currentUser = await this.userHelper().getCurrentUser()
+
+    await this.countSummaryRepository().countSummaryAction().bulkCreateOrUpdate(
+      currentUser, countPlans.map(countPlan => countPlan.toCountSummaryEntity())
+    )
+  }
 }
 
 applyMixins(
