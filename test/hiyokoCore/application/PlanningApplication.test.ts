@@ -37,7 +37,7 @@ class PlanningApplicationTest extends PlanningApplication {
         ])
       })
 
-      describe('getThisWeekPlanAcheivement()', () => {
+      describe('getThisWeekPlanAchievement()', () => {
         it('should get all plans and achievements', async () => {
           this.countSummaryRepository().countSummaryAction().createOrUpdate(
             this.user, CountCategory.addingVocabularyList, new DateTime()
@@ -59,7 +59,7 @@ class PlanningApplicationTest extends PlanningApplication {
             this.user, CountCategory.planTakingQuiz, new DateTime()
           )
 
-          const planAcheivement = await this.getThisWeekPlanAcheivement()
+          const planAcheivement = await this.getThisWeekPlanAchievement()
 
           expect(planAcheivement.toJSON().achievement[CountCategory.addingVocabularyList].length).to.equal(7)
           expect(planAcheivement.toJSON().achievement[CountCategory.addingVocabularyList].reduce((acc, c) => acc + c.count, 0)).to.equal(2)
@@ -85,7 +85,7 @@ class PlanningApplicationTest extends PlanningApplication {
 
           await this.setCountPlans(countPlans)
 
-          const planAchievement = await this.getThisWeekPlanAcheivement()
+          const planAchievement = await this.getThisWeekPlanAchievement()
 
           expect(planAchievement.toJSON().plan[CountCategory.planAddingVocabularyList].filter(p => p.count === 3)[0].count).to.equal(3)
           expect(planAchievement.toJSON().plan[CountCategory.planTakingQuiz].filter(p => p.count === 4)[0].count).to.equal(4)
@@ -97,7 +97,7 @@ class PlanningApplicationTest extends PlanningApplication {
 
           await this.setCountPlans(countPlans2)
 
-          const planAchievement2 = await this.getThisWeekPlanAcheivement()
+          const planAchievement2 = await this.getThisWeekPlanAchievement()
 
           expect(planAchievement2.toJSON().plan[CountCategory.planAddingVocabularyList].filter(p => p.count === 1)[0].count).to.equal(1)
           expect(planAchievement2.toJSON().plan[CountCategory.planTakingQuiz].filter(p => p.count === 0)[0].count).to.equal(0)

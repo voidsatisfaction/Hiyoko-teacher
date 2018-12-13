@@ -3,6 +3,15 @@ import { validationResult, check } from 'express-validator/check'
 
 import { PlanningApplication, CountPlan } from '../application/PlanningApplication'
 import { DateTime } from '../../util/DateTime';
+import { CountCategory } from '../domain/model/CountSummary';
+
+interface ICountPlan extends ICountSummary {}
+
+interface ICountSummary {
+  countCategory: CountCategory
+  date: string
+  count: number
+}
 
 const UserSettingRouter = express.Router()
 
@@ -18,7 +27,7 @@ UserSettingRouter.get('/planning/:userId', [
     const userId: string = req.params.userId
 
     const planningApplication = new PlanningApplication(userId)
-    const planAchievement = await planningApplication.getThisWeekPlanAcheivement()
+    const planAchievement = await planningApplication.getThisWeekPlanAchievement()
 
     res.json({ planAchievement: planAchievement.toJSON() })
   } catch (e) {
@@ -37,8 +46,7 @@ UserSettingRouter.post('/planning/count', [
     }
 
     const userId: string = req.body.userId
-    // countPlan has countCategory, date, count properties
-    const countPlans: any[] = req.body.countPlans
+    const countPlans: ICountPlan[] = req.body.countPlans
 
     const planningApplication = new PlanningApplication(userId)
     await planningApplication.setCountPlans(

@@ -136,7 +136,7 @@ export class PlanningApplication
 
   countSummaryRepository: () => ICountSummaryRepository
 
-  async getThisWeekPlanAcheivement(): Promise<PlanAchievement> {
+  async getThisWeekPlanAchievement(): Promise<PlanAchievement> {
     const currentUser = await this.userHelper().getCurrentUser()
     const userProduct = await this.userProductRelation().toUserProduct(currentUser)
 

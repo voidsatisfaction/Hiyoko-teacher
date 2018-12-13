@@ -41,7 +41,6 @@ class CountSummaryRepositoryDB extends RepositoryBase<CountSummaryEntity>
     userEntity: UserEntity,
     countSummaryEntities: CountSummaryEntity[]
   ): Promise<CountSummaryEntity[]> {
-    // insert only count > 0
     const bulkInsertArgs = countSummaryEntities.map(
       countSummaryEntity => [userEntity.userId, countSummaryEntity.countCategory, countSummaryEntity.date.toDateString(), countSummaryEntity.count]
     )
