@@ -13,14 +13,51 @@ import { ICountSummaryRepository } from "../domain/repository/CountSummaryReposi
 import { DateTime } from "../../util/DateTime";
 import { CountCategory, CountSummaryEntity } from "../domain/model/CountSummary";
 
-type TPlanAchievement = {
-  achievement: {
-    addVocabularyListCounts: AchievementCount[],
-    takeQuizCounts: AchievementCount[]
+export class PlanAchievement {
+  private achievementKeys: string[]
+  private achievement: { [key: string]: CountAchievement[] }
+  private planKeys: string[]
+  private plan: { [key: string]: CountPlan[] }
+
+  constructor() {
+    this.achievementKeys = []
+    this.achievement = {}
+    this.planKeys = []
+    this.plan = {}
+  }
+
+  setAchievementCount(key: string, achievementCounts: CountAchievement[]): PlanAchievement {
+    this.achievementKeys.push(key)
+    this.achievement[key] = [...achievementCounts]
+
+    return this
+  }
+
+  setPlanCount(key: string, planCounts: CountPlan[]): PlanAchievement {
+    this.planKeys.push(key)
+    this.plan[key] = [...planCounts]
+
+    return this
+  }
+
+  toJSON() {
+    const results = {
+      achievement: {},
+      plan: {}
+    }
+
+    this.achievementKeys.forEach(achievementKey => {
+      results.achievement[achievementKey] = this.achievement[achievementKey].map(achievementCount => achievementCount.toJSON())
+    })
+    this.planKeys.forEach(planKey => {
+      results.plan[planKey] = this.plan[planKey].map(planCount => planCount.toJSON())
+    })
+
+    return results
   }
 }
 
-export class AchievementCount {
+export class CountSummary {
   readonly userId: string
   readonly countCategory: CountCategory
   readonly date: DateTime
@@ -37,8 +74,8 @@ export class AchievementCount {
     this.count = count
   }
 
-  static fromCountSummaryEntity(countSummaryEntity: CountSummaryEntity): AchievementCount {
-    return new AchievementCount(
+  static fromCountSummaryEntity(countSummaryEntity: CountSummaryEntity): CountSummary {
+    return new CountSummary(
       countSummaryEntity.userId,
       countSummaryEntity.countCategory,
       countSummaryEntity.date,
@@ -54,7 +91,20 @@ export class AchievementCount {
       count: this.count
     })
   }
+
+  toCountSummaryEntity(): CountSummaryEntity {
+    return new CountSummaryEntity(
+      this.userId,
+      this.countCategory,
+      this.date,
+      this.count
+    )
+  }
 }
+
+export class CountAchievement extends CountSummary {}
+
+export class CountPlan extends CountSummary {}
 
 export class PlanningApplication
   implements DbClientComponent,
@@ -86,7 +136,7 @@ export class PlanningApplication
 
   countSummaryRepository: () => ICountSummaryRepository
 
-  async getThisWeekPlanAcheivement(): Promise<TPlanAchievement> {
+  async getThisWeekPlanAchievement(): Promise<PlanAchievement> {
     const currentUser = await this.userHelper().getCurrentUser()
     const userProduct = await this.userProductRelation().toUserProduct(currentUser)
 
@@ -94,29 +144,46 @@ export class PlanningApplication
 
     // did data
     // add vocabulary numbers & taking quiz numbers
-    const [addVocabularyListCounts, takeQuizCounts] = await Promise.all([
+    const [
+      addVocabularyListCounts,
+      takeQuizCounts,
+      planAddVocabularyListCounts,
+      planTakeQuizCounts
+    ] = await Promise.all([
       this.countSummaryRepository().countSummaryLoader().findAll(
         this.userId, CountCategory.addingVocabularyList, thisWeekDateStrings
       ),
       this.countSummaryRepository().countSummaryLoader().findAll(
         this.userId, CountCategory.takingQuiz, thisWeekDateStrings
       ),
+      this.countSummaryRepository().countSummaryLoader().findAll(
+        this.userId, CountCategory.planAddingVocabularyList, thisWeekDateStrings
+      ),
+      this.countSummaryRepository().countSummaryLoader().findAll(
+        this.userId, CountCategory.planTakingQuiz, thisWeekDateStrings
+      )
     ])
-
-    // TODO: plan data
 
     this.userActionLogger().putActionLog(
       Action.getPlanAchievement, userProduct.productId, undefined
     )
 
-    return ({
-      achievement: {
-        addVocabularyListCounts: addVocabularyListCounts.map(AchievementCount.fromCountSummaryEntity),
-        takeQuizCounts: takeQuizCounts.map(AchievementCount.fromCountSummaryEntity)
-      }
-    })
+    const planAchievement = new PlanAchievement()
+    planAchievement.setAchievementCount(CountCategory.addingVocabularyList, addVocabularyListCounts.map(CountAchievement.fromCountSummaryEntity))
+      .setAchievementCount(CountCategory.takingQuiz, takeQuizCounts.map(CountAchievement.fromCountSummaryEntity))
+      .setPlanCount(CountCategory.planAddingVocabularyList, planAddVocabularyListCounts.map(CountPlan.fromCountSummaryEntity))
+      .setPlanCount(CountCategory.planTakingQuiz, planTakeQuizCounts.map(CountPlan.fromCountSummaryEntity))
+
+    return planAchievement
   }
 
+  async setCountPlans(countPlans: CountPlan[]): Promise<void> {
+    const currentUser = await this.userHelper().getCurrentUser()
+
+    await this.countSummaryRepository().countSummaryAction().bulkCreateOrUpdate(
+      currentUser, countPlans.map(countPlan => countPlan.toCountSummaryEntity())
+    )
+  }
 }
 
 applyMixins(

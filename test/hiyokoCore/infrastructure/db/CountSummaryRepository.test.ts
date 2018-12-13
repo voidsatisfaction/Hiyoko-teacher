@@ -101,6 +101,49 @@ describe('CountSummary repository test', () => {
     })
   })
 
+  describe('bulkCreateOrUpdate()', () => {
+    it('should bulkCreateOrUpdate countSummary', async () => {
+      const userEntity = UserEntityMock()
+      const countSummary1 = new CountSummaryEntity(userEntity.userId, CountCategory.planAddingVocabularyList, new DateTime('2018-10-10'), 5)
+      const countSummary2 = new CountSummaryEntity(userEntity.userId, CountCategory.planAddingVocabularyList, new DateTime('2018-10-11'), 2)
+      const countSummary3 = new CountSummaryEntity(userEntity.userId, CountCategory.planAddingVocabularyList, new DateTime('2018-10-12'), 1)
+
+      const countSummaries = [countSummary1, countSummary2, countSummary3]
+
+      await countSummaryAction.bulkCreateOrUpdate(
+        userEntity,
+        countSummaries
+      )
+
+      const foundCountSummaryEntities = await countSummaryLoader.findAll(
+        userEntity.userId,
+        countSummary1.countCategory,
+        ['2018-10-10', '2018-10-11', '2018-10-12']
+      )
+
+      expect(foundCountSummaryEntities).to.be.deep.equal(countSummaries)
+
+      const countSummary4 = new CountSummaryEntity(userEntity.userId, CountCategory.planAddingVocabularyList, new DateTime('2018-10-10'), 15)
+      const countSummary5 = new CountSummaryEntity(userEntity.userId, CountCategory.planAddingVocabularyList, new DateTime('2018-10-11'), 0)
+      const countSummary6 = new CountSummaryEntity(userEntity.userId, CountCategory.planAddingVocabularyList, new DateTime('2018-10-12'), 1)
+
+      const countSummaries2 = [countSummary4, countSummary5, countSummary6]
+
+      await countSummaryAction.bulkCreateOrUpdate(
+        userEntity,
+        countSummaries2
+      )
+
+      const foundCountSummaryEntities2 = await countSummaryLoader.findAll(
+        userEntity.userId,
+        countSummary4.countCategory,
+        ['2018-10-10', '2018-10-11', '2018-10-12']
+      )
+
+      expect(foundCountSummaryEntities2).to.be.deep.equal(countSummaries2)
+    })
+  })
+
   describe('findAll()', () => {
     it('should findAll countSummary added count which was increased', async () => {
       const now = sinon.useFakeTimers(DateTime.getThisWeekMondayDateTime(new DateTime()).toDate())

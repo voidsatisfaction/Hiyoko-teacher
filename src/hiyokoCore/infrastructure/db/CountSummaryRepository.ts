@@ -37,6 +37,29 @@ class CountSummaryRepositoryDB extends RepositoryBase<CountSummaryEntity>
     ))
   }
 
+  async bulkCreateOrUpdate(
+    userEntity: UserEntity,
+    countSummaryEntities: CountSummaryEntity[]
+  ): Promise<CountSummaryEntity[]> {
+    const bulkInsertArgs = countSummaryEntities.map(
+      countSummaryEntity => [userEntity.userId, countSummaryEntity.countCategory, countSummaryEntity.date.toDateString(), countSummaryEntity.count]
+    )
+
+    await this.dbc.query(`
+      INSERT INTO Count_summary_table
+        (userId, countCategory, date, count)
+      VALUES
+        ?
+      ON DUPLICATE KEY UPDATE
+        count = VALUES(count)
+    `, {
+      replacements: [bulkInsertArgs],
+      type: this.dbc.QueryTypes.INSERT
+    })
+
+    return countSummaryEntities
+  }
+
   async createOrUpdate(
     userEntity: UserEntity,
     countCategory: CountCategory,

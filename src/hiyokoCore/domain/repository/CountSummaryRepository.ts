@@ -13,6 +13,11 @@ export interface ICountSummaryAction {
     countCategory: CountCategory,
     dateTime: DateTime
   ): Promise<void>
+
+  bulkCreateOrUpdate(
+    userEntity: UserEntity,
+    countSummaryEntities: CountSummaryEntity[]
+  ): Promise<CountSummaryEntity[]>
 }
 
 export interface ICountSummaryLoader {
