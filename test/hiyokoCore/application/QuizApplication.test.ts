@@ -94,8 +94,8 @@ class QuizApplicationTest extends QuizApplication {
         })
       })
 
-      after(() => {
-        dbc.close()
+      after(async () => {
+        await dbc.close()
       })
     })
   }

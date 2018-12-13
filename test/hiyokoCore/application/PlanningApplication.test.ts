@@ -103,10 +103,6 @@ class PlanningApplicationTest extends PlanningApplication {
           expect(planAchievement2.toJSON().plan[CountCategory.planTakingQuiz].filter(p => p.count === 0)[0].count).to.equal(0)
         })
       })
-
-      after(() => {
-        this.dbc.close()
-      })
     })
   }
 }

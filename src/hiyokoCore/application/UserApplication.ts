@@ -54,8 +54,6 @@ export class UserApplication
       return user
     } catch(e) {
       throw e
-    } finally {
-      await this.dbc.close()
     }
   }
 
@@ -69,8 +67,6 @@ export class UserApplication
       return userEntities
     } catch(e) {
       throw e
-    } finally {
-      await this.dbc.close()
     }
   }
 }

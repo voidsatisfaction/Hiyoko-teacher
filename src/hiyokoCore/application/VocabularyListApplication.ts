@@ -119,8 +119,6 @@ export class VocabularyListApplication
         )
       } catch(e) {
         throw e
-      } finally {
-        await this.dbc.close()
       }
     }
 
@@ -144,8 +142,6 @@ export class VocabularyListApplication
         )
       } catch(e) {
         throw e
-      } finally {
-        await this.dbc.close()
       }
     }
 
@@ -168,8 +164,6 @@ export class VocabularyListApplication
 
       } catch(e) {
         throw e
-      } finally {
-        await this.dbc.close()
       }
     }
 }

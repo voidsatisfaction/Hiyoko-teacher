@@ -78,10 +78,6 @@ class QuizResultApplicationTest extends QuizResultApplication {
           expect(afterVocabularyList4.priority).to.be.equal(50)
         })
       })
-
-      after(() => {
-        this.dbc.close()
-      })
     })
   }
 }

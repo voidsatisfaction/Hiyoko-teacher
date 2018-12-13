@@ -11,12 +11,6 @@ interface ITableInstance {
   destroy(option: object)
 }
 
-export class DbClientComponent {
-  dbClient(): IDbClient {
-    return new DbClient()
-  }
-}
-
 export class DbClient implements IDbClient {
   readonly User
   readonly Vocabulary
@@ -45,7 +39,13 @@ export class DbClient implements IDbClient {
         dialect: 'mysql',
         port: c.dbPort,
         logging: false,
-        timezone: '+09:00'
+        timezone: '+09:00',
+        pool: {
+          max: 20,
+          min: 20,
+          acquire: 30 * 1000,
+          idle: 10 * 1000
+        }
       }
     )
 
@@ -116,5 +116,13 @@ export class DbClient implements IDbClient {
 
   private setForeginKeyConstraint(): any {
     return this.hiyokoCoreDB.query('SET FOREIGN_KEY_CHECKS = 1', null, {});
+  }
+}
+
+const dbc: IDbClient = new DbClient()
+
+export class DbClientComponent {
+  dbClient(): IDbClient {
+    return dbc
   }
 }
