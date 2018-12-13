@@ -15,9 +15,9 @@ import { CountCategory, CountSummaryEntity } from "../domain/model/CountSummary"
 
 export class PlanAchievement {
   private achievementKeys: string[]
-  private achievement: { [key: string]: AchievementCount[] }
+  private achievement: { [key: string]: CountAchievement[] }
   private planKeys: string[]
-  private plan: { [key: string]: PlanCount[] }
+  private plan: { [key: string]: CountPlan[] }
 
   constructor() {
     this.achievementKeys = []
@@ -26,14 +26,14 @@ export class PlanAchievement {
     this.plan = {}
   }
 
-  setAchievementCount(key: string, achievementCounts: AchievementCount[]): PlanAchievement {
+  setAchievementCount(key: string, achievementCounts: CountAchievement[]): PlanAchievement {
     this.achievementKeys.push(key)
     this.achievement[key] = [...achievementCounts]
 
     return this
   }
 
-  setPlanCount(key: string, planCounts: PlanCount[]): PlanAchievement {
+  setPlanCount(key: string, planCounts: CountPlan[]): PlanAchievement {
     this.planKeys.push(key)
     this.plan[key] = [...planCounts]
 
@@ -74,8 +74,8 @@ export class CountSummary {
     this.count = count
   }
 
-  static fromCountSummaryEntity(countSummaryEntity: CountSummaryEntity): AchievementCount {
-    return new AchievementCount(
+  static fromCountSummaryEntity(countSummaryEntity: CountSummaryEntity): CountSummary {
+    return new CountSummary(
       countSummaryEntity.userId,
       countSummaryEntity.countCategory,
       countSummaryEntity.date,
@@ -93,9 +93,9 @@ export class CountSummary {
   }
 }
 
-export class AchievementCount extends CountSummary {}
+export class CountAchievement extends CountSummary {}
 
-export class PlanCount extends CountSummary {}
+export class CountPlan extends CountSummary {}
 
 export class PlanningApplication
   implements DbClientComponent,
@@ -160,14 +160,15 @@ export class PlanningApplication
     )
 
     const planAchievement = new PlanAchievement()
-    planAchievement.setAchievementCount(CountCategory.addingVocabularyList, addVocabularyListCounts.map(AchievementCount.fromCountSummaryEntity))
-      .setAchievementCount(CountCategory.takingQuiz, takeQuizCounts.map(AchievementCount.fromCountSummaryEntity))
-      .setPlanCount(CountCategory.planAddingVocabularyList, planAddVocabularyListCounts.map(PlanCount.fromCountSummaryEntity))
-      .setPlanCount(CountCategory.planTakingQuiz, planTakeQuizCounts.map(PlanCount.fromCountSummaryEntity))
+    planAchievement.setAchievementCount(CountCategory.addingVocabularyList, addVocabularyListCounts.map(CountAchievement.fromCountSummaryEntity))
+      .setAchievementCount(CountCategory.takingQuiz, takeQuizCounts.map(CountAchievement.fromCountSummaryEntity))
+      .setPlanCount(CountCategory.planAddingVocabularyList, planAddVocabularyListCounts.map(CountPlan.fromCountSummaryEntity))
+      .setPlanCount(CountCategory.planTakingQuiz, planTakeQuizCounts.map(CountPlan.fromCountSummaryEntity))
 
     return planAchievement
   }
 
+  // async setThisWeekCountPlans()
 }
 
 applyMixins(
