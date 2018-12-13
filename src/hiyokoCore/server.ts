@@ -5,6 +5,7 @@ import UserRouter from './web/UserWeb'
 import VocabularyListRouter from './web/VocabularyListWeb'
 import AdminRouter from './web/AdminWeb'
 import QuizRouter from './web/QuizWeb'
+import UserSettingRouter from './web/UserSettingWeb'
 
 const app = express()
 
@@ -29,6 +30,7 @@ switch (process.env.NODE_ENV) {
 app.use('/users', UserRouter)
 app.use('/vocabularyLists', VocabularyListRouter)
 app.use('/quizzes', QuizRouter)
+app.use('/userSetting', UserSettingRouter)
 app.get('/', (req, res) => {
   res.send(`worked ${process.env.NODE_ENV}`)
 })
