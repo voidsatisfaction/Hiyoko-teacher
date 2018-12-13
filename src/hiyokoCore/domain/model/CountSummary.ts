@@ -1,11 +1,11 @@
 import { DateTime } from "../../../util/DateTime";
 
 export enum CountCategory {
-  addingVocabularyList = 'adding_vocabulary_list',
-  takingQuiz           = 'taking_quiz',
+  addingVocabularyList = 'addingVocabularyList',
+  takingQuiz           = 'takingQuiz',
 
-  planAddingVocabularyList = 'plan_adding_vocabulary_list',
-  planTakingQuiz           = 'plan_taking_quiz'
+  planAddingVocabularyList = 'planAddingVocabularyList',
+  planTakingQuiz           = 'planTakingQuiz'
 }
 
 export class CountSummaryEntity {

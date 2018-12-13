@@ -13,14 +13,51 @@ import { ICountSummaryRepository } from "../domain/repository/CountSummaryReposi
 import { DateTime } from "../../util/DateTime";
 import { CountCategory, CountSummaryEntity } from "../domain/model/CountSummary";
 
-type TPlanAchievement = {
-  achievement: {
-    addVocabularyListCounts: AchievementCount[],
-    takeQuizCounts: AchievementCount[]
+export class PlanAchievement {
+  private achievementKeys: string[]
+  private achievement: { [key: string]: AchievementCount[] }
+  private planKeys: string[]
+  private plan: { [key: string]: PlanCount[] }
+
+  constructor() {
+    this.achievementKeys = []
+    this.achievement = {}
+    this.planKeys = []
+    this.plan = {}
+  }
+
+  setAchievementCount(key: string, achievementCounts: AchievementCount[]): PlanAchievement {
+    this.achievementKeys.push(key)
+    this.achievement[key] = [...achievementCounts]
+
+    return this
+  }
+
+  setPlanCount(key: string, planCounts: PlanCount[]): PlanAchievement {
+    this.planKeys.push(key)
+    this.plan[key] = [...planCounts]
+
+    return this
+  }
+
+  toJSON() {
+    const results = {
+      achievement: {},
+      plan: {}
+    }
+
+    this.achievementKeys.forEach(achievementKey => {
+      results.achievement[achievementKey] = this.achievement[achievementKey].map(achievementCount => achievementCount.toJSON())
+    })
+    this.planKeys.forEach(planKey => {
+      results.plan[planKey] = this.plan[planKey].map(planCount => planCount.toJSON())
+    })
+
+    return results
   }
 }
 
-export class AchievementCount {
+export class CountSummary {
   readonly userId: string
   readonly countCategory: CountCategory
   readonly date: DateTime
@@ -56,6 +93,10 @@ export class AchievementCount {
   }
 }
 
+export class AchievementCount extends CountSummary {}
+
+export class PlanCount extends CountSummary {}
+
 export class PlanningApplication
   implements DbClientComponent,
     LoggerDBClientComponent,
@@ -86,7 +127,7 @@ export class PlanningApplication
 
   countSummaryRepository: () => ICountSummaryRepository
 
-  async getThisWeekPlanAcheivement(): Promise<TPlanAchievement> {
+  async getThisWeekPlanAcheivement(): Promise<PlanAchievement> {
     const currentUser = await this.userHelper().getCurrentUser()
     const userProduct = await this.userProductRelation().toUserProduct(currentUser)
 
@@ -94,27 +135,37 @@ export class PlanningApplication
 
     // did data
     // add vocabulary numbers & taking quiz numbers
-    const [addVocabularyListCounts, takeQuizCounts] = await Promise.all([
+    const [
+      addVocabularyListCounts,
+      takeQuizCounts,
+      planAddVocabularyListCounts,
+      planTakeQuizCounts
+    ] = await Promise.all([
       this.countSummaryRepository().countSummaryLoader().findAll(
         this.userId, CountCategory.addingVocabularyList, thisWeekDateStrings
       ),
       this.countSummaryRepository().countSummaryLoader().findAll(
         this.userId, CountCategory.takingQuiz, thisWeekDateStrings
       ),
+      this.countSummaryRepository().countSummaryLoader().findAll(
+        this.userId, CountCategory.planAddingVocabularyList, thisWeekDateStrings
+      ),
+      this.countSummaryRepository().countSummaryLoader().findAll(
+        this.userId, CountCategory.planTakingQuiz, thisWeekDateStrings
+      )
     ])
-
-    // TODO: plan data
 
     this.userActionLogger().putActionLog(
       Action.getPlanAchievement, userProduct.productId, undefined
     )
 
-    return ({
-      achievement: {
-        addVocabularyListCounts: addVocabularyListCounts.map(AchievementCount.fromCountSummaryEntity),
-        takeQuizCounts: takeQuizCounts.map(AchievementCount.fromCountSummaryEntity)
-      }
-    })
+    const planAchievement = new PlanAchievement()
+    planAchievement.setAchievementCount(CountCategory.addingVocabularyList, addVocabularyListCounts.map(AchievementCount.fromCountSummaryEntity))
+      .setAchievementCount(CountCategory.takingQuiz, takeQuizCounts.map(AchievementCount.fromCountSummaryEntity))
+      .setPlanCount(CountCategory.planAddingVocabularyList, planAddVocabularyListCounts.map(PlanCount.fromCountSummaryEntity))
+      .setPlanCount(CountCategory.planTakingQuiz, planTakeQuizCounts.map(PlanCount.fromCountSummaryEntity))
+
+    return planAchievement
   }
 
 }

@@ -9,8 +9,8 @@ CREATE TABLE Hiyoko_core.Count_summary_table (
 
 ALTER TABLE Hiyoko_core.Count_summary_table
   MODIFY COLUMN `countCategory` ENUM(
-    'adding_vocabulary_list',
-    'taking_quiz',
-    'plan_adding_vocabulary_list',
-    'plan_taking_quiz'
+    'addingVocabularyList',
+    'takingQuiz',
+    'planAddingVocabularyList',
+    'planTakingQuiz'
   )
