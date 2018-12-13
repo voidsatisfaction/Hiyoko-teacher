@@ -13,4 +13,4 @@ ALTER TABLE Hiyoko_core.Count_summary_table
     'takingQuiz',
     'planAddingVocabularyList',
     'planTakingQuiz'
-  )
+  ) NOT NULL;

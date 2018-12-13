@@ -69,7 +69,7 @@ describe('/userSetting', () => {
     })
   })
 
-  describe('POST userSetting/planning/count', () => {
+  describe('PUT userSetting/planning/count', () => {
     it('should successfully set count plannings', async () => {
       const payload = {
         userId,
@@ -85,7 +85,7 @@ describe('/userSetting', () => {
       }
 
       await request(app)
-        .post(`/userSetting/planning/count`)
+        .put(`/userSetting/planning/count`)
         .send(payload)
         .expect(200)
         .set('Accept', 'application/json')

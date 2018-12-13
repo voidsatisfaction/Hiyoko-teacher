@@ -35,7 +35,7 @@ UserSettingRouter.get('/planning/:userId', [
   }
 })
 
-UserSettingRouter.post('/planning/count', [
+UserSettingRouter.put('/planning/count', [
   check('userId').isString(),
   check('countPlans').isArray()
 ], async (req: express.Request, res: express.Response) => {
