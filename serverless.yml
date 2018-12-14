@@ -108,3 +108,8 @@ functions:
 package:
   include:
     - src/hiyokoMantle/web/liff/template
+  exclude:
+    - src/hiyokoCore
+    - build
+    - db
+    - prac
