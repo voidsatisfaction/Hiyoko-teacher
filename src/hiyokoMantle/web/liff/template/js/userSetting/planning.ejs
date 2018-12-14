@@ -1,3 +1,84 @@
 <script>
+  function init(data) {
+    const container = document.querySelector('.container-fluid')
 
+    new PlanningView({ container, data })
+  }
+
+  class PlanningPresenter {
+    constructor(view, userId) {
+      this.view = view
+      this.userId = userId
+    }
+
+    async updateCountPlans({ countPlans }) {
+      try {
+        const response = await axios.put('/<%= process.env.NODE_ENV %>/hiyokoSensei/api/userSetting/planning/count', {
+          userId: this.userId,
+          countPlans
+        })
+
+        this.view.redirect({ userId: this.userId })
+      } catch(error) {
+        console.error(error)
+        alert('Some error occured! Please contact to develper')
+      }
+    }
+  }
+
+  class PlanningView {
+    constructor({ container, data }) {
+      this.liffData = data
+      this.presenter = new PlanningPresenter(this, this.liffData.context.userId)
+      this.$container = container
+
+      this.initMembers()
+      this.initEvents()
+      this.initAction()
+    }
+
+    initMembers() {
+      this.$countPlanEditModals = this.$container.querySelectorAll('.js-count-plan-edit-modal')
+    }
+
+    initEvents() {
+      this.$countPlanEditModals.forEach($countPlanEditModal => {
+        $countPlanEditModal.addEventListener('click', this._onClickCountPlanSaveButton.call(this, $countPlanEditModal))
+      })
+    }
+
+    initAction() {
+
+    }
+
+    redirect({ userId }) {
+      window.location.href = `/<%= process.env.NODE_ENV %>/hiyokoSensei/liff/userSetting/planning?userId=${userId}`
+    }
+
+    _onClickCountPlanSaveButton($countPlanEditModal) {
+      return (e) => {
+        if (![...e.target.classList].includes('js-count-plan-edit-button')) {
+          return
+        }
+        // input data
+        const $inputs = [...$countPlanEditModal.querySelectorAll('input[type=text]')]
+        // CountCategory
+        const countCategory = $countPlanEditModal.dataset.countCategory
+
+        const countPlans = $inputs.map($input => ({
+          countCategory,
+          date: $input.dataset.date,
+          count: +$input.value
+        }))
+
+        this.presenter.updateCountPlans({ countPlans })
+      }
+    }
+  }
+
+  (() => {
+    liff.init((data) => {
+      init(data)
+    })
+  })()
 </script>

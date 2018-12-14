@@ -15,9 +15,10 @@
     </header>
     <hr />
     <% for(let i=0; i<length; i++) { %>
-      <section class="planning-card-container <%= classes[i] %>">
+      <section class="planning-card-container js-<%= classes[i] %>">
         <div class="row planning-card-header">
-          <p><%= titles[i] %></p>
+          <p><%= titles[i] %> <button class="btn btn-info btn-sm plan-edit-button" data-toggle="modal" data-target="#planEditModalCenter-<%= i %>"
+            data-plan-name="<%= classes[i] %>">Edit goal</button></p>
         </div>
         <div class="row planning-card-body">
           <% for(let j=0; j<plans[i].length; j++) { %>
@@ -32,10 +33,50 @@
             </div>
           <% } %>
         </div>
-        <div class="row">
-          <a><button class="btn btn-primary btn-sm">save</button></a>
-        </div>
       </section>
+    <% } %>
+
+    <!-- Modal -->
+    <% for(let i=0; i<length; i++) { %>
+      <div class="modal fade count-plan-edit-modal js-count-plan-edit-modal"
+        id="planEditModalCenter-<%= i %>"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="planEditModalCenter"
+        aria-hidden="true"
+        data-count-category="<%= plans[i][0].countCategory %>"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Edit goal: <%= titles[i] %></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="container-fluid">
+                <div class="row">
+                  <% for(let j=0; j<plans[i].length; j++) { %>
+                    <% date = plans[i][j].date %>
+                    <% dateShort = date.split('-').slice(1).join('-') %>
+                    <div class="col">
+                      <div class="form-group">
+                        <label for="exampleInputEmail1"><%= dateShort %></label>
+                        <input type="text" class="form-control" id="exampleInputEmail1" value="<%= plans[i][j].count %>" data-date="<%= date %>">
+                      </div>
+                    </div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary js-count-plan-edit-button">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
     <% } %>
   </div>
 

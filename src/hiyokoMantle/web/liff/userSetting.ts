@@ -19,6 +19,12 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
     getUserSettingPlanningHTML
   )
 
+  pathMethodResolver.setFunction(
+    '/hiyokoSensei/api/userSetting/planning/count',
+    'PUT',
+    putUserSettingCountPlanningJSON
+  )
+
   const func = pathMethodResolver.getFunction(event.path, event.httpMethod)
   await func()
 
@@ -43,8 +49,8 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
       const html: string = await TemplateEngine.renderHTML(filePath, {
         length: 2,
         classes: [
-          'adding-vocabulary-count',
-          'taking-quiz-count'
+          CountCategory.planAddingVocabularyList,
+          CountCategory.takingQuiz
         ],
         titles: [
           '1. Adding vocabulary count',
@@ -64,6 +70,22 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
     } catch (error) {
       console.error(error)
       callback(null, responseHTML(500, 'Some error occured'))
+    }
+  }
+
+  async function putUserSettingCountPlanningJSON() {
+    try {
+      const body = JSON.parse(event.body)
+
+      const userId = body.userId
+      const countPlans = body.countPlans
+
+      await HiyokoCoreClient.putCountPlans(userId, countPlans)
+
+      callback(null, response(200, { result: 'success' }))
+    } catch(error) {
+      console.error(error)
+      callback(null, response(500, 'Some error occured'))
     }
   }
 }
