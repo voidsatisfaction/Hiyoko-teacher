@@ -12,6 +12,7 @@ provider:
     ADMIN_TOKEN: ${env:ADMIN_TOKEN}
 plugins:
   - serverless-plugin-typescript
+  - serverless-prune-plugin
 functions:
   # For bot
   hiyokoSensei:
@@ -20,7 +21,6 @@ functions:
       - http:
           path: hiyokoSensei/bot/webhook
           method: post
-          cors: true
   # For add vocabulary
   hiyokoSenseiLiff:
     handler: src/hiyokoMantle/web/liff/vocabularyListAdd.handler
@@ -28,11 +28,9 @@ functions:
       - http:
           path: hiyokoSensei/liff/vocabularyList/add
           method: get
-          cors: true
       - http:
           path: hiyokoSensei/liff/vocabularyList/add
           method: post
-          cors: true
   # For list all user vocabularies
   hiyokoSenseiLiff-Vocabularies:
     handler: src/hiyokoMantle/web/liff/vocabularyLists.handler
@@ -40,15 +38,12 @@ functions:
       - http:
           path: hiyokoSensei/liff/vocabularyLists/all
           method: get
-          cors: true
       - http:
           path: hiyokoSensei/api/vocabularyLists
           method: get
-          cors: true
       - http:
           path: hiyokoSensei/api/vocabularyLists
           method: delete
-          cors: true
   # For simple quizzes
   hiyokoSenseiLiff-SimpleQuizzes:
     handler: src/hiyokoMantle/web/liff/simpleQuizzes.handler
@@ -56,15 +51,12 @@ functions:
       - http:
           path: hiyokoSensei/liff/quizzes/simple
           method: get
-          cors: true
       - http:
           path: hiyokoSensei/api/quizzes/simple
           method: get
-          cors: true
       - http:
           path: hiyokoSensei/api/quizzes/simple
           method: post
-          cors: true
   # For composite quizzes
   hiyokoSenseiLiff-CompositeQuizzes:
     handler: src/hiyokoMantle/web/liff/compositeQuizzes.handler
@@ -72,26 +64,24 @@ functions:
       - http:
           path: hiyokoSensei/liff/quizzes/composite
           method: get
-          cors: true
       - http:
           path: hiyokoSensei/api/quizzes/composite
           method: get
-          cors: true
       - http:
           path: hiyokoSensei/api/quizzes/composite
           method: post
-          cors: true
   hiyokoSenseiLiff-UserSetting:
     handler: src/hiyokoMantle/web/liff/userSetting.handler
     events:
       - http:
           path: hiyokoSensei/liff/userSetting/home
           method: get
-          cors: true
       - http:
           path: hiyokoSensei/liff/userSetting/planning
           method: get
-          cors: true
+      - http:
+          path: hiyokoSensei/api/userSetting/planning/count
+          method: put
   # For push message
   # FIXME: This setting makes two pushers(DEV / PROD)
   hiyokoSenseiPusher:
