@@ -179,9 +179,14 @@ export class PlanningApplication
 
   async setCountPlans(countPlans: CountPlan[]): Promise<void> {
     const currentUser = await this.userHelper().getCurrentUser()
+    const userProduct = await this.userProductRelation().toUserProduct(currentUser)
 
     await this.countSummaryRepository().countSummaryAction().bulkCreateOrUpdate(
       currentUser, countPlans.map(countPlan => countPlan.toCountSummaryEntity())
+    )
+
+    this.userActionLogger().putActionLog(
+      Action.setPlanAchievement, userProduct.productId, countPlans
     )
   }
 }

@@ -1,3 +1,33 @@
 <script>
-  
+  function init(data) {
+    const navigator = document.querySelector('.nav-link-planning')
+
+    new UserSettingNavigatorView({ navigator, data })
+  }
+
+  class UserSettingNavigatorView {
+    constructor({ navigator, data }) {
+      this.userId = data.context.userId
+
+      this.$navigator = navigator
+
+      this.initMembers()
+      this.initEvents()
+    }
+
+    initMembers() { }
+
+    initEvents() {
+      const link = `/<%= process.env.NODE_ENV %>/hiyokoSensei/liff/userSetting/planning?userId=${this.userId}`
+      this.$navigator.addEventListener('click', () => {
+        window.location.href = link
+      })
+    }
+  }
+
+  (() => {
+    liff.init((data) => {
+      init(data)
+    })
+  })()
 </script>

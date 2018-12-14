@@ -13,7 +13,8 @@ export enum Action {
   solveSimpleQuizzes    = 'solve-simple-quizzes',
   solveCompositeQuizzes = 'solve-composite-quizzes',
 
-  getPlanAchievement = 'get-plan-achievement'
+  getPlanAchievement = 'get-plan-achievement',
+  setPlanAchievement = 'set-plan-achievement'
 }
 
 export interface IUserActionLoggerObject {
