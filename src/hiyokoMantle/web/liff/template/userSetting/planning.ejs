@@ -9,7 +9,7 @@
 
 <body>
   <div class="container-fluid">
-    <%- include('./_navigator', { title: 'User Setting' }) %>
+    <%- include('./_navigator', { title: 'Planning' }) %>
     <header>
       <h5>Weekly Objective</h5>
     </header>
@@ -22,14 +22,23 @@
         </div>
         <div class="row planning-card-body">
           <% for(let j=0; j<plans[i].length; j++) { %>
-            <% if (plans[i][j].count === 0 || plans[i][j].count > achievements[i][j].count) { %>
+            <% const plan = plans[i][j]; const achievement = achievements[i][j]; const shortDate = plan.date.split('-').slice(1).join('-') %>
             <div class="col border">
+            <% if (plan.count === 0) { %>
+              <p class="bg-dark text-white">
+                <%= shortDate %>
+              </p>
+            <% } else if (plan.count > achievement.count) { %>
+              <p class="bg-danger text-white">
+                <%= shortDate %>
+              </p>
             <% } else { %>
-            <div class="col border border-success">
+              <p class="bg-success text-white">
+                <%= shortDate %>
+              </p>
             <% } %>
-              <p><%= plans[i][j].date.split('-').slice(1).join('-') %></p>
-              <p>goal: <%= plans[i][j].count %></p>
-              <p>count: <%= achievements[i][j].count %></p>
+              <p>goal: <%= plan.count %></p>
+              <p>count: <%= achievement.count %></p>
             </div>
           <% } %>
         </div>
