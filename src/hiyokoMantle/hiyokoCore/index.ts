@@ -3,6 +3,7 @@ import { Configure } from '../../../config'
 import { IVocabularyList } from '../model/VocabularyList'
 import { IUser } from '../model/User'
 import { ISimpleQuiz, IQuiz } from '../model/SimpleQuiz';
+import { ICountSummary } from '../model/CountSummary';
 
 export class HiyokoCoreClient {
   private static _client(): AxiosInstance {
@@ -142,6 +143,33 @@ export class HiyokoCoreClient {
 
       return response.data.result
     } catch (error) {
+      throw error
+    }
+  }
+
+  static async getThisWeekPlanAchievement(userId: string): Promise<{
+    achievement: { [key: string]: ICountSummary[] },
+    plan: { [key: string]: ICountSummary[] }
+  }> {
+    try {
+      const response = await this._client().get(`/userSetting/planning/${userId}`)
+
+      return response.data.planAchievement
+    } catch (error) {
+      throw error
+    }
+  }
+
+  static async putCountPlans(
+    userId: string,
+    countPlans: ICountSummary[]
+  ): Promise<void> {
+    try {
+      await this._client().put(`/userSetting/planning/count`, {
+        userId,
+        countPlans
+      })
+    } catch(error) {
       throw error
     }
   }

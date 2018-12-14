@@ -1,0 +1,11 @@
+<script>
+  (() => {
+    liff.init((data) => {
+      const userId = data.context.userId
+      const link = `/<%= process.env.NODE_ENV %>/hiyokoSensei/liff/userSetting/planning?userId=${userId}`
+      document.querySelector('.nav-link-planning').addEventListener('click', () => {
+        window.location.href = link
+      })
+    })
+  })()
+</script>

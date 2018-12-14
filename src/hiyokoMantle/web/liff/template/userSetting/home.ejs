@@ -8,16 +8,19 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="container-fluid">
     <%- include('./_nevigator', { title: 'User Setting' }) %>
     <header>
       <h5>This is userSetting page</h5>
     </header>
+    <hr />
   </div>
 
   <%- include('../common/script') %>
 
   <%- include('../js/userSetting/home') %>
+
+  <%- include('../js/userSetting/_navigator') %>
 </body>
 
 </html>

@@ -8,16 +8,42 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="container-fluid">
     <%- include('./_nevigator', { title: 'User Setting' }) %>
     <header>
-      <h5>This is planning</h5>
+      <h5>Weekly Objective</h5>
     </header>
+    <hr />
+    <% for(let i=0; i<length; i++) { %>
+      <section class="planning-card-container <%= classes[i] %>">
+        <div class="row planning-card-header">
+          <p><%= titles[i] %></p>
+        </div>
+        <div class="row planning-card-body">
+          <% for(let j=0; j<plans[i].length; j++) { %>
+            <% if (plans[i][j].count === 0 || plans[i][j].count > achievements[i][j].count) { %>
+            <div class="col border">
+            <% } else { %>
+            <div class="col border border-success">
+            <% } %>
+              <p><%= plans[i][j].date.split('-').slice(1).join('-') %></p>
+              <p>goal: <%= plans[i][j].count %></p>
+              <p>count: <%= achievements[i][j].count %></p>
+            </div>
+          <% } %>
+        </div>
+        <div class="row">
+          <a><button class="btn btn-primary btn-sm">save</button></a>
+        </div>
+      </section>
+    <% } %>
   </div>
 
   <%- include('../common/script') %>
 
   <%- include('../js/userSetting/planning') %>
+
+  <%- include('../js/userSetting/_navigator') %>
 </body>
 
 </html>
