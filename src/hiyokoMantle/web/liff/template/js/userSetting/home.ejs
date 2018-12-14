@@ -1,8 +1,32 @@
 <script>
   function init(data) {
+    const container = document.querySelector('.container-fluid')
     const navigator = document.querySelector('.nav-link-planning')
 
     new UserSettingNavigatorView({ navigator, data })
+    new UserSettingHomeView({ container, data })
+  }
+
+  class UserSettingHomeView {
+    constructor({ container, data }) {
+      this.userId = data.context.userId
+
+      this.$container = container
+
+      this.initMembers()
+      this.initEvents()
+    }
+
+    initMembers() {
+      this.$planningLink = this.$container.querySelector('.js-planning-link')
+    }
+
+    initEvents() {
+      const planningLink = `/<%= process.env.NODE_ENV %>/hiyokoSensei/liff/userSetting/planning?userId=${this.userId}`
+      this.$planningLink.addEventListener('click', () => {
+        window.location.href = planningLink
+      })
+    }
   }
 
   class UserSettingNavigatorView {
