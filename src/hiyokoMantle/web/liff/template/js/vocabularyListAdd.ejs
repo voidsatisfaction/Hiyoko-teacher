@@ -10,10 +10,10 @@
       this.view = view
     }
 
-    async sendVocabularyListData({ userId, name, meaning, contextSentence }) {
+    async sendVocabularyListData({ userId, name, meaning }) {
       try {
         const result = await axios.post(`/<%= process.env.NODE_ENV %>/hiyokoSensei/liff/vocabularyList/add`, {
-          userId, name, meaning, contextSentence
+          userId, name, meaning
         })
 
         this.view.submitSuccess({ name })
@@ -36,7 +36,6 @@
     initMembers() {
       this.vocabularyNameInput = this.container.querySelector('#vocabularyNameInput')
       this.meaningInput = this.container.querySelector('#meaningInput')
-      this.contextSentenceInput = this.container.querySelector('#contextSentenceInput')
       this.submitInput = this.container.querySelector('#submitInput')
     }
 
@@ -47,7 +46,6 @@
     submitSuccess({ name }) {
       this.vocabularyNameInput.value = ''
       this.meaningInput.value = ''
-      this.contextSentenceInput.value = ''
 
       const addResult = this.container.querySelector('#addResult')
       addResult.innerHTML = `
@@ -70,24 +68,15 @@
       const userId = this.liffData.context.userId
       const name = this.vocabularyNameInput.value
       const meaning = this.meaningInput.value
-      const contextSentence = this.contextSentenceInput.value
 
-      if (!name || !meaning || !contextSentence) {
-        const reason = 'You should fill out all three fields (name, meaning, contextSentence)'
-        this.submitFail({ reason })
-        return
-      }
-
-      // contextSentence should include name validation
-      // FIXME: name: hell 이고, contextSentence가 hellsing인경우 단어가 등록됨
-      if (!contextSentence.trim().includes(name)) {
-        const reason = 'Context sentence should contain vocabulary name'
+      if (!name || !meaning) {
+        const reason = 'You should fill out all three fields (name, meaning)'
         this.submitFail({ reason })
         return
       }
 
       this.presenter.sendVocabularyListData({
-        userId, name, meaning, contextSentence
+        userId, name, meaning
       })
     }
   }

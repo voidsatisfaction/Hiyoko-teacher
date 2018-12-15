@@ -38,7 +38,7 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
       const userId: string = body.userId!
       const name: string = body.name!
       const meaning: string = body.meaning!
-      const contextSentence: string | null = body.contextSentence
+      const contextSentence: string | null = body.contextSentence || null
       const vocabularyList = await HiyokoCoreClient.addVocabularyList(
         userId, name, meaning, contextSentence
       )
