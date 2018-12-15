@@ -28,7 +28,7 @@ VocabularyListRouter.post('/', [
   check('userId').exists().isString(),
   check('name').exists().isString().trim(),
   check('meaning').exists().isString().trim(),
-  check('contextSentence').exists().isString().trim()
+  check('contextSentence').optional()
 ], async (req: express.Request, res: express.Response) => {
   try {
     const bodyErrors = validationResult(req)
