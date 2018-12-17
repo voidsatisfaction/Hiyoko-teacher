@@ -58,6 +58,19 @@ export class Configure {
 
         this.adminToken = process.env.ADMIN_TOKEN
         break
+      case 'STAGING':
+        // Mantle deploy test
+        this.nodeEnv = 'STAGING'
+
+        // mantle
+        this.coreURL = process.env.CORE_URL
+        this.productId = '0'
+
+        this.lineBotAccessToken = process.env.LINE_BOT_ACCESS_TOKEN
+        this.lineBotSecretToken = process.env.LINE_BOT_SECRET_TOKEN
+
+        this.adminToken = process.env.ADMIN_TOKEN
+        break
       case 'TEST':
         // TEST(CI / local unit test npm run test)
         // core

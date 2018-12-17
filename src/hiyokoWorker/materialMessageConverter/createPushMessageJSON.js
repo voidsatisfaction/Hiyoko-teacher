@@ -17,13 +17,18 @@ function toPushMessageString({ jsonData }) {
   const { Date, VideoURL, TranscriptURL, Themes } = jsonData
 
   const message = `
+
 ${Date}
+
 =====Material URLs=====
 Video: ${VideoURL}
+
 Transcript: ${TranscriptURL}
-=====Video Themes======
-${Themes.reduce((str, themeData) => str + `${themeData.Time}: ${themeData.Theme}\n`, '')}
-  `
+
+====Video Contents====
+
+${Themes.reduce((str, themeData) => str + `${themeData.Time}\n${themeData.Theme}\n\n`, '')}
+`
 
   return ({ jsonData, message: message.trim() })
 }

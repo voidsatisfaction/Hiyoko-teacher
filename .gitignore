@@ -4,6 +4,7 @@ build
 
 .env.dev
 .env.prod
+.env.staging
 
 src/hiyokoWorker/materialMessageConverter/pushMessageJSON/*
 src/hiyokoWorker/materialMessageConverter/rawLocalJSON/*
