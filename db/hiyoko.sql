@@ -57,4 +57,13 @@ CREATE TABLE Hiyoko_core.Count_summary_table (
   KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS Hiyoko_core.Cnn10_materials;
+CREATE TABLE Hiyoko_core.Cnn10_materials (
+  `materialId` INT(20) UNSIGNED AUTO_INCREMENT NOT NULL,
+  `videoURL` VARCHAR(200) NOT NULL,
+  `transcriptURL` VARCHAR(200) NOT NULL,
+  `date` DATE NOT NULL,
+  PRIMARY KEY (`materialId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 SHOW TABLES;
