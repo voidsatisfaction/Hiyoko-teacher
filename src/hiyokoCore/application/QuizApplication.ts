@@ -145,6 +145,7 @@ export class QuizApplication
   // e.g you guys turned down my offer right? -> you guys tu____ ____ my offer right? / rned down
   private vocabularyListToActiveVocabularyQuiz(vocabularyList: VocabularyList): { problem: string, answer: string } {
     const name = vocabularyList.name
+    const capitalizedName = vocabularyList.name.charAt(0).toUpperCase() + vocabularyList.name.slice(1)
     const contextSentence = vocabularyList.contextSentence
     const nameSplit = name.split(' ')
 
@@ -171,8 +172,8 @@ export class QuizApplication
         noTouchUntil = 3
       }
 
-      return str.split('').map((c, i) => {
-        if (i <= noTouchUntil) {
+      return str.split('').map((c, j) => {
+        if (j <= noTouchUntil) {
           return c
         }
         answer += c
@@ -181,7 +182,12 @@ export class QuizApplication
     })
     .join(' ')
 
-    const problem = contextSentence.replace(name, replacingString)
+    // Registered vocabulary -> apple, but its contextSentence starts like: Apple is red
+    // In this case, Problem should be capitalized. And capitalized word should be replaced
+    let problem = contextSentence.replace(name, replacingString)
+    if (problem === contextSentence) {
+      problem = contextSentence.replace(capitalizedName, replacingString.charAt(0).toUpperCase() + replacingString.slice(1))
+    }
 
     return { problem, answer }
   }

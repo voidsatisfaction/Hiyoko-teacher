@@ -62,7 +62,7 @@ class QuizApplicationTest extends QuizApplication {
           const contextSentence2 = 'why you got offered, but not joining the company?'
 
           const name3 = 'swimming'
-          const contextSentence3 = 'swimming is one of my favourite hobby!'
+          const contextSentence3 = 'Swimming is one of my favourite hobby!'
 
           now.tick(10 * 1000)
           const vocabularyList1 = await VocabularyListEntityPersistMock(this.dbc, userEntity, name1, meaning, contextSentence1, 100)
@@ -89,7 +89,7 @@ class QuizApplicationTest extends QuizApplication {
           expect(compositeQuizzes[3].answer).to.be.equal('rned down')
           expect(compositeQuizzes[4].problem).to.be.equal('why you got off____, but not joining the company?')
           expect(compositeQuizzes[4].answer).to.be.equal('ered')
-          expect(compositeQuizzes[5].problem).to.be.equal('swi_____ is one of my favourite hobby!')
+          expect(compositeQuizzes[5].problem).to.be.equal('Swi_____ is one of my favourite hobby!')
           expect(compositeQuizzes[5].answer).to.be.equal('mming')
         })
       })
