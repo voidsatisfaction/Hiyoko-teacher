@@ -80,7 +80,7 @@
 
       // contextSentence should include name validation
       // FIXME: name: hell 이고, contextSentence가 hellsing인경우 단어가 등록됨
-      if (!contextSentence.trim().includes(name)) {
+      if (!contextSentence.trim().includes(name) && !this._isCapitalizedInclude({ vocabulary: name, contextSentence })) {
         const reason = 'Context sentence should contain vocabulary name'
         this.submitFail({ reason })
         return
@@ -89,6 +89,17 @@
       this.presenter.sendVocabularyListData({
         userId, name, meaning, contextSentence
       })
+    }
+
+    _isCapitalizedInclude({ vocabulary, contextSentence }) {
+      if (vocabulary.length === 0) {
+        return false
+      }
+      const splitVocabulary = vocabulary.split('')
+      splitVocabulary[0] = splitVocabulary[0].toUpperCase()
+      const capitalizedString = splitVocabulary.join('')
+
+      return contextSentence.trim().includes(capitalizedString)
     }
   }
 
