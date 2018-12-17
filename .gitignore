@@ -5,6 +5,9 @@ build
 .env.dev
 .env.prod
 
+src/hiyokoWorker/materialMessageConverter/pushMessageJSON/*
+src/hiyokoWorker/materialMessageConverter/rawLocalJSON/*
+
 prac
 
 # serverless directories
