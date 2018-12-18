@@ -61,6 +61,7 @@
       this.vocabularyNameInput.value = ''
       this.meaningInput.value = ''
       this.contextSentenceInput.value = ''
+      this.meaningInputHelper.innerHTML = ''
 
       const addResult = this.container.querySelector('#addResult')
       addResult.innerHTML = `
@@ -122,6 +123,7 @@
             this._renderVocabularyMeanings({ meanings })
           } catch (error) {
             console.error(error)
+            this._renderVocabularyMeanings({ meanings: [] })
             this.canGlosbeUse = false
           } finally {
             clearInterval(this.lazyMeaningSearch)
