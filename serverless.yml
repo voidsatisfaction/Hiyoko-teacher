@@ -95,6 +95,13 @@ functions:
           path: hiyokoSensei/pusher/message/users/all
           method: post
           cors: true
+  # For glosbe api
+  glosbe:
+    handler: src/hiyokoMantle/web/glosbe/glosbe.handler
+    events:
+      - http:
+          path: hiyokoSensei/glosbe/translate
+          method: get
 package:
   include:
     - src/hiyokoMantle/web/liff/template

@@ -6,3 +6,22 @@
   crossorigin="anonymous"></script>
 <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+class HiyokoLambdaClient {
+  constructor() {
+    this._client = axios.create({
+      baseURL: '/<%= process.env.NODE_ENV %>/hiyokoSensei'
+    })
+  }
+
+  async glosbeTranslate({ vocabulary }) {
+    const res = await this._client.get('/glosbe/translate', {
+      params: {
+        vocabulary
+      }
+    })
+
+    return res.data
+  }
+}
+</script>
