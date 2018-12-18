@@ -21,6 +21,12 @@
         alert(JSON.stringify(`Something went wrong! please retry a few minutes later`))
       }
     }
+
+    async getVocabularyMeanings({ vocabulary }) {
+      // array of meaning(string)
+      const hiyokoLambdaClient = new HiyokoLambdaClient()
+      return await hiyokoLambdaClient.glosbeTranslate({ vocabulary })
+    }
   }
 
   class VocabularyListAddView {
@@ -29,18 +35,25 @@
       this.presenter = new VocabularyListAddPresenter(this)
       this.container = container
 
+      this.lazyMeaningSearch = setInterval(() => console.log('lazySearching...'), 2 * 1000)
+      this.canGlosbeUse = true
+
       this.initMembers()
       this.initEvents()
+
+      this._renderVocabularyMeanings = this._renderVocabularyMeanings.bind(this)
     }
 
     initMembers() {
       this.vocabularyNameInput = this.container.querySelector('#vocabularyNameInput')
       this.meaningInput = this.container.querySelector('#meaningInput')
+      this.meaningInputHelper = this.container.querySelector('#meaningInputHelper')
       this.submitInput = this.container.querySelector('#submitInput')
     }
 
     initEvents() {
       this.submitInput.addEventListener('click', this._onClickSubmitButton.bind(this))
+      this.vocabularyNameInput.addEventListener('input', this._onChangeVocabularyNameInput.bind(this))
     }
 
     submitSuccess({ name }) {
@@ -64,6 +77,14 @@
       `
     }
 
+    _renderVocabularyMeanings({ meanings }) {
+      if (meanings.length === 0) {
+        this.meaningInputHelper.innerHTML = 'Please refer dictionary'
+      } else {
+        this.meaningInputHelper.innerHTML = `Suggestion: ${meanings.join(', ')}`
+      }
+    }
+
     _onClickSubmitButton(e) {
       const userId = this.liffData.context.userId
       const name = this.vocabularyNameInput.value
@@ -78,6 +99,24 @@
       this.presenter.sendVocabularyListData({
         userId, name, meaning
       })
+    }
+
+    _onChangeVocabularyNameInput(e) {
+      clearInterval(this.lazyMeaningSearch)
+      if (this.canGlosbeUse) {
+        const vocabulary = e.target.value
+        this.lazyMeaningSearch = setInterval(async () => {
+          try {
+            const meanings = await this.presenter.getVocabularyMeanings({ vocabulary })
+            this._renderVocabularyMeanings({ meanings })
+          } catch (error) {
+            console.error(error)
+            this.canGlosbeUse = false
+          } finally {
+            clearInterval(this.lazyMeaningSearch)
+          }
+        }, 1 * 1000)
+      }
     }
   }
 

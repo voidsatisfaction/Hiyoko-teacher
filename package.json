@@ -10,6 +10,7 @@
     "test": "NODE_ENV=TEST npx mocha --exit -r ts-node/register 'test/hiyokoCore/**/*.ts'",
     "deploy_mantle_dev": ". ./.env.dev; sls deploy",
     "deploy_mantle_prod": ". ./.env.prod; sls deploy",
+    "deploy_mantle_staging": ". ./.env.staging; sls deploy",
     "deploy_core_prod": "npm run build; npm run make_core_artifact; eb deploy",
     "build": "./node_modules/.bin/tsc",
     "make_core_artifact": "stat dist || mkdir dist; zip dist/hiyoko-core-app.zip -r build package.json package-lock.json",
