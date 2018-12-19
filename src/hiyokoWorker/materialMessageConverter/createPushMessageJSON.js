@@ -21,6 +21,7 @@ function toPushMessageString({ jsonData }) {
 ${Date}
 
 =====Material URLs=====
+
 Video: ${VideoURL}
 
 Transcript: ${TranscriptURL}
