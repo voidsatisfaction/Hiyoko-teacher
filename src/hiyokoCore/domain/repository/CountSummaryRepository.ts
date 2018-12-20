@@ -32,4 +32,10 @@ export interface ICountSummaryLoader {
     countCategory: CountCategory,
     date: DateString
   ): Promise<CountSummaryEntity>
+
+  findAllByCountCategoryAndUserIdsAndDate(
+    userIds: string[],
+    countCategory: CountCategory,
+    date: DateString
+  ): Promise<CountSummaryEntity[]>
 }

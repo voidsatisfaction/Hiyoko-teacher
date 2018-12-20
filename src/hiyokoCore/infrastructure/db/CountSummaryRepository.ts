@@ -1,7 +1,7 @@
 import { RepositoryBase } from "./RepositoryBase"
 import { IDbClient } from "../../interface/infrastructure/db"
 import { ICountSummaryRepository, ICountSummaryLoader, ICountSummaryAction } from "../../domain/repository/CountSummaryRepository"
-import { CountSummaryEntity, CountCategory } from "../../domain/model/CountSummary"
+import { CountSummaryEntity, CountCategory, getPlanCountCategories } from "../../domain/model/CountSummary"
 import { DateString, DateTime } from "../../../util/DateTime"
 import { UserEntity } from "../../domain/model/User";
 
@@ -141,5 +141,27 @@ class CountSummaryRepositoryDB extends RepositoryBase<CountSummaryEntity>
     })
 
     return newArray
+  }
+
+  async findAllByCountCategoryAndUserIdsAndDate(
+    userIds: string[],
+    countCategory: CountCategory,
+    date: DateString
+  ): Promise<CountSummaryEntity[]> {
+    const rows = await this.dbc.query(`
+      SELECT * FROM ${this.tableName}
+        WHERE userId IN (:userIds) AND
+          countCategory = :countCategory AND
+          date = :date
+    `, {
+      replacements: {
+        userIds,
+        countCategory,
+        date
+      },
+      type: this.dbc.QueryTypes.SELECT
+    })
+
+    return this.parseAs(rows, CountSummaryEntity)
   }
 }
