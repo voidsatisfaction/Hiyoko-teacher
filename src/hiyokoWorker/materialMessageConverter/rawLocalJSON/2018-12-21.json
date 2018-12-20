@@ -1,0 +1,23 @@
+{
+  "Date": "2018-12-21",
+  "VideoURL": "https://edition.cnn.com/2018/11/15/cnn10/ten-content-fri/index.html",
+  "TranscriptURL": "http://transcripts.cnn.com/TRANSCRIPTS/1811/16/sn.01.html",
+  "Themes": [
+    {
+      "Time": "00:00 - 02:00",
+      "Theme": "U.S. President Donald Trump voices his support for a prison reform bill."
+    },
+    {
+      "Time": "02:00 - 03:10",
+      "Theme": "South Korean students get to work on a high-stakes exam."
+    },
+    {
+      "Time": "03:10 - 08:00",
+      "Theme": "U.S. Food and Drug Administration proposes new rules concerning certain e-cigarette products."
+    },
+    {
+      "Time": "08:00 - 08:50",
+      "Theme": "U.S. Food and Drug Administration proposes new rules concerning certain e-cigarette products."
+    }
+  ]
+}

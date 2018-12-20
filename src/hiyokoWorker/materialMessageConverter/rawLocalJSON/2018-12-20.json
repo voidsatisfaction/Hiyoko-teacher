@@ -1,0 +1,19 @@
+{
+  "Date": "2018-12-20",
+  "VideoURL": "https://edition.cnn.com/2018/11/14/cnn10/ten-content-thurs/index.html",
+  "TranscriptURL": "http://transcripts.cnn.com/TRANSCRIPTS/1811/15/sn.01.html",
+  "Themes": [
+    {
+      "Time": "00:00 - 02:15",
+      "Theme": "Elections in Congress: Overview of who's in the running for leadership of the U.S. Senate and House of Representatives."
+    },
+    {
+      "Time": "02:15 - 05:10",
+      "Theme": "How changes in oil prices have various ripple effects around the world."
+    },
+    {
+      "Time": "05:10 - 09:00",
+      "Theme": "Front lines of the firefights in Southern California's hills."
+    }
+  ]
+}
