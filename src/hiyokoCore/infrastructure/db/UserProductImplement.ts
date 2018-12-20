@@ -53,6 +53,19 @@ class UserProductDB extends RepositoryBase<UserProductEntity> implements
     return new UserProductEntity(userId, productId)
   }
 
+  async findAllByProductId(productId: number): Promise<UserProductEntity[]> {
+    const rows = await this.dbc.query(`
+      SELECT * FROM ${this.tableName}
+        WHERE productId = :productId
+    `, {
+      replacements: {
+        productId
+      }
+    })
+
+    return this.parseAs(rows, UserProductEntity)
+  }
+
   async findByUserId(userId: string): Promise<UserProductEntity> {
     const rows = await this.dbc.query(`
       SELECT * FROM ${this.tableName}

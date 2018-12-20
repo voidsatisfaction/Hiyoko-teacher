@@ -11,4 +11,5 @@ export interface IUserProductAction {
 
 export interface IUserProductLoader {
   findByUserId(userId: string): Promise<UserProductEntity | null>
+  findAllByProductId(productId: number): Promise<UserProductEntity[]>
 }
