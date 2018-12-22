@@ -14,7 +14,7 @@ function parseRawLocalJSON({ location }) {
 }
 
 function toPushMessageString({ jsonData }) {
-  const { Date, VideoURL, TranscriptURL, Themes } = jsonData
+  const { Date, VideoURL, TranscriptURL, Themes, Comment, EnglishComment } = jsonData
 
   const message = `
 
@@ -25,6 +25,10 @@ ${Date}
 Video: ${VideoURL}
 
 Transcript: ${TranscriptURL}
+
+${Comment}
+
+${EnglishComment}
 
 ====Video Contents====
 
