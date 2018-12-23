@@ -15,7 +15,6 @@ export interface ICountSummaryAction {
   ): Promise<void>
 
   bulkCreateOrUpdate(
-    userEntity: UserEntity,
     countSummaryEntities: CountSummaryEntity[]
   ): Promise<CountSummaryEntity[]>
 }

@@ -111,7 +111,6 @@ describe('CountSummary repository test', () => {
       const countSummaries = [countSummary1, countSummary2, countSummary3]
 
       await countSummaryAction.bulkCreateOrUpdate(
-        userEntity,
         countSummaries
       )
 
@@ -130,7 +129,6 @@ describe('CountSummary repository test', () => {
       const countSummaries2 = [countSummary4, countSummary5, countSummary6]
 
       await countSummaryAction.bulkCreateOrUpdate(
-        userEntity,
         countSummaries2
       )
 
@@ -206,11 +204,9 @@ describe('CountSummary repository test', () => {
 
       await Promise.all([
         countSummaryAction.bulkCreateOrUpdate(
-          userEntity1,
           countSummaries1
         ),
         countSummaryAction.bulkCreateOrUpdate(
-          userEntity2,
           countSummaries2
         ),
       ])

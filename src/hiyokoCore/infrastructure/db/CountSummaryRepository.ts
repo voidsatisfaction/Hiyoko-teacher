@@ -38,11 +38,10 @@ class CountSummaryRepositoryDB extends RepositoryBase<CountSummaryEntity>
   }
 
   async bulkCreateOrUpdate(
-    userEntity: UserEntity,
     countSummaryEntities: CountSummaryEntity[]
   ): Promise<CountSummaryEntity[]> {
     const bulkInsertArgs = countSummaryEntities.map(
-      countSummaryEntity => [userEntity.userId, countSummaryEntity.countCategory, countSummaryEntity.date.toDateString(), countSummaryEntity.count]
+      countSummaryEntity => [countSummaryEntity.userId, countSummaryEntity.countCategory, countSummaryEntity.date.toDateString(), countSummaryEntity.count]
     )
 
     await this.dbc.query(`
