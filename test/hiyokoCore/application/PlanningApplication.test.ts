@@ -13,7 +13,7 @@ class PlanningApplicationTest extends PlanningApplication {
   readonly dbc: IDbClient
   readonly loggerDBC: ILoggerDBClient
   readonly vocabularyListVocabularyRelationObject: IVocabularyListVocabularyRelationObject
-  readonly userId: string
+  userId: string
   user: UserEntity
 
   constructor() {
@@ -73,10 +73,36 @@ class PlanningApplicationTest extends PlanningApplication {
         })
       })
 
+      describe('adminGetCountPlansByUserIdsAndCountCategoryAndDate()', () => {
+        it('should get count plans and null according to db value', async () => {
+          const now = new DateTime()
+          const [user1, user2, user3] = await Promise.all([
+            UserEntityPersistMock(this.dbc),
+            UserEntityPersistMock(this.dbc),
+            UserEntityPersistMock(this.dbc)
+          ])
+          this.user = user1
+
+          const countPlan1 = new CountPlan(user1.userId, CountCategory.planAddingVocabularyList, now, 3)
+          const countPlan2 = new CountPlan(user2.userId, CountCategory.planAddingVocabularyList, now, 4)
+
+          await this.setCountPlans([ countPlan1, countPlan2 ])
+
+          const result = await this.adminGetCountPlansByUserIdsAndCountCategoryAndDate(
+            [user1, user2, user3].map(user => user.userId),
+            CountCategory.planAddingVocabularyList,
+            now.toDateString(),
+          )
+
+          expect(result.length).to.be.equal(3)
+          expect(result.filter(r => r.countSummary).length).to.be.equal(2)
+        })
+      })
+
       describe('setCountPlans()', () => {
         it('should set this week\'s count plans', async () => {
           const user = await UserEntityPersistMock(this.dbc)
-          this.user = user
+          this.userId = user.userId
 
           const countPlan2 = new CountPlan(user.userId, CountCategory.planAddingVocabularyList, new DateTime(), 3)
           const countPlan3 = new CountPlan(user.userId, CountCategory.planTakingQuiz, new DateTime(), 4)

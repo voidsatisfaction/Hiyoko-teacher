@@ -10,7 +10,7 @@ import { IUserProductRepository } from "../domain/repository/UserProductReposito
 import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
 import { CountSummaryRepositoryComponent } from "../infrastructure/db/CountSummaryRepository";
 import { ICountSummaryRepository } from "../domain/repository/CountSummaryRepository";
-import { DateTime } from "../../util/DateTime";
+import { DateTime, DateString } from "../../util/DateTime";
 import { CountCategory, CountSummaryEntity } from "../domain/model/CountSummary";
 
 export class PlanAchievement {
@@ -182,12 +182,42 @@ export class PlanningApplication
     const userProduct = await this.userProductRelation().toUserProduct(currentUser)
 
     await this.countSummaryRepository().countSummaryAction().bulkCreateOrUpdate(
-      currentUser, countPlans.map(countPlan => countPlan.toCountSummaryEntity())
+      countPlans.map(countPlan => countPlan.toCountSummaryEntity())
     )
 
     this.userActionLogger().putActionLog(
       Action.setPlanAchievement, userProduct.productId, countPlans
     )
+  }
+
+  async adminGetCountPlansByUserIdsAndCountCategoryAndDate(
+    userIds: string[],
+    countCategory: CountCategory,
+    dateString: DateString
+  ): Promise<{ userId: string, countSummary: CountSummaryEntity }[]> {
+    const countSummaries = await this.countSummaryRepository().countSummaryLoader().findAllByCountCategoryAndUserIdsAndDate(
+      userIds, countCategory, dateString
+    )
+
+    const countPlanUserIdMap: { [key: string]: CountSummaryEntity } = countSummaries.reduce((acc, countSummary) => {
+      acc[countSummary.userId] = countSummary
+      return acc
+    }, {})
+
+    const result = userIds.map(userId => {
+      if (countPlanUserIdMap[userId]) {
+        return ({
+          userId,
+          countSummary: countPlanUserIdMap[userId]
+        })
+      }
+      return ({
+        userId,
+        countSummary: null
+      })
+    })
+
+    return result
   }
 }
 

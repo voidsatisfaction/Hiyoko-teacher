@@ -1,4 +1,4 @@
-import { UserEntity } from "../domain/model/User"
+import { UserEntity, UserProductEntity } from "../domain/model/User"
 import { UserRepositoryComponent } from "../infrastructure/db/UserRepository"
 import { IUserRepository } from "../domain/repository/UserRepository"
 import { applyMixins } from "../../util/Mixin"
@@ -7,7 +7,7 @@ import { IDbClient } from "../interface/infrastructure/db"
 import { UserActionLogHelperComponent, IUserActionLoggerObject, Action } from "./helper/UserActionLogHelper";
 import { LoggerDBClientComponent } from "../infrastructure/loggerDb/client";
 import { ILoggerDBClient } from "../interface/infrastructure/LoggerDB";
-import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
+import { IUserProductRelationObject, UserProductRelationComponent } from "../domain/relation/UserProductRelation";
 import { UserProductRepositoryComponent } from "../infrastructure/db/UserProductImplement";
 import { IUserProductRepository } from "../domain/repository/UserProductRepository";
 
@@ -16,6 +16,7 @@ export class UserApplication
     LoggerDBClientComponent,
     UserRepositoryComponent,
     UserProductRepositoryComponent,
+    UserProductRelationComponent,
     UserActionLogHelperComponent
   {
 
@@ -57,14 +58,16 @@ export class UserApplication
     }
   }
 
-  async adminListAll(): Promise<UserEntity[]> {
+  async adminListAll(): Promise<UserProductEntity[]> {
     try {
       const userLoader = this.userRepository().userLoader()
 
       // TODO: all user meta data
       const userEntities = await userLoader.listAll()
 
-      return userEntities
+      const userProducts = await this.userProductRelation().toUserProducts(userEntities)
+
+      return userProducts
     } catch(e) {
       throw e
     }
@@ -78,6 +81,7 @@ applyMixins(
     LoggerDBClientComponent,
     UserRepositoryComponent,
     UserProductRepositoryComponent,
+    UserProductRelationComponent,
     UserActionLogHelperComponent
   ]
 )

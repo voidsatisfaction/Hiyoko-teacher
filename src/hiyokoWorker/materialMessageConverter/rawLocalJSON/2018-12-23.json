@@ -1,0 +1,25 @@
+{
+  "Date": "2018-12-23",
+  "VideoURL": "https://edition.cnn.com/2018/11/19/cnn10/ten-content-tues/index.html",
+  "TranscriptURL": "http://transcripts.cnn.com/TRANSCRIPTS/1811/20/sn.01.html",
+  "Comment": "오늘의 CNN은 바이오 에너지를 이용해서 쓰레기 처리 문제와 에너지원 확보 문제를 동시에 해결해나간다는 스토리가 인상적입니다.",
+  "EnglishComment": "Today's CNN story about using bioenergy to solve waste disposal problems and energy sources at the same time are impressive.",
+  "Themes": [
+    {
+      "Time": "00:00 - 03:40",
+      "Theme": "balance of power in the U.S. Senate and House of Representatives, as Midterm Election results continue to come in."
+    },
+    {
+      "Time": "03:40 - 04:40",
+      "Theme": "An impact crater in beneath Greenland's ice."
+    },
+    {
+      "Time": "04:40 - 09:05",
+      "Theme": "An effort to use biomass pellets to power homes."
+    },
+    {
+      "Time": "09:05 - 10:00",
+      "Theme": "A rarely seen jellyfish."
+    }
+  ]
+}

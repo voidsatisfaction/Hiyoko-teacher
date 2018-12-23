@@ -38,11 +38,10 @@ class CountSummaryRepositoryDB extends RepositoryBase<CountSummaryEntity>
   }
 
   async bulkCreateOrUpdate(
-    userEntity: UserEntity,
     countSummaryEntities: CountSummaryEntity[]
   ): Promise<CountSummaryEntity[]> {
     const bulkInsertArgs = countSummaryEntities.map(
-      countSummaryEntity => [userEntity.userId, countSummaryEntity.countCategory, countSummaryEntity.date.toDateString(), countSummaryEntity.count]
+      countSummaryEntity => [countSummaryEntity.userId, countSummaryEntity.countCategory, countSummaryEntity.date.toDateString(), countSummaryEntity.count]
     )
 
     await this.dbc.query(`
@@ -141,5 +140,27 @@ class CountSummaryRepositoryDB extends RepositoryBase<CountSummaryEntity>
     })
 
     return newArray
+  }
+
+  async findAllByCountCategoryAndUserIdsAndDate(
+    userIds: string[],
+    countCategory: CountCategory,
+    date: DateString
+  ): Promise<CountSummaryEntity[]> {
+    const rows = await this.dbc.query(`
+      SELECT * FROM ${this.tableName}
+        WHERE userId IN (:userIds) AND
+          countCategory = :countCategory AND
+          date = :date
+    `, {
+      replacements: {
+        userIds,
+        countCategory,
+        date
+      },
+      type: this.dbc.QueryTypes.SELECT
+    })
+
+    return this.parseAs(rows, CountSummaryEntity)
   }
 }

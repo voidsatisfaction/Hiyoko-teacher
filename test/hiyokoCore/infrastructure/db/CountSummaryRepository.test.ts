@@ -111,7 +111,6 @@ describe('CountSummary repository test', () => {
       const countSummaries = [countSummary1, countSummary2, countSummary3]
 
       await countSummaryAction.bulkCreateOrUpdate(
-        userEntity,
         countSummaries
       )
 
@@ -130,7 +129,6 @@ describe('CountSummary repository test', () => {
       const countSummaries2 = [countSummary4, countSummary5, countSummary6]
 
       await countSummaryAction.bulkCreateOrUpdate(
-        userEntity,
         countSummaries2
       )
 
@@ -190,6 +188,36 @@ describe('CountSummary repository test', () => {
       expect(addingVocabularyListCounts[4].count).to.be.equal(0)
       expect(addingVocabularyListCounts[5].count).to.be.equal(0)
       expect(addingVocabularyListCounts[6].count).to.be.equal(0)
+    })
+  })
+
+  describe('findAllPlansByUserIdsAndDate()', () => {
+    it('should find all plans by userIds and date', async () => {
+      const userEntity1 = UserEntityMock()
+      const userEntity2 = UserEntityMock()
+      const countSummary1 = new CountSummaryEntity(userEntity1.userId, CountCategory.planAddingVocabularyList, new DateTime('2018-10-10'), 5)
+      const countSummary2 = new CountSummaryEntity(userEntity1.userId, CountCategory.planAddingVocabularyList, new DateTime('2018-10-11'), 2)
+      const countSummary3 = new CountSummaryEntity(userEntity2.userId, CountCategory.planAddingVocabularyList, new DateTime('2018-10-10'), 1)
+
+      const countSummaries1 = [countSummary1, countSummary2]
+      const countSummaries2 = [countSummary3]
+
+      await Promise.all([
+        countSummaryAction.bulkCreateOrUpdate(
+          countSummaries1
+        ),
+        countSummaryAction.bulkCreateOrUpdate(
+          countSummaries2
+        ),
+      ])
+
+      const foundCountSummaries = await countSummaryLoader.findAllByCountCategoryAndUserIdsAndDate(
+        [userEntity1.userId, userEntity2.userId],
+        CountCategory.planAddingVocabularyList,
+        '2018-10-10'
+      )
+
+      expect(foundCountSummaries.length).to.be.equal(2)
     })
   })
 
