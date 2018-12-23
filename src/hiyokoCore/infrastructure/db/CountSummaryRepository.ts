@@ -1,7 +1,7 @@
 import { RepositoryBase } from "./RepositoryBase"
 import { IDbClient } from "../../interface/infrastructure/db"
 import { ICountSummaryRepository, ICountSummaryLoader, ICountSummaryAction } from "../../domain/repository/CountSummaryRepository"
-import { CountSummaryEntity, CountCategory, getPlanCountCategories } from "../../domain/model/CountSummary"
+import { CountSummaryEntity, CountCategory } from "../../domain/model/CountSummary"
 import { DateString, DateTime } from "../../../util/DateTime"
 import { UserEntity } from "../../domain/model/User";
 
