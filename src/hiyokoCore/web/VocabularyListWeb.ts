@@ -50,6 +50,34 @@ VocabularyListRouter.post('/', [
   }
 })
 
+VocabularyListRouter.put('/', [
+  check('userId').exists().isString(),
+  check('vocaListId').exists().isNumeric(),
+  check('meaning').exists().isString().trim(),
+  check('contextSentence').optional()
+], async (req: express.Request, res: express.Response) => {
+  try {
+    const bodyErrors = validationResult(req)
+    if (!bodyErrors.isEmpty()) {
+      return res.status(400).json({ errors: bodyErrors.array() })
+    }
+
+    const userId: string = req.body.userId
+    const vocaListId: number = req.body.vocaListId
+    const meaning: string = req.body.meaning
+    const contextSentence: string | null = req.body.contextSentence || null
+
+    const vocabularyListApplication = new VocabularyListApplication(userId)
+    const vocabularyList = await vocabularyListApplication.editUserVocabularyList(
+      vocaListId, meaning, contextSentence
+    )
+
+    res.json({ vocabularyList: vocabularyList.toJSON() })
+  } catch(e) {
+    return res.status(e.statusCode || 500).json({ error: e.toString() })
+  }
+})
+
 VocabularyListRouter.delete('/', [
   check('userId').exists().isString(),
   check('vocaListId').exists().isNumeric()

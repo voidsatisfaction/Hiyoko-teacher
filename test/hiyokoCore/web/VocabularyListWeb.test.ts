@@ -145,6 +145,64 @@ describe('/vocabularyLists', () => {
     })
   })
 
+  describe('PUT /vocabularyLists', () => {
+    let res
+    before(async () => {
+      const createPayload = {
+        userId,
+        name: 'wlekmflwmeflw',
+        meaning: 'flkmf2l3km',
+        contextSentence: 'lkmlkmflm'
+      }
+
+      res = await request(app)
+        .post('/vocabularyLists')
+        .send(createPayload)
+        .set('Accept', 'application/json')
+        .expect(200)
+    })
+
+    it('should be error when userId is not matched', async () => {
+      const updatePayload = {
+        userId: 'not matched userId123',
+        vocaListId: res.body.vocabularyList.vocaListId,
+        meaning: 'wfjnekksdmlfad',
+        contextSentence: 'ksdflk'
+      }
+
+      await request(app)
+        .put('/vocabularyLists')
+        .send(updatePayload)
+        .set('Accept', 'application/json')
+        .expect(403)
+        .then((res2) => {
+          expect(res2.status).to.be.equal(403)
+        })
+    })
+
+    it('should edit vocabularyList', async () => {
+      const createdVocabularyList = res.body.vocabularyList
+      const newMeaning = 'hello this is new meaning'
+      const newContextSentence = 'ldkfjslkdfjsldjflskjl'
+
+      const updatePayload = {
+        userId,
+        vocaListId: createdVocabularyList.vocaListId,
+        meaning: newMeaning,
+        contextSentence: newContextSentence
+      }
+
+      const res2 = await request(app)
+        .put('/vocabularyLists')
+        .send(updatePayload)
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      expect(res2.body.vocabularyList.meaning).to.be.equal(newMeaning)
+      expect(res2.body.vocabularyList.contextSentence).to.be.equal(newContextSentence)
+    })
+  })
+
   describe('DELETE /vocabularyLists', () => {
     it('should not delete with different userId', async () => {
       const createPayload = {

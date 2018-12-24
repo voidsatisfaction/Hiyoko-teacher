@@ -182,13 +182,15 @@ export class VocabularyListApplication
     async editUserVocabularyList(
       vocaListId: number,
       meaning: string,
-      contextSentence: string
+      contextSentence?: string
     ): Promise<VocabularyList> {
       try {
         const user = await this.userHelper().getCurrentUser()
         const userProduct = await this.userHelper().getCurrentUserProduct(user)
 
         const oldVocabularyListEntity = await this.vocabularyListRepository().vocabularyListLoader().find(vocaListId)
+        contextSentence = contextSentence || oldVocabularyListEntity.contextSentence
+
         if (oldVocabularyListEntity.userId !== user.userId) {
           throw new VocabularyListApplicationUnauthorizationError(`Edit vocabularyList not authorized`)
         }
