@@ -1,0 +1,25 @@
+{
+  "Date": "2018-12-24",
+  "VideoURL": "https://edition.cnn.com/2018/11/25/cnn10/ten-content-mon/index.html",
+  "TranscriptURL": "http://transcripts.cnn.com/TRANSCRIPTS/1811/26/sn.01.html",
+  "Comment": "오늘의 CNN은 미국에서 가장 큰 쇼핑 데이로 알려진 Black friday의 기원과, 미국 전체의 디지털 광고 매출의 37%나 차지하는 구글의 독점 논쟁에 대해서 다룹니다.",
+  "EnglishComment": "Today, CNN discusses the origin of the Black Friday, known as the biggest shopping day in the United States, and Google's exclusive argument, which accounts for 37 percent of all digital advertising sales in the United States.",
+  "Themes": [
+    {
+      "Time": "00:00 - 02:00",
+      "Theme": "a new climate change report by the U.S. government."
+    },
+    {
+      "Time": "02:00 - 03:45",
+      "Theme": "the history of Black Friday and its sales in the present."
+    },
+    {
+      "Time": "03:45 - 05:45",
+      "Theme": "Widespread protests in terms of rising gas price in France."
+    },
+    {
+      "Time": "05:45 - 09:10",
+      "Theme": "Whether Google is a monopoly."
+    }
+  ]
+}
