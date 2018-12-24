@@ -8,7 +8,6 @@ import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db';
 import { VocabularyListApplicationUnauthorizationError } from '../../../src/hiyokoCore/application/error';
 import { VocabularyListRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository';
 import { DateTime } from '../../../src/util/DateTime';
-import { VocabularyListEntity } from '../../../src/hiyokoCore/domain/model/VocabularyList';
 
 class VocabularyRepositoryTest extends VocabularyRepositoryComponent {
   readonly dbc: IDbClient
@@ -103,7 +102,9 @@ describe('VocabularyListApplication test', () => {
         vocabularyEntity.name, newMeaning, newContextSentence, persistVocabularyListEntity.priority, persistVocabularyListEntity.createdAt
       )
 
-      const editedVocabularyList = await vocabularyListApplication.editUserVocabularyList(newVocabularyList)
+      const editedVocabularyList = await vocabularyListApplication.editUserVocabularyList(
+        newVocabularyList.vocaListId, newMeaning, newContextSentence
+      )
 
       expect(editedVocabularyList.meaning).to.equal(newMeaning)
       expect(editedVocabularyList.contextSentence).to.equal(newContextSentence)

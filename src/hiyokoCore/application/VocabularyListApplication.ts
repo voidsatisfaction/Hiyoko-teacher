@@ -27,6 +27,22 @@ export class VocabularyList {
   readonly priority: number
   readonly createdAt: DateTime
 
+  static fromVocabularyListEntityAndName(
+    vocabularyListEntity: VocabularyListEntity,
+    name: string
+  ): VocabularyList {
+    return new VocabularyList(
+      vocabularyListEntity.userId,
+      vocabularyListEntity.vocaListId,
+      vocabularyListEntity.vocaId,
+      name,
+      vocabularyListEntity.meaning,
+      vocabularyListEntity.contextSentence,
+      vocabularyListEntity.priority,
+      vocabularyListEntity.createdAt
+    )
+  }
+
   constructor(
     userId: string,
     vocaListId: number,
@@ -164,21 +180,34 @@ export class VocabularyListApplication
     }
 
     async editUserVocabularyList(
-      vocabularyList: VocabularyList
+      vocaListId: number,
+      meaning: string,
+      contextSentence: string
     ): Promise<VocabularyList> {
       try {
         const user = await this.userHelper().getCurrentUser()
         const userProduct = await this.userHelper().getCurrentUserProduct(user)
 
-        const newVocabularyListEntity = vocabularyList.toVocabularyListEntity()
+        const oldVocabularyListEntity = await this.vocabularyListRepository().vocabularyListLoader().find(vocaListId)
+        if (oldVocabularyListEntity.userId !== user.userId) {
+          throw new VocabularyListApplicationUnauthorizationError(`Edit vocabularyList not authorized`)
+        }
+        const newVocabularyListEntity = new VocabularyListEntity(
+          oldVocabularyListEntity.vocaListId, oldVocabularyListEntity.userId, oldVocabularyListEntity.vocaId,
+          meaning, oldVocabularyListEntity.priority, oldVocabularyListEntity.createdAt, contextSentence
+        )
 
         await this.vocabularyListRepository().vocabularyListAction().update(newVocabularyListEntity)
+        const newVocabularyLists = <VocabularyList[]>await this.vocabularyListVocabularyRelation().mergeVocabulary([newVocabularyListEntity])
 
         this.userActionLogger().putActionLog(
           Action.edditVocabularyList, userProduct.productId
         )
 
-        return vocabularyList
+        return VocabularyList.fromVocabularyListEntityAndName(
+          newVocabularyListEntity,
+          newVocabularyLists[0].name
+        )
       } catch(e) {
         throw e
       }
