@@ -5,6 +5,7 @@ import { DateTime } from "../../../util/DateTime";
 export enum Action {
   follow                = 'follow',
   addVocabularyList     = 'add-vocabulary-list',
+  edditVocabularyList   = 'edit-vocabulary-list',
   deleteVocabularyList  = 'delete-vocabulary-list',
   readVocabularyLists   = 'read-vocabulary-lists',
 

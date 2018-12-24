@@ -8,6 +8,7 @@ import { IDbClient } from '../../../src/hiyokoCore/interface/infrastructure/db';
 import { VocabularyListApplicationUnauthorizationError } from '../../../src/hiyokoCore/application/error';
 import { VocabularyListRepositoryComponent } from '../../../src/hiyokoCore/infrastructure/db/VocabularyListRepository';
 import { DateTime } from '../../../src/util/DateTime';
+import { VocabularyListEntity } from '../../../src/hiyokoCore/domain/model/VocabularyList';
 
 class VocabularyRepositoryTest extends VocabularyRepositoryComponent {
   readonly dbc: IDbClient
@@ -81,6 +82,35 @@ describe('VocabularyListApplication test', () => {
       expect(vocabularyLists[1].name).to.be.equal(vocabularyEntity2.name)
       expect(vocabularyLists[2].name).to.be.equal(vocabularyEntity1.name)
       now.restore()
+    })
+  })
+
+  describe('editVocabularyList()', () => {
+    it('should edit vocabularyList', async () => {
+      const persistUser = await UserEntityPersistMock(dbc)
+      const vocabularyListApplication = new VocabularyListApplication(persistUser.userId)
+
+      const [vocabularyEntity, persistVocabularyListEntity] = await VocabularyListEntityPersistMock(dbc, persistUser)
+
+      const foundVocabularyLists = await vocabularyListApplication.getUserVocabularyLists()
+
+      expect(foundVocabularyLists[0].toVocabularyListEntity()).to.be.deep.equal(persistVocabularyListEntity)
+
+      const newMeaning = 'hello world new meaning'
+      const newContextSentence = 'lkasmdflakmdlmfam'
+      const newVocabularyList = new VocabularyList(
+        persistVocabularyListEntity.userId, persistVocabularyListEntity.vocaListId, persistVocabularyListEntity.vocaId,
+        vocabularyEntity.name, newMeaning, newContextSentence, persistVocabularyListEntity.priority, persistVocabularyListEntity.createdAt
+      )
+
+      const editedVocabularyList = await vocabularyListApplication.editUserVocabularyList(newVocabularyList)
+
+      expect(editedVocabularyList.meaning).to.equal(newMeaning)
+      expect(editedVocabularyList.contextSentence).to.equal(newContextSentence)
+
+      const foundVocabularyLists2 = await vocabularyListApplication.getUserVocabularyLists()
+
+      expect(foundVocabularyLists2[0]).to.be.deep.equal(editedVocabularyList)
     })
   })
 

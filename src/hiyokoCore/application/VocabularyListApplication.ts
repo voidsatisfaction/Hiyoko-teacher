@@ -15,10 +15,12 @@ import { UserActionLogHelperComponent, IUserActionLoggerObject, Action } from ".
 import { IUserProductRepository } from "../domain/repository/UserProductRepository";
 import { IUserProductRelationObject } from "../domain/relation/UserProductRelation";
 import { DateTime } from "../../util/DateTime";
+import { VocabularyListEntity } from "../domain/model/VocabularyList";
 
 export class VocabularyList {
   readonly userId: string
   readonly vocaListId: number
+  readonly vocaId: number
   readonly name: string
   readonly meaning: string
   readonly contextSentence: string
@@ -28,6 +30,7 @@ export class VocabularyList {
   constructor(
     userId: string,
     vocaListId: number,
+    vocaId: number,
     name: string,
     meaning: string,
     contextSentence: string,
@@ -36,6 +39,7 @@ export class VocabularyList {
   ) {
     this.userId = userId
     this.vocaListId = vocaListId
+    this.vocaId = vocaId
     this.name = name
     this.meaning = meaning
     this.contextSentence = contextSentence
@@ -53,6 +57,19 @@ export class VocabularyList {
       priority: this.priority,
       createdAt: this.createdAt.toDateTimeString()
     })
+  }
+
+  toVocabularyListEntity(): VocabularyListEntity {
+    return new VocabularyListEntity(
+      this.vocaListId,
+      this.userId,
+      this.vocaId,
+      this.meaning,
+      this.priority,
+      this.createdAt,
+      this.contextSentence,
+      null
+    )
   }
 }
 
@@ -111,6 +128,7 @@ export class VocabularyListApplication
         return new VocabularyList(
           user.userId,
           vocabularyList.vocaListId,
+          vocabularyList.vocaId,
           vocabulary.name,
           vocabularyList.meaning,
           vocabularyList.contextSentence,
@@ -137,9 +155,30 @@ export class VocabularyListApplication
 
         return vocabularyLists.map(
           vl => new VocabularyList(
-            vl.userId, vl.vocaListId, vl.name, vl.meaning, vl.contextSentence, vl.priority, vl.createdAt
+            vl.userId, vl.vocaListId, vl.vocaId, vl.name, vl.meaning, vl.contextSentence, vl.priority, vl.createdAt
           )
         )
+      } catch(e) {
+        throw e
+      }
+    }
+
+    async editUserVocabularyList(
+      vocabularyList: VocabularyList
+    ): Promise<VocabularyList> {
+      try {
+        const user = await this.userHelper().getCurrentUser()
+        const userProduct = await this.userHelper().getCurrentUserProduct(user)
+
+        const newVocabularyListEntity = vocabularyList.toVocabularyListEntity()
+
+        await this.vocabularyListRepository().vocabularyListAction().update(newVocabularyListEntity)
+
+        this.userActionLogger().putActionLog(
+          Action.edditVocabularyList, userProduct.productId
+        )
+
+        return vocabularyList
       } catch(e) {
         throw e
       }
