@@ -67,6 +67,10 @@ export class DateTime {
     return this.value.format('YYYY-MM-DD')
   }
 
+  toHourMinuteString(): string {
+    return this.value.format('HH:mm')
+  }
+
   // changed to UTC timezone Date object so, -9 hours
   toDate(): Date {
     return this.value.toDate()
