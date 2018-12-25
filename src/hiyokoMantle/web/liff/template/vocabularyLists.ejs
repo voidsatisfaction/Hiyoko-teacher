@@ -25,7 +25,75 @@
           <!-- vocabulary - context sentence goes here -->
         </div>
       </div>
-
+      <!-- vocabulary list edit modal part -->
+      <div class="modal fade vocabulary-list-edit-modal js-vocabulary-list-edit-modal" id="vocabularyListEditModalCenter" tabindex="-1"
+        role="dialog" aria-labelledby="vocabularyListEditModalCenter" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalEditTitle">
+                <!-- Title goes here -->
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      id="vocaListIdEditInput"
+                      value=""
+                      hidden
+                    >
+                    <input
+                      type="text"
+                      id="vocaNameEditInput"
+                      value=""
+                      hidden
+                    >
+                    <input
+                      type="text"
+                      id="dateEditInput"
+                      value=""
+                      hidden
+                    >
+                  </div>
+                  <div class="form-group">
+                    <label for="meaningInput">Meaning(의미)</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="meaningEditInput"
+                      placeholder="e.g) 거절하다 / 拒絶する"
+                      autocapitalize="none"
+                      value=""
+                    >
+                    <!-- meaning goes here -->
+                  </div>
+                  <div class="form-group">
+                    <label for="meaningInput">Context Sentence(문맥)</label>
+                    <textarea
+                      rows="5"
+                      class="form-control"
+                      id="contextSentenceEditInput"
+                      placeholder="e.g) Why did she turn down your invitation?"
+                    >
+                      <!-- context sentence goes here -->
+                    </textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary js-vocabulary-list-edit-button" data-dismiss="modal">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <%- include('common/script') %>

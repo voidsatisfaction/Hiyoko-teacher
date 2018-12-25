@@ -44,6 +44,28 @@
       }
     }
 
+    async editVocabularyListData({ userId, vocaListId, meaning, contextSentence, date }) {
+      try {
+        const result = await axios.put(`/<%= process.env.NODE_ENV %>/hiyokoSensei/api/vocabularyLists`, {
+          userId, vocaListId, meaning, contextSentence
+        })
+
+        this.normalizedVocabularyLists.byDate[date] = this.normalizedVocabularyLists.byDate[date].map(vl => {
+          if (vl.vocaListId === vocaListId) {
+            vl.meaning = meaning
+            vl.contextSentence = contextSentence
+          }
+          return vl
+        })
+
+        this.renderVocabularyMeaningView()
+        this.renderVocabularyContextSentenceView()
+      } catch(error) {
+        console.error(error)
+        alert(JSON.stringify(`Something went wrong! please retry a few minutes later`))
+      }
+    }
+
     renderVocabularyMeaningView() {
       this.view.renderVocabularyListsNum({ num: this.vocabularyListsNum })
       this.view.renderVocabularyMeaningCards({ normalizedVocabularyLists: this.normalizedVocabularyLists })
@@ -51,6 +73,14 @@
 
     renderVocabularyContextSentenceView() {
       this.view.renderVocabularyContextSentenceCards({ normalizedVocabularyLists: this.normalizedVocabularyLists })
+    }
+
+    renderVocabularyListEditModal({ vocaListId, date }) {
+      vocaListId = Number(vocaListId)
+
+      const vocabularyList = this.normalizedVocabularyLists.byDate[date].filter(vl => vl.vocaListId === vocaListId)[0]
+
+      this.view.renderVocabularyListEditModal({ vocabularyList, date })
     }
 
     async _fetchNormalizedVocabularyLists() {
@@ -81,10 +111,21 @@
       this.vocabularyListsContextSentence = this.container.querySelector('#nav-vocabularyLists-contextSentence')
 
       this.vocabularyListsNum = this.container.querySelector('.js-vocabularyLists-num')
+
+      this.vocabularyListEditModal = this.container.querySelector('.js-vocabulary-list-edit-modal')
+      this.vocabularyListEditButton = this.container.querySelector('.js-vocabulary-list-edit-button')
+
+      this.vocabularyListEditModalTitle = this.vocabularyListEditModal.querySelector('#modalEditTitle')
+      this.vocabularyListEditModalVocaNameInput = this.vocabularyListEditModal.querySelector('#vocaNameEditInput')
+      this.vocabularyListEditModalVocaListIdInput = this.vocabularyListEditModal.querySelector('#vocaListIdEditInput')
+      this.vocabularyListEditModalDateInput = this.vocabularyListEditModal.querySelector('#dateEditInput')
+      this.vocabularyListEditModalMeaningInput = this.vocabularyListEditModal.querySelector('#meaningEditInput')
+      this.vocabularyListEditModalContextSentenceInput = this.vocabularyListEditModal.querySelector('#contextSentenceEditInput')
     }
 
     initEvents() {
       this.vocabularyListsHome.addEventListener('click', this._onClickDeleteButton.bind(this))
+      this.vocabularyListEditButton.addEventListener('click', this._onClickEditButton.bind(this))
     }
 
     initAction() {
@@ -92,13 +133,50 @@
     }
 
     _onClickDeleteButton(e) {
-      const { nodeName, vocaListId } = e.srcElement.dataset
-      if (
-        nodeName !== 'vocabulary-list-delete-icon' ||
-        !confirm('Really delete?')
-      ) return
+      const { nodeName } = e.srcElement.dataset
 
-      this.presenter.deleteVocabularyList({ vocaListId })
+      switch (nodeName) {
+        case 'vocabulary-list-delete-icon':
+          e.stopPropagation()
+          if (confirm('Really delete?')) {
+            const { vocaListId } = e.srcElement.dataset
+
+            this.presenter.deleteVocabularyList({ vocaListId })
+          }
+          break
+        case 'vocabulary-list-row':
+          const { vocaListId, date } = e.srcElement.dataset
+
+          this.presenter.renderVocabularyListEditModal({ vocaListId, date })
+          break
+        default:
+          break
+      }
+    }
+
+    _onClickEditButton(e) {
+      const userId = this.liffData.context.userId
+      const vocaListId = +this.vocabularyListEditModalVocaListIdInput.value
+      const name = this.vocabularyListEditModalVocaNameInput.value
+      const meaning = this.vocabularyListEditModalMeaningInput.value.trim()
+      const contextSentence = this.vocabularyListEditModalContextSentenceInput.value.trim()
+      const date = this.vocabularyListEditModalDateInput.value
+
+      if (!meaning || !contextSentence) {
+        const reason = 'You should fill out all three fields (name, meaning, contextSentence)'
+        alert(reason)
+        return
+      }
+
+      if (!contextSentence.trim().includes(name) && !this._isCapitalizedInclude({ vocabulary: name, contextSentence })) {
+        const reason = 'Context sentence should contain vocabulary name'
+        alert(reason)
+        return
+      }
+
+      this.presenter.editVocabularyListData({
+        userId, vocaListId, meaning, contextSentence, date
+      })
     }
 
     renderVocabularyListsNum({ num }) {
@@ -117,7 +195,7 @@
               <table class="table table-sm">
                 <tbody>
                   ${
-                    vocabularyLists.map((vocabularyList) => this._vocabularyMeaningTableRowHTML({ vocabularyList }))
+                    vocabularyLists.map((vocabularyList) => this._vocabularyMeaningTableRowHTML({ vocabularyList, date }))
                       .join('\n')
                   }
                 </tbody>
@@ -155,12 +233,32 @@
       this.vocabularyListsContextSentence.innerHTML = dateCardHTMLArray.join('\n')
     }
 
-    _vocabularyMeaningTableRowHTML({ vocabularyList }) {
+    _vocabularyMeaningTableRowHTML({ vocabularyList, date }) {
+      const { vocaListId } = vocabularyList
       return `
-        <tr>
-          <th class="vocabulary-list-name" scope="row">${vocabularyList.name}</td>
-          <td class="vocabulary-list-meaning">${vocabularyList.meaning}</td>
-          <td class="vocabulary-list-delete"><i class="material-icons vocabulary-list-delete-icon" data-node-name="vocabulary-list-delete-icon" data-voca-list-id="${vocabularyList.vocaListId}">delete</i></td>
+        <tr class="vocabulary-list-row" data-toggle="modal" data-target="#vocabularyListEditModalCenter">
+          <th
+            class="vocabulary-list-name"
+            scope="row"
+            data-node-name="vocabulary-list-row"
+            data-voca-list-id="${vocaListId}"
+            data-date="${date}"
+          >
+            ${vocabularyList.name}
+          </th>
+          <td
+            class="vocabulary-list-meaning"
+            data-node-name="vocabulary-list-row"
+            data-voca-list-id="${vocaListId}"
+            data-date="${date}"
+          >
+            ${vocabularyList.meaning}
+          </td>
+          <td class="vocabulary-list-delete">
+            <i class="material-icons vocabulary-list-delete-icon" data-node-name="vocabulary-list-delete-icon" data-voca-list-id="${vocabularyList.vocaListId}">
+              delete
+            </i>
+          </td>
         </tr>
       `
     }
@@ -168,10 +266,30 @@
     _vocabularyContextSentenceTableRowHTML({ vocabularyList }) {
       return `
         <tr>
-          <th class="vocabulary-list-name" scope="row">${vocabularyList.name}</td>
+          <th class="vocabulary-list-name" scope="row">${vocabularyList.name}</th>
           <td class="vocabulary-list-context-sentence">${vocabularyList.contextSentence}</td>
         </tr>
       `
+    }
+
+    renderVocabularyListEditModal({ vocabularyList, date }) {
+      this.vocabularyListEditModalTitle.innerHTML = `${vocabularyList.name}`
+      this.vocabularyListEditModalVocaListIdInput.value = `${vocabularyList.vocaListId}`
+      this.vocabularyListEditModalVocaNameInput.value = `${vocabularyList.name}`
+      this.vocabularyListEditModalDateInput.value = `${date}`
+      this.vocabularyListEditModalMeaningInput.value = `${vocabularyList.meaning}`
+      this.vocabularyListEditModalContextSentenceInput.innerHTML = `${vocabularyList.contextSentence}`
+    }
+
+    _isCapitalizedInclude({ vocabulary, contextSentence }) {
+      if (vocabulary.length === 0) {
+        return false
+      }
+      const splitVocabulary = vocabulary.split('')
+      splitVocabulary[0] = splitVocabulary[0].toUpperCase()
+      const capitalizedString = splitVocabulary.join('')
+
+      return contextSentence.trim().includes(capitalizedString)
     }
   }
 
