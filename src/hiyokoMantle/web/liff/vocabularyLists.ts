@@ -3,6 +3,7 @@ import { TemplateEngine } from "../util/templateEngine"
 import { PathMethodResolver } from "../../../util/LambdaUtil/pathResolver"
 import { HiyokoCoreService } from "../../service/HiyokoCore"
 import { HiyokoCoreClient } from "../../hiyokoCore";
+import { IVocabularyList } from "../../model/VocabularyList";
 
 export const handler = async (event: TLambdaHttpEvent, context, callback) => {
   const pathMethodResolver = new PathMethodResolver()
@@ -17,6 +18,12 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
     '/hiyokoSensei/api/vocabularyLists',
     'GET',
     getVocabularyListsAllJSON
+  )
+
+  pathMethodResolver.setFunction(
+    '/hiyokoSensei/api/vocabularyLists',
+    'PUT',
+    putVocabularyListJSON
   )
 
   pathMethodResolver.setFunction(
@@ -49,6 +56,26 @@ export const handler = async (event: TLambdaHttpEvent, context, callback) => {
     } catch(error) {
       console.error(error)
       callback(null, response(500, 'Some error occured'))
+    }
+  }
+
+  async function putVocabularyListJSON() {
+    try {
+      const body = JSON.parse(event.body)
+
+      const userId: string = body.userId
+      const vocaListId: number = body.vocaListId
+      const meaning: string = body.meaning
+      const contextSentence: string | null = body.contextSentence || null
+
+      const editedVocabularyList: IVocabularyList = await HiyokoCoreClient.putVocabularyList(
+        userId, vocaListId, meaning, contextSentence
+      )
+
+      callback(null, response(200, editedVocabularyList))
+    } catch(error) {
+      console.error(error)
+      callback(null, response(500, JSON.stringify(error)))
     }
   }
 

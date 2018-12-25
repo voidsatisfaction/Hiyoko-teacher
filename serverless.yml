@@ -43,6 +43,9 @@ functions:
           method: get
       - http:
           path: hiyokoSensei/api/vocabularyLists
+          method: put
+      - http:
+          path: hiyokoSensei/api/vocabularyLists
           method: delete
   # For simple quizzes
   hiyokoSenseiLiff-SimpleQuizzes:
