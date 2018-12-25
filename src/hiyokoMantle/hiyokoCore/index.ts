@@ -56,6 +56,27 @@ export class HiyokoCoreClient {
     }
   }
 
+  static async putVocabularyList(
+    userId: string,
+    vocaListId: number,
+    meaning: string,
+    contextSentence?: string
+  ): Promise<IVocabularyList> {
+    try {
+      contextSentence = contextSentence || null
+      const response = await this._client().put(`/vocabularyLists`, {
+        userId,
+        vocaListId,
+        meaning,
+        contextSentence
+      })
+
+      return response.data.vocabularyList
+    } catch(error) {
+      throw error
+    }
+  }
+
   static async deleteVocabularyList(
     userId: string,
     vocaListId: number
