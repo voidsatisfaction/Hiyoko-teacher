@@ -113,3 +113,7 @@ package:
     - build
     - db
     - prac
+custom:
+  prune:
+    automatic: true
+    number: 3
