@@ -3,8 +3,10 @@ import { DateTime } from "../../util/DateTime";
 
 function cron() {
   setInterval(async () => {
+    const now = new DateTime()
     if (
-      new DateTime().toHourMinuteString() === '20:00'
+      now.toHourMinuteString() === '17:00' ||
+      now.toHourMinuteString() === '21:00'
     ) {
       await planCheck()
     }

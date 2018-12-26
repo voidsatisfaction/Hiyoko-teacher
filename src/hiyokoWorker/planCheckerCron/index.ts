@@ -101,7 +101,7 @@ export async function planCheck() {
     const [plan1, plan2] = [userIdPlanAddingVocabularyListMap[userId], userIdPlanTakingQuizzes[userId]]
     const [done1, done2] = [userIdAddingVocabularyLists[userId], userIdTakingQuizzes[userId]]
     if (
-      !plan1 || !plan2 ||
+      !done1 || !done2 ||
       (done1.count < plan1.count) ||
       (done2.count < plan2.count)
     ) {
