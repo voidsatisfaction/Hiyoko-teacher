@@ -1,0 +1,17 @@
+{
+  "Date": "2018-12-28",
+  "VideoURL": "https://edition.cnn.com/2018/11/29/cnn10/ten-content-fri/index.html",
+  "TranscriptURL": "http://transcripts.cnn.com/TRANSCRIPTS/1811/30/sn.01.html",
+  "Comment": "오늘은 강수량을 인위적으로 늘리려는 인간의 시도에 관한 에피소드가 재미있습니다.",
+  "EnglishComment": "For today, the episode about attempt to incrase precipitation artificially is interesting to watch.",
+  "Themes": [
+    {
+      "Time": "00:00 - 01:50",
+      "Theme": "The stage is set for meetings and drama at this year's Group of 20 (G20) summit in Argentina."
+    },
+    {
+      "Time": "01:50 - 08:00",
+      "Theme": "How scientists try to increase precipitation through cloud seeding."
+    }
+  ]
+}
