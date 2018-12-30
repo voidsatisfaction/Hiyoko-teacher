@@ -1,0 +1,25 @@
+{
+  "Date": "2018-12-31",
+  "VideoURL": "https://edition.cnn.com/2018/12/04/cnn10/ten-content-weds/index.html",
+  "TranscriptURL": "http://transcripts.cnn.com/TRANSCRIPTS/1812/05/sn.01.html",
+  "Comment": "오늘은, 에너지의 공유를 이용한 블록체인 기술의 적용에 관한 내용이 인상 깊습니다. 최근 에어비엔비, 우버 등 공유경제를 활용하는 사례가 많은데요, 에너지 분야에서는 블록체인 기술과 함께 어떠한 첨단 기술이 적용되어지고 있는지 확인하실 수 있습니다.",
+  "EnglishComment": "Today, I am impressed with the application of blockchain technology using energy sharing. There are a lot of recent uses in shared economies such as Air Bienby and Uber. For today's episode, you can see which cutting-edge technologies are being applied along with blockchain technology especially in the energy sector,.",
+  "Themes": [
+    {
+      "Time": "00:00 - 01:50",
+      "Theme": "Protests for increasing the disel prices in France."
+    },
+    {
+      "Time": "01:50 - 03:10",
+      "Theme": "Funeral of former U.S. president George H. W. Bush."
+    },
+    {
+      "Time": "03:10 - 06:30",
+      "Theme": "The possible role of blockchain technology in how people get electricity."
+    },
+    {
+      "Time": "06:30 - 08:40",
+      "Theme": "How 26 monkeys previously used for research will now spend retirement at a sanctuary in Florida."
+    }
+  ]
+}
