@@ -8,6 +8,8 @@ build
 
 prac
 
+*.csv
+
 # serverless directories
 .serverless
 # Elastic Beanstalk Files
