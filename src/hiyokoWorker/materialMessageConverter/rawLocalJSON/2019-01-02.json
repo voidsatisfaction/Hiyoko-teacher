@@ -1,0 +1,17 @@
+{
+  "Date": "2019-01-02",
+  "VideoURL": "https://edition.cnn.com/2018/12/06/cnn10/ten-content-fri/index.html",
+  "TranscriptURL": "http://transcripts.cnn.com/TRANSCRIPTS/1812/07/sn.01.html",
+  "Comment": "*어제 컴퓨터가 고장이 나서 교재 메시지 전달이 늦어졌습니다. 죄송합니다.* 오늘은, 최첨단 주방에서의 IOT(Internet Of Things)의 활약을 볼 수 있습니다.",
+  "EnglishComment": "Today, you'll see Internet Of Things (IOT) in a state-of-the-art kitchen.",
+  "Themes": [
+    {
+      "Time": "00:00 - 03:35",
+      "Theme": "National Pearl Harbor Remembrance Day -- CNN 10 recalls the attack that led to the U.S. entry into World War II."
+    },
+    {
+      "Time": "03:35 - 03:10",
+      "Theme": "A kitchen where everything is connected, will the food actually be as good?"
+    }
+  ]
+}

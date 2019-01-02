@@ -1,0 +1,21 @@
+{
+  "Date": "2019-01-03",
+  "VideoURL": "https://edition.cnn.com/2018/12/09/cnn10/ten-content-mon/index.html",
+  "TranscriptURL": "http://transcripts.cnn.com/TRANSCRIPTS/1812/10/sn.01.html",
+  "Comment": "오늘은, CNN Hero에 선발된 학생에 대한 에피소드가 나옵니다. 어린 나이임에도 불구하고, 세상을 보다 좋게 만들려는 시도가 아름답고 대핟하다고 생각 합니다.",
+  "EnglishComment": "Today, there's an episode about a student selected by CNN Hero. Even at a young age, I think the attempt to make the world better is beautiful and great.",
+  "Themes": [
+    {
+      "Time": "00:00 - 02:45",
+      "Theme": "A report on continued unrest in France, as the nation's president prepares to address his country."
+    },
+    {
+      "Time": "02:45 - 04:30",
+      "Theme": "Explanations of a SpaceX success and a SpaceX failure follow."
+    },
+    {
+      "Time": "04:30 - 08:40",
+      "Theme": "A Young Wonder who's helping kids on another continent get what they need to play ball."
+    }
+  ]
+}
