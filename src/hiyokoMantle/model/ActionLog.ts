@@ -3,5 +3,5 @@ export interface ActionLog {
   action: string
   createdAt: string
   productId?: number
-  content?: object
+  content?: any
 }
