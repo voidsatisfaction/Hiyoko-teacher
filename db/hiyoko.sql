@@ -62,6 +62,8 @@ CREATE TABLE Hiyoko_core.Cnn10_materials (
   `materialId` INT(20) UNSIGNED AUTO_INCREMENT NOT NULL,
   `videoURL` VARCHAR(200) NOT NULL,
   `transcriptURL` VARCHAR(200) NOT NULL,
+  `transcript` TEXT DEFAULT NULL,
+  `vocaSet` TEXT DEFAULT NULL,
   `date` DATE NOT NULL,
   PRIMARY KEY (`materialId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
